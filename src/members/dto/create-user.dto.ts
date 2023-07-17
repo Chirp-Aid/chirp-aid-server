@@ -1,15 +1,15 @@
 import { BadRequestException } from "@nestjs/common";
 import { ApiProperty } from "@nestjs/swagger";
-// // import { Transform } from "class-transformer";
-// import { IsEmail, IsString, Matches, MaxLength, MinLength } from "class-validator";
-// import { NotIn } from "src/not-in";
+import { Transform } from "class-transformer";
+import { IsEmail, IsInt, IsString, Matches, MaxLength, MinLength, isString } from "class-validator";
+import { NotIn } from "../../not-in";
 
 export class CreateUserDto {
     @Transform(params => params.value.trim())
     @NotIn('password', {message: 'password는 name과 같은 문자열을 포함할 수 없습니다. '})
     @IsString()
     @MinLength(2)
-    @MaxLength(30)
+    @MaxLength(15)
     @ApiProperty({
         example: 'Hong gildong',
         description: 'The name of User'
@@ -29,7 +29,32 @@ export class CreateUserDto {
     @Matches(/^[A-Za-z\d!@#$%^&*()]{8,30}$/)
     @ApiProperty({
         example: 'abc123!!',
-        description: 'The passowrd of User'
+        description: 'The password of User'
     })
     readonly password: string;
+
+    @IsInt()
+    age: number;
+
+    @IsString()
+    @ApiProperty({
+        example: 'f',
+        description: 'The sex of User'
+    })
+    sex: string;
+
+    @IsString()
+    @MinLength(2)
+    @MaxLength(15)
+    nickName: string;
+
+    @IsString()
+    @MaxLength(15)
+    region: string;
+
+    @MaxLength(15)
+    phone_number: string;
+
+    @IsString()
+    profile_photo: string;
 }

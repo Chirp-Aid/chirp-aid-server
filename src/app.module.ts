@@ -5,6 +5,7 @@ import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { NotificationsModule } from './notifications/notifications.module';
 import { MembersModule } from './members/members.module';
+import { User } from './members/entities/user.entity';
 
 @Module({
   imports: [ConfigModule.forRoot({
@@ -17,12 +18,11 @@ import { MembersModule } from './members/members.module';
     username: process.env.DATABASE_USERNAME,
     password: process.env.DATABASE_PASSWORD,
     database: process.env.DATABASE_NAME,
-    entities: [__dirname + '/**/*.entity{.ts,.js}'],
-    synchronize: false,
+    entities: [User],
+    synchronize: true,
   }),
   NotificationsModule,
   MembersModule
-  
 ],
   controllers: [AppController],
   providers: [AppService],
