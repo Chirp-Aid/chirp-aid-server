@@ -16,7 +16,7 @@ export class UsersService {
     ){}
 
     async create(createUserDto: CreateUserDto) {
-        const {name, email, password, age, sex, nickName, region, phone_number, profile_photo} = createUserDto;
+        const {name, email, password, age, sex, nickname, region, phone_number, profile_photo} = createUserDto;
 
         const queryRunner = this.dataSource.createQueryRunner();
 
@@ -30,7 +30,7 @@ export class UsersService {
             newUser.password= password;
             newUser.age= age;
             newUser.sex= sex;
-            newUser.nickName= nickName;
+            newUser.nickname= nickname;
             newUser.region= region;
             newUser.phone_number= phone_number;
             newUser.profile_photo= profile_photo;

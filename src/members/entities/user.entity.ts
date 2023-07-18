@@ -21,7 +21,7 @@ export class User{
     sex: string;
 
     @Column({ unique: true, length: 15})
-    nickName: string;
+    nickname: string;
 
     @Column()
     region: string;
@@ -32,4 +32,6 @@ export class User{
     @Column()
     profile_photo: string;
 
+    @Column({unique: true})
+    refresh_token: string;
 }
