@@ -3,6 +3,7 @@ import { ApiProperty } from "@nestjs/swagger";
 import { Transform } from "class-transformer";
 import { IsEmail, IsInt, IsString, Matches, MaxLength, MinLength, isString } from "class-validator";
 import { NotIn } from "../../not-in";
+import { messaging } from "firebase-admin";
 
 export class CreateUserDto {
     @Transform(params => params.value.trim())
@@ -26,7 +27,7 @@ export class CreateUserDto {
     readonly email: string;
 
     @IsString()
-    @Matches(/^[A-Za-z\d!@#$%^&*()]{8,30}$/)
+    @Matches(/^[A-Za-z\d!@#$%^&*()]{8,30}$/, {message: '비밀번호는 8글자 이상으로 ^[A-Za-z\d!@#$%^&*()]{8,30}가 포함되어야 합니다.'})
     @ApiProperty({
         example: 'abc123!!',
         description: 'The password of User'

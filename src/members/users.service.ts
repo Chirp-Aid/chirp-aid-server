@@ -41,6 +41,7 @@ export class UsersService {
             newUser.profile_photo = profile_photo;
             const user = await queryRunner.manager.save(newUser);
             await queryRunner.commitTransaction();
+            console.log(`save User : ${user.email}`);
             return user;
         } catch (error) {
             await queryRunner.rollbackTransaction();
@@ -54,11 +55,13 @@ export class UsersService {
     async login(email: string, password: string, res: Response) {
         const user = await this.usersRepository.findOne({where: {email: email}})
         if(!user){
+            console.log(`existed email: ${email}`);
             throw new NotFoundException('존재하지 않는 이메일입니다.');
         }
 
         const isAuth = await bcrypt.compare(password, user.password);
         if(!isAuth){
+            console.log(`wrong password: ${email}`);
             throw new UnprocessableEntityException('비밀번호가 일치하지 않습니다.');
         }
 
@@ -67,7 +70,7 @@ export class UsersService {
         this.updateRefreshToken(user.user_id, refresh_token);
         // JWT Access Toekn 발급
         const jwt = this.authService.getAccessToken({user});
-
+        console.log(`succeed Login : ${user.email}`);
         return jwt
     }
 
