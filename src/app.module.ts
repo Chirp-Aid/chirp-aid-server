@@ -6,7 +6,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { NotificationsModule } from './notifications/notifications.module';
 import { MembersModule } from './members/members.module';
 import { User } from './members/entities/user.entity';
-
+import { AuthModule } from './auth/auth.module';
 @Module({
   imports: [ConfigModule.forRoot({
     isGlobal: true,
@@ -22,7 +22,8 @@ import { User } from './members/entities/user.entity';
     synchronize: true,
   }),
   NotificationsModule,
-  MembersModule
+  MembersModule,
+  AuthModule
 ],
   controllers: [AppController],
   providers: [AppService],

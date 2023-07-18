@@ -1,41 +1,28 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, ValidationPipe } from '@nestjs/common';
-import { MembersService } from './members.service';
-import { CreateMemberDto } from './dto/create-member.dto';
-import { UpdateMemberDto } from './dto/update-member.dto';
+import { Controller, Post, Body,ValidationPipe, Res} from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UsersService } from './users.service';
+import { LoginUserDto } from './dto/login-user.dto';
+import * as bcrypt from 'bcrypt';
+import { Response } from 'express';
 
 @Controller('members')
 export class MembersController {
+  private PASSWORD_SALT = 10;
   constructor(private readonly usersService: UsersService) {}
-
-  @Post('/users')
-  createUser(@Body(ValidationPipe) createUserDto: CreateUserDto) {
-    return this.usersService.create(createUserDto);
+  
+  @Post('/new/users')
+  async createUser(@Body(ValidationPipe) createUserDto: CreateUserDto) {
+    const hashedPassword = await bcrypt.hash(
+      createUserDto.password,
+      this.PASSWORD_SALT,
+      );
+    const newUser = {...createUserDto, password: hashedPassword}
+    return await this.usersService.create(newUser);
   }
 
-  // @Post('/orphanages')
-  // createOrphanages(@Body() createMemberDto: CreateMemberDto) {
-  //   return this.membersService.create(createMemberDto);
-  // }
-
-  // @Get()
-  // findAll() {
-  //   return this.membersService.findAll();
-  // }
-
-  // @Get(':id')
-  // findOne(@Param('id') id: string) {
-  //   return this.membersService.findOne(+id);
-  // }
-
-  // @Patch(':id')
-  // update(@Param('id') id: string, @Body() updateMemberDto: UpdateMemberDto) {
-  //   return this.membersService.update(+id, updateMemberDto);
-  // }
-
-  // @Delete(':id')
-  // remove(@Param('id') id: string) {
-  //   return this.membersService.remove(+id);
-  // }
+  @Post('/users')
+  async loginUser(@Body() loginUserDto: LoginUserDto, @Res() res: Response) {
+    const {email, password} = loginUserDto;
+    return res.status(200).send(await this.usersService.login(email, password, res));
+  }
 }

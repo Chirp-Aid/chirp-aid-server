@@ -11,7 +11,7 @@ export class User{
     @Column({ unique: true, length: 60})
     email: string;
 
-    @Column({ length: 30})
+    @Column({ length: 60})
     password: string;
 
     @Column()
@@ -32,6 +32,6 @@ export class User{
     @Column()
     profile_photo: string;
 
-    @Column({unique: true})
-    refresh_token: string;
+    @Column({default: 'none'})
+    refresh_token?: string;
 }
