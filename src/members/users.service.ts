@@ -6,6 +6,8 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { AuthService } from 'src/auth/auth.service';
 import * as bcrypt from 'bcrypt';
 import { Response } from 'express';
+import { LoginUserDto } from './dto/login-user.dto';
+import { SaveFcmDto } from './dto/save-fcm.dto';
 
 @Injectable()
 export class UsersService {
@@ -52,7 +54,8 @@ export class UsersService {
         }
     }
 
-    async login(email: string, password: string, res: Response) {
+    async login(loginUserDto: LoginUserDto, res: Response) {
+        const {email, password} = loginUserDto;
         const user = await this.usersRepository.findOne({where: {email: email}})
         if(!user){
             console.log(`existed email: ${email}`);
@@ -89,5 +92,17 @@ export class UsersService {
             .set({ refresh_token: newToken })
             .where('user_id = :userId', { userId })
             .execute();
-        }
+    }
+
+    async saveFcmToken(saveFcmDto: SaveFcmDto){
+        const {email, fcmToken} = saveFcmDto;
+        await this.usersRepository
+            .createQueryBuilder()
+            .update(User)
+            .set({ fcm_token: fcmToken })
+            .where('email = :email', { email })
+            .execute();
+        
+        return 201;
+    }
 }

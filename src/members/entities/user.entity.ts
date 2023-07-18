@@ -33,5 +33,8 @@ export class User{
     profile_photo: string;
 
     @Column({default: 'none'})
-    refresh_token?: string;
+    refresh_token: string;
+    
+    @Column({default: 'none'})
+    fcm_token: string;
 }

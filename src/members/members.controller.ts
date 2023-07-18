@@ -5,6 +5,7 @@ import { LoginUserDto } from './dto/login-user.dto';
 import * as bcrypt from 'bcrypt';
 import { Response } from 'express';
 import { AuthGuard } from '@nestjs/passport';
+import { SaveFcmDto } from './dto/save-fcm.dto';
 
 @Controller('members')
 export class MembersController {
@@ -23,8 +24,13 @@ export class MembersController {
 
   @Post('/users')
   async loginUser(@Body() loginUserDto: LoginUserDto, @Res() res: Response) {
-    const {email, password} = loginUserDto;
-    return res.status(200).send(await this.usersService.login(email, password, res));
+    return res.status(200).send(await this.usersService.login(loginUserDto, res));
+  }
+
+  @Post('/users/auth')
+  @UseGuards(AuthGuard('access'))
+  async saveFcmToken(@Body() saveFcmDto: SaveFcmDto){
+    return await this.usersService.saveFcmToken(saveFcmDto);
   }
 
   //test
