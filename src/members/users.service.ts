@@ -53,19 +53,18 @@ export class UsersService {
 
     async login(email: string, password: string, res: Response) {
         const user = await this.usersRepository.findOne({where: {email: email}})
-
         if(!user){
             throw new NotFoundException('존재하지 않는 이메일입니다.');
         }
 
         const isAuth = await bcrypt.compare(password, user.password);
-
         if(!isAuth){
             throw new UnprocessableEntityException('비밀번호가 일치하지 않습니다.');
         }
 
         // JWT Refresh Token 쿠키에 발급
-        this.authService.setRefreshToken({user, res});
+        const refresh_token = this.authService.setRefreshToken({user, res});
+        this.updateRefreshToken(user.user_id, refresh_token);
         // JWT Access Toekn 발급
         const jwt = this.authService.getAccessToken({user});
 
@@ -79,4 +78,14 @@ export class UsersService {
 
         return user;
     }
+
+    async updateRefreshToken(userId: number, newToken: string) {
+        
+        await this.usersRepository
+            .createQueryBuilder()
+            .update(User)
+            .set({ refresh_token: newToken })
+            .where('user_id = :userId', { userId })
+            .execute();
+        }
 }

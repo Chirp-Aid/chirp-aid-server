@@ -27,6 +27,7 @@ export class MembersController {
     return res.status(200).send(await this.usersService.login(email, password, res));
   }
 
+  //테스트!! refreshToken 빼야함
   @UseGuards(AuthGuard('access'))
   @Get('/:id')
   async getUserInfo(@Param('id') id: number) {

@@ -14,7 +14,7 @@ export class AuthService{
         },
         {
             secret: process.env.JWT_ACCESS_TOKEN,
-            expiresIn: '5m',
+            expiresIn: '1d',
         },
         );
     }
@@ -26,11 +26,11 @@ export class AuthService{
         },
         {
             secret: process.env.JWT_REFRESH_TOKEN,
-            expiresIn: '1d',
+            expiresIn: '2w',
         },
         );
         res.setHeader(`Set-Cookie`, `refreshToekn=${refreshToken}`);
-        return;
+        return refreshToken;
     }
 
 }
