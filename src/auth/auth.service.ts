@@ -13,7 +13,7 @@ export class AuthService{
             sub: user.user_id,
         },
         {
-            secret: process.env.JWT_CONFIG,
+            secret: process.env.JWT_ACCESS_TOKEN,
             expiresIn: '5m',
         },
         );
@@ -25,7 +25,7 @@ export class AuthService{
             sub: user.user_id,
         },
         {
-            secret: process.env.JWT_CONFIG,
+            secret: process.env.JWT_REFRESH_TOKEN,
             expiresIn: '1d',
         },
         );
