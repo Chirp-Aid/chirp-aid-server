@@ -83,7 +83,6 @@ export class UsersService {
     }
 
     async updateRefreshToken(userId: number, newToken: string) {
-        
         await this.usersRepository
             .createQueryBuilder()
             .update(User)
