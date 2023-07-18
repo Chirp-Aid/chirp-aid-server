@@ -1,16 +1,5 @@
-import { Inject, Injectable } from "@nestjs/common";
+import { Injectable } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
-import { ConfigType } from "@nestjs/config";
-import * as jwt from 'jsonwebtoken';
-import { refreshToken } from "firebase-admin/app";
-
-interface User{
-    user_id: number;
-    name: string;
-    email: string;
-    refresh_token: string;
-}
-
 
 @Injectable()
 export class AuthService{
