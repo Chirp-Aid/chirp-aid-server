@@ -8,6 +8,7 @@ import { MembersModule } from './members/members.module';
 import { User } from './members/entities/user.entity';
 import { AuthModule } from './auth/auth.module';
 import { CommonModule } from './auth/jwt/common.module';
+import { OrphanagesModule } from './orphanages/orphanages.module';
 @Module({
   imports: [ConfigModule.forRoot({
     isGlobal: true,
@@ -25,7 +26,8 @@ import { CommonModule } from './auth/jwt/common.module';
   NotificationsModule,
   MembersModule,
   AuthModule,
-  CommonModule
+  CommonModule,
+  OrphanagesModule
 ],
   controllers: [AppController],
   providers: [AppService],
