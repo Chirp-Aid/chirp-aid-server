@@ -10,11 +10,13 @@ import { AuthService } from './auth.service';
 export class AuthController {
     constructor(private readonly authService: AuthService){}
 
+    //로그인
     @Post('users')
     async loginUser(@Body() loginUserDto: LoginDto, @Res() res: Response) {
         return res.status(200).send(await this.authService.login(loginUserDto, res));
     }
     
+    //fcm 저장
     @Post('users/fcm')
     @UseGuards(AuthGuard('access'))
     async saveFcmToken(@Body() saveFcmDto: SaveFcmDto){

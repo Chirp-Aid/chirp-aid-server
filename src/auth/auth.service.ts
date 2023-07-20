@@ -56,16 +56,14 @@ export class AuthService{
             throw new UnprocessableEntityException('비밀번호가 일치하지 않습니다.');
         }
 
-        // JWT Refresh Token 쿠키에 발급
         const refresh_token = this.setRefreshToken({user, res});
-        this.updateRefreshToken(user.user_id, refresh_token);
-        // JWT Access Toekn 발급
+        this.saveRefreshToken(user.user_id, refresh_token);
         const jwt = this.getAccessToken({user});
         console.log(`succeed Login : ${user.email}`);
         return jwt
     }
 
-    async updateRefreshToken(userId: number, newToken: string) {
+    async saveRefreshToken(userId: number, newToken: string) {
         await this.usersRepository
             .createQueryBuilder()
             .update(User)
@@ -82,12 +80,13 @@ export class AuthService{
             .set({ fcm_token: fcmToken })
             .where('email = :email', { email })
             .execute();
-        
         return 201;
     }
         
     async restoreAccessToken({user}){
-        
+        const jwt = this.getAccessToken({user});
+        console.log(`succeed Login : ${user.email}`);
+        return jwt
     }
 
 }
