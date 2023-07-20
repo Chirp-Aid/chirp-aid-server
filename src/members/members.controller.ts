@@ -1,11 +1,8 @@
-import { Controller, Post, Body,ValidationPipe, Res, UseGuards, Param, Get} from '@nestjs/common';
+import { Controller, Post, Body,ValidationPipe, } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UsersService } from './users.service';
-import { LoginUserDto } from './dto/login-user.dto';
 import * as bcrypt from 'bcrypt';
-import { Response } from 'express';
-import { AuthGuard } from '@nestjs/passport';
-import { SaveFcmDto } from './dto/save-fcm.dto';
+
 
 @Controller('members')
 export class MembersController {
@@ -22,21 +19,4 @@ export class MembersController {
     return await this.usersService.create(newUser);
   }
 
-  @Post('/users')
-  async loginUser(@Body() loginUserDto: LoginUserDto, @Res() res: Response) {
-    return res.status(200).send(await this.usersService.login(loginUserDto, res));
-  }
-
-  @Post('/users/auth')
-  @UseGuards(AuthGuard('access'))
-  async saveFcmToken(@Body() saveFcmDto: SaveFcmDto){
-    return await this.usersService.saveFcmToken(saveFcmDto);
-  }
-
-  //test
-  @UseGuards(AuthGuard('access'))
-  @Get('/:id')
-  async getUserInfo(@Param('id') id: number) {
-    return this.usersService.findOne(id);
-  }
 }
