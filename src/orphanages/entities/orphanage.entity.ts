@@ -22,5 +22,4 @@ export class Orphanage {
 
     @Column()
     photo: string;
-
 }

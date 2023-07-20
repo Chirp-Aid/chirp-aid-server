@@ -9,6 +9,8 @@ import { User } from './members/entities/user.entity';
 import { AuthModule } from './auth/auth.module';
 import { CommonModule } from './auth/jwt/common.module';
 import { OrphanagesModule } from './orphanages/orphanages.module';
+import { Orphanage } from './orphanages/entities/orphanage.entity';
+import { OrphanageUser } from './members/entities/orphanage-user.entity.ts';
 @Module({
   imports: [ConfigModule.forRoot({
     isGlobal: true,
@@ -20,7 +22,7 @@ import { OrphanagesModule } from './orphanages/orphanages.module';
     username: process.env.DATABASE_USERNAME,
     password: process.env.DATABASE_PASSWORD,
     database: process.env.DATABASE_NAME,
-    entities: [User],
+    entities: [User, Orphanage, OrphanageUser],
     synchronize: true,
   }),
   NotificationsModule,

@@ -63,7 +63,7 @@ export class AuthService{
         return jwt
     }
 
-    async saveRefreshToken(userId: number, newToken: string) {
+    async saveRefreshToken(userId: string, newToken: string) {
         await this.usersRepository
             .createQueryBuilder()
             .update(User)

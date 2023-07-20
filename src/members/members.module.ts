@@ -1,13 +1,15 @@
 import { Module } from '@nestjs/common';
-import { MembersService } from './members.service';
+import { OrphanageUsersService } from './orphanage-user.service';
 import { MembersController } from './members.controller';
 import { UsersService } from './users.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
+import { OrphanageUser } from './entities/orphanage-user.entity.ts';
+import { Orphanage } from 'src/orphanages/entities/orphanage.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([User])],
+  imports: [TypeOrmModule.forFeature([User, OrphanageUser,Orphanage])],
   controllers: [MembersController],
-  providers: [MembersService, UsersService]
+  providers: [OrphanageUsersService, UsersService]
 })
 export class MembersModule {}
