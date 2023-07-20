@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
 import { DataSource, Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
-import { AuthService } from 'src/auth/auth.service';
+import * as uuid from 'uuid';
 
 
 @Injectable()
@@ -28,6 +28,7 @@ export class UsersService {
                 throw new ConflictException('존재하는 이메일 또는 닉네임입니다.');
             }
             const newUser = new User();
+            newUser.user_id = uuid.v1();
             newUser.name = name;
             newUser.email = email;
             newUser.password = password;
