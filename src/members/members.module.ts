@@ -8,8 +8,8 @@ import { OrphanageUser } from './entities/orphanage-user.entity.ts';
 import { Orphanage } from 'src/orphanages/entities/orphanage.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([User, OrphanageUser,Orphanage])],
+  imports: [TypeOrmModule.forFeature([User, OrphanageUser, Orphanage])],
   controllers: [MembersController],
-  providers: [OrphanageUsersService, UsersService]
+  providers: [OrphanageUsersService, UsersService],
 })
 export class MembersModule {}

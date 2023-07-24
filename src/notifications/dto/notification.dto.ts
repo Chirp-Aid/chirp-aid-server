@@ -1,5 +1,5 @@
 export class NotificationDto {
-    deviceToken: string;
-    title: string;
-    body: string;
+  deviceToken: string;
+  title: string;
+  body: string;
 }

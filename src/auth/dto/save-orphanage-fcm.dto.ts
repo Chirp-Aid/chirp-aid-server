@@ -1,4 +1,4 @@
-export class SaveOrphanageFcmDto{
-    email: string;
-    fcmToken: string;
+export class SaveOrphanageFcmDto {
+  email: string;
+  fcmToken: string;
 }

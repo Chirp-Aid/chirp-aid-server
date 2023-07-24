@@ -12,25 +12,26 @@ import { OrphanagesModule } from './orphanages/orphanages.module';
 import { Orphanage } from './orphanages/entities/orphanage.entity';
 import { OrphanageUser } from './members/entities/orphanage-user.entity.ts';
 @Module({
-  imports: [ConfigModule.forRoot({
-    isGlobal: true,
-  }),
-  TypeOrmModule.forRoot({
-    type: process.env.DATABASE_TYPE as any,
-    host: process.env.DATABASE_HOST,
-    port: parseInt(process.env.DATABASE_PORT),
-    username: process.env.DATABASE_USERNAME,
-    password: process.env.DATABASE_PASSWORD,
-    database: process.env.DATABASE_NAME,
-    entities: [User, Orphanage, OrphanageUser],
-    synchronize: true,
-  }),
-  NotificationsModule,
-  MembersModule,
-  AuthModule,
-  CommonModule,
-  OrphanagesModule
-],
+  imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
+    TypeOrmModule.forRoot({
+      type: process.env.DATABASE_TYPE as any,
+      host: process.env.DATABASE_HOST,
+      port: parseInt(process.env.DATABASE_PORT),
+      username: process.env.DATABASE_USERNAME,
+      password: process.env.DATABASE_PASSWORD,
+      database: process.env.DATABASE_NAME,
+      entities: [User, Orphanage, OrphanageUser],
+      synchronize: true,
+    }),
+    NotificationsModule,
+    MembersModule,
+    AuthModule,
+    CommonModule,
+    OrphanagesModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })

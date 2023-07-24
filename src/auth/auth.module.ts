@@ -8,12 +8,12 @@ import { OrphanageUser } from 'src/members/entities/orphanage-user.entity.ts';
 import { OrphanageAuthService } from './auth-orphanage.service';
 
 @Module({
-    imports: [
-        JwtModule.register({}),
-        TypeOrmModule.forFeature([User, OrphanageUser])
-    ],
-    providers: [JwtService, AuthService, OrphanageAuthService],
-    exports: [AuthService],
-    controllers: [AuthController]
+  imports: [
+    JwtModule.register({}),
+    TypeOrmModule.forFeature([User, OrphanageUser]),
+  ],
+  providers: [JwtService, AuthService, OrphanageAuthService],
+  exports: [AuthService],
+  controllers: [AuthController],
 })
 export class AuthModule {}
