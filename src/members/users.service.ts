@@ -1,7 +1,5 @@
 import {
   ConflictException,
-  HttpException,
-  HttpStatus,
   Injectable,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -35,13 +33,11 @@ export class UsersService {
     await queryRunner.startTransaction();
 
     try {
-      if (
-        await this.usersRepository.findOne({
-          where: [{ nickname }, { email }],
-        })
-      ) {
+      if (await this.usersRepository.findOne({where: [{ nickname }, { email }]}))
+      {
         throw new ConflictException('존재하는 이메일 또는 닉네임입니다.');
       }
+
       const newUser = new User();
       newUser.user_id = uuid.v1();
       newUser.name = name;
@@ -53,14 +49,17 @@ export class UsersService {
       newUser.region = region;
       newUser.phone_number = phone_number;
       newUser.profile_photo = profile_photo;
+
       const user = await queryRunner.manager.save(newUser);
       await queryRunner.commitTransaction();
       console.log(`save User : ${user.email}`);
-      return user;
+
+      return createUserDto;
+
     } catch (error) {
       await queryRunner.rollbackTransaction();
-      console.log(error.message);
-      return new HttpException(error.message, HttpStatus.BAD_REQUEST);
+      console.log(error['response']);
+      return error['response'];
     } finally {
       await queryRunner.release();
     }

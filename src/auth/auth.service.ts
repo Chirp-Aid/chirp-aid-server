@@ -88,7 +88,7 @@ export class AuthService {
       .set({ fcm_token: fcmToken })
       .where('email = :email', { email })
       .execute();
-    return 201;
+    return await this.usersRepository.findOne({where: {email: email}});
   }
 
   async restoreAccessToken({ user }) {

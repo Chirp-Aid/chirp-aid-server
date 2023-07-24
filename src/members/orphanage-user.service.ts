@@ -1,7 +1,5 @@
 import {
   ConflictException,
-  HttpException,
-  HttpStatus,
   Injectable,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -29,11 +27,8 @@ export class OrphanageUsersService {
     await queryRunner.startTransaction();
 
     try {
-      if (
-        await this.usersRepository.findOne({
-          where: [{ email }],
-        })
-      ) {
+      if (await this.usersRepository.findOne({where: [{ email }],}))
+      {
         throw new ConflictException('존재하는 이메일 또는 닉네임입니다.');
       }
 
@@ -52,11 +47,13 @@ export class OrphanageUsersService {
       await queryRunner.commitTransaction();
 
       console.log(`save OrphanageUser : ${user.email}`);
-      return user;
+
+      return createOrphanageUserDto;
+
     } catch (error) {
       await queryRunner.rollbackTransaction();
-      console.log(error.message);
-      return new HttpException(error.message, HttpStatus.BAD_REQUEST);
+      console.log(error['response']);
+      return error['response'];
     } finally {
       await queryRunner.release();
     }

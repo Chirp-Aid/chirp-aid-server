@@ -18,7 +18,7 @@ export class CreateOrphanageUserDto {
   @MinLength(2)
   @MaxLength(15)
   @ApiProperty({
-    example: 'Hong gildong',
+    example: '홍길동',
     description: 'The name of OrphanageUser',
   })
   readonly name: string;
@@ -45,7 +45,7 @@ export class CreateOrphanageUserDto {
 
   @IsString()
   @ApiProperty({
-    example: 'orphanageName',
+    example: '금오보육원',
     description: 'The name of Orphanage',
   })
   orphanageName: string;

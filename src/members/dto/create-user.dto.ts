@@ -19,7 +19,7 @@ export class CreateUserDto {
   @MinLength(2)
   @MaxLength(15)
   @ApiProperty({
-    example: 'Hong gildong',
+    example: '홍길동',
     description: 'The name of User',
   })
   readonly name: string;
@@ -49,7 +49,7 @@ export class CreateUserDto {
 
   @IsString()
   @ApiProperty({
-    example: 'f',
+    example: 'm',
     description: 'The sex of User',
   })
   sex: string;
@@ -57,15 +57,31 @@ export class CreateUserDto {
   @IsString()
   @MinLength(2)
   @MaxLength(15)
+  @ApiProperty({
+    example: 'chirpAid',
+    description: 'The nickName of User',
+  })
   nickname: string;
 
   @IsString()
   @MaxLength(15)
+  @ApiProperty({
+    example: '서울',
+    description: 'The region of User',
+  })
   region: string;
 
   @MaxLength(15)
+  @ApiProperty({
+    example: '01012345678',
+    description: 'The phone number of User',
+  })
   phone_number: string;
 
   @IsString()
+  @ApiProperty({
+    example: 'url',
+    description: 'The profile photo of User',
+  })
   profile_photo: string;
 }
