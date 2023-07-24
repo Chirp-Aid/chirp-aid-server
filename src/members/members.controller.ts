@@ -5,10 +5,8 @@ import * as bcrypt from 'bcrypt';
 import { CreateOrphanageUserDto } from './dto/create-orphanage-user.dto';
 import { OrphanageUsersService } from './orphanage-user.service';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { User } from './entities/user.entity';
-import { OrphanageUser } from './entities/orphanage-user.entity.ts';
 
-@ApiTags('Users and OrphanageUsers')
+@ApiTags('MEMBERS: Users and OrphanageUsers')
 @Controller('members')
 export class MembersController {
   private PASSWORD_SALT = 10;

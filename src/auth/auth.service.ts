@@ -1,11 +1,12 @@
 import {
   Injectable,
+  InternalServerErrorException,
   NotFoundException,
   UnprocessableEntityException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { User } from 'src/members/entities/user.entity';
-import { Repository } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { LoginDto } from './dto/login.dto';
 import * as bcrypt from 'bcrypt';
@@ -17,6 +18,7 @@ export class AuthService {
   constructor(
     private readonly jwtService: JwtService,
     @InjectRepository(User) private usersRepository: Repository<User>,
+    private dataSource: DataSource,
   ) {}
 
   getAccessToken({ user }) {
@@ -40,7 +42,7 @@ export class AuthService {
       },
       {
         secret: process.env.JWT_REFRESH_TOKEN,
-        expiresIn: '2w',
+        expiresIn: '1w',
       },
     );
     res.setHeader(`refreshToekn`, refreshToken);
@@ -82,13 +84,31 @@ export class AuthService {
   //여기서 본인의 정보를 업데이트 하는지 한 번 더 확인하는 부분 추가 구현 필요
   async saveFcmToken(saveFcmDto: SaveFcmDto) {
     const { email, fcmToken } = saveFcmDto;
-    await this.usersRepository
-      .createQueryBuilder()
-      .update(User)
-      .set({ fcm_token: fcmToken })
-      .where('email = :email', { email })
-      .execute();
-    return await this.usersRepository.findOne({where: {email: email}});
+    try{
+      const user = await this.usersRepository.findOne({
+        where: { email: email },
+      });
+      if (!user) {
+        console.log(`unexisted email: ${email}`);
+        throw new NotFoundException('존재하지 않는 이메일입니다.');
+      }
+      await this.dataSource.transaction(async (manager) => {
+        await manager
+          .createQueryBuilder()
+          .update(User)
+          .set({ fcm_token: fcmToken })
+          .where('email = :email', { email })
+          .execute();
+      });
+
+    } catch (error) {
+      console.log(error['response'])
+      return error['response'];
+    }
+    return await this.usersRepository.findOne({
+      where: {email: email},
+      select: ['email', 'name', 'age', 'sex', 'nickname', 'region', 'phone_number', 'profile_photo']
+    });
   }
 
   async restoreAccessToken({ user }) {

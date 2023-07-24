@@ -4,7 +4,7 @@ import {
   UnprocessableEntityException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { Repository } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
 import { Response } from 'express';
@@ -18,6 +18,7 @@ export class OrphanageAuthService {
     private readonly jwtService: JwtService,
     @InjectRepository(OrphanageUser)
     private orphanageRepository: Repository<OrphanageUser>,
+    private dataSource: DataSource,
   ) {}
 
   getAccessToken({ orphanageUser }) {
@@ -41,7 +42,7 @@ export class OrphanageAuthService {
       },
       {
         secret: process.env.JWT_REFRESH_TOKEN,
-        expiresIn: '2w',
+        expiresIn: '1w',
       },
     );
     res.setHeader(`refreshToekn`, refreshToken);
@@ -83,13 +84,34 @@ export class OrphanageAuthService {
   //여기서 본인의 정보를 업데이트 하는지 한 번 더 확인하는 부분 추가 구현 필요
   async saveFcmToken(saveFcmDto: SaveOrphanageFcmDto) {
     const { email, fcmToken } = saveFcmDto;
-    await this.orphanageRepository
-      .createQueryBuilder()
-      .update(OrphanageUser)
-      .set({ fcm_token: fcmToken })
-      .where('email = :email', { email })
-      .execute();
-    return this.orphanageRepository.findOne({where:{email:email}});
+
+    try{
+      const user = await this.orphanageRepository.findOne({
+        where: {email: email},
+      });
+      if (!user) {
+        console.log(`unexisted email: ${email}`);
+        throw new NotFoundException('존재하지 않는 이메일입니다.');
+      }
+
+      await this.dataSource.transaction(async (manager) => {
+        await manager
+          .createQueryBuilder()
+          .update(OrphanageUser)
+          .set({ fcm_token: fcmToken })
+          .where('email = :email', { email })
+          .execute();
+      });
+    } catch (error) {
+      console.log(error['response'])
+      return error['response'];
+    }
+    return this.orphanageRepository
+      .createQueryBuilder('user')
+      .select(['user.name', 'user.email', 'orphanage.orphanage_name'])
+      .innerJoin('user.orphanage', 'orphanage')
+      .where('user.email = :email', { email })
+      .getOne();
   }
 
   async restoreAccessToken({ user }) {

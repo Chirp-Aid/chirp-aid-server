@@ -58,7 +58,7 @@ export class CreateUserDto {
   @MinLength(2)
   @MaxLength(15)
   @ApiProperty({
-    example: 'chirpAid',
+    example: '와이리',
     description: 'The nickName of User',
   })
   nickname: string;

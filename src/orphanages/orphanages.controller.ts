@@ -15,31 +15,21 @@ import { UpdateOrphanageDto } from './dto/update-orphanage.dto';
 export class OrphanagesController {
   constructor(private readonly orphanagesService: OrphanagesService) {}
 
-  @Post()
-  create(@Body() createOrphanageDto: CreateOrphanageDto) {
-    return this.orphanagesService.create(createOrphanageDto);
-  }
+  // @Get(':id')
+  // findOne(@Param('id') id: string) {
+  //   return this.orphanagesService.findOne(+id);
+  // }
 
-  @Get()
-  findAll() {
-    return this.orphanagesService.findAll();
-  }
+  // @Patch(':id')
+  // update(
+  //   @Param('id') id: string,
+  //   @Body() updateOrphanageDto: UpdateOrphanageDto,
+  // ) {
+  //   return this.orphanagesService.update(+id, updateOrphanageDto);
+  // }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.orphanagesService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(
-    @Param('id') id: string,
-    @Body() updateOrphanageDto: UpdateOrphanageDto,
-  ) {
-    return this.orphanagesService.update(+id, updateOrphanageDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.orphanagesService.remove(+id);
-  }
+  // @Delete(':id')
+  // remove(@Param('id') id: string) {
+  //   return this.orphanagesService.remove(+id);
+  // }
 }
