@@ -1,15 +1,21 @@
 import { Injectable } from '@nestjs/common';
 import { CreateOrphanageDto } from './dto/create-orphanage.dto';
 import { UpdateOrphanageDto } from './dto/update-orphanage.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Orphanage } from './entities/orphanage.entity';
+import { DataSource, Repository } from 'typeorm';
 
 @Injectable()
 export class OrphanagesService {
-  create(createOrphanageDto: CreateOrphanageDto) {
-    return 'This action adds a new orphanage';
-  }
+  constructor(
+    @InjectRepository(Orphanage) private orphanageRepository: Repository<Orphanage>,
+    private dataSource: DataSource,
+  ){}
 
-  findAll() {
-    return `This action returns all orphanages`;
+  async findAll() {
+    const orphanages = await this.orphanageRepository.find();
+    console.log(orphanages);
+    return await orphanages;
   }
 
   findOne(id: number) {
@@ -20,7 +26,4 @@ export class OrphanagesService {
     return `This action updates a #${id} orphanage`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} orphanage`;
-  }
 }
