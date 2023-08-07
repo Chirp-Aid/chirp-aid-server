@@ -18,12 +18,26 @@ export class OrphanagesService {
     return await orphanages;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} orphanage`;
+  async findOne(id: number) {
+    const orphanage = await this.orphanageRepository
+    .createQueryBuilder('orphanage')
+    .select([
+      'orphanage.orphanage_name',
+      'orphanage.address',
+      'orphanage.homepage_link',
+      'orphanage.phone_number',
+      'orphanage.description',
+      'orphanage.photo',
+      'orphanage_user.name',
+      'orphanage_user.email',
+    ])
+    .leftJoin('orphanage', 'orphanage_user.orphanage_id')
+    .where({})
+    .getMany();
+  
+    console.log(orphanage);
+    
+    return orphanage;
+  
   }
-
-  update(id: number, updateOrphanageDto: UpdateOrphanageDto) {
-    return `This action updates a #${id} orphanage`;
-  }
-
 }

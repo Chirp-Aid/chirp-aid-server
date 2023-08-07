@@ -1,5 +1,5 @@
 import { Column, Entity, JoinColumn, OneToOne, PrimaryColumn } from 'typeorm';
-import { Orphanage } from 'src/entities/orphanage.entity';
+import { Orphanage } from '../entities/orphanage.entity';
 
 @Entity('orphanager_user')
 export class OrphanageUser {
@@ -22,6 +22,6 @@ export class OrphanageUser {
   fcm_token: string;
 
   @OneToOne(() => Orphanage, { onDelete: 'CASCADE' })
-  @JoinColumn()
-  orphanage: Orphanage;
+  @JoinColumn({ name: "orphanage_id" })
+  orphanage_id: Orphanage;
 }
