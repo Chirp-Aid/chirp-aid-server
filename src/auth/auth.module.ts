@@ -2,9 +2,9 @@ import { Module } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { JwtModule, JwtService } from '@nestjs/jwt';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { User } from 'src/members/entities/user.entity';
+import { User } from '../entities/user.entity';
 import { AuthController } from './auth.controller';
-import { OrphanageUser } from 'src/members/entities/orphanage-user.entity.ts';
+import { OrphanageUser } from '../entities/orphanage-user.entity';
 import { OrphanageAuthService } from './auth-orphanage.service';
 
 @Module({

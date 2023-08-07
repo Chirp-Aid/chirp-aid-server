@@ -1,5 +1,5 @@
 import { Column, Entity, JoinColumn, OneToOne, PrimaryColumn } from 'typeorm';
-import { Orphanage } from 'src/orphanages/entities/orphanage.entity';
+import { Orphanage } from 'src/entities/orphanage.entity';
 
 @Entity('orphanager_user')
 export class OrphanageUser {

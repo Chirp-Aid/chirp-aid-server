@@ -8,7 +8,7 @@ import { DataSource, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
 import { Response } from 'express';
-import { OrphanageUser } from 'src/members/entities/orphanage-user.entity.ts';
+import { OrphanageUser } from '../entities/orphanage-user.entity';
 import { OrphanageLoginDto } from './dto/orphanage-login.dto';
 import { SaveOrphanageFcmDto } from './dto/save-orphanage-fcm.dto';
 

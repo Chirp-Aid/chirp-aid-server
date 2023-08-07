@@ -8,8 +8,8 @@ import { AuthService } from './auth.service';
 import { OrphanageLoginDto } from './dto/orphanage-login.dto';
 import { OrphanageAuthService } from './auth-orphanage.service';
 import { ApiHeader, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { User } from 'src/members/entities/user.entity';
-import { OrphanageUser } from 'src/members/entities/orphanage-user.entity.ts';
+import { User } from '../entities/user.entity';
+import { OrphanageUser } from '../entities/orphanage-user.entity';
 
 @ApiTags('AUTH: Login and SaveFCM')
 @Controller('auth')

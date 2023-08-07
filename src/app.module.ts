@@ -5,12 +5,13 @@ import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { NotificationsModule } from './notifications/notifications.module';
 import { MembersModule } from './members/members.module';
-import { User } from './members/entities/user.entity';
+import { User } from './entities/user.entity';
 import { AuthModule } from './auth/auth.module';
 import { CommonModule } from './auth/jwt/common.module';
 import { OrphanagesModule } from './orphanages/orphanages.module';
-import { Orphanage } from './orphanages/entities/orphanage.entity';
-import { OrphanageUser } from './members/entities/orphanage-user.entity.ts';
+import { Orphanage } from './entities/orphanage.entity';
+import { OrphanageUser } from './entities/orphanage-user.entity';
+import { RequestsModule } from './requests/requests.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -31,6 +32,7 @@ import { OrphanageUser } from './members/entities/orphanage-user.entity.ts';
     AuthModule,
     CommonModule,
     OrphanagesModule,
+    RequestsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -5,9 +5,9 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, Repository } from 'typeorm';
 import * as uuid from 'uuid';
-import { OrphanageUser } from './entities/orphanage-user.entity.ts';
+import { OrphanageUser } from '../entities/orphanage-user.entity';
 import { CreateOrphanageUserDto } from './dto/create-orphanage-user.dto';
-import { Orphanage } from 'src/orphanages/entities/orphanage.entity';
+import { Orphanage } from 'src/entities/orphanage.entity';
 
 @Injectable()
 export class OrphanageUsersService {

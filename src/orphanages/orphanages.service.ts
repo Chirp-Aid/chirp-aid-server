@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { CreateOrphanageDto } from './dto/create-orphanage.dto';
 import { UpdateOrphanageDto } from './dto/update-orphanage.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Orphanage } from './entities/orphanage.entity';
+import { Orphanage } from '../entities/orphanage.entity';
 import { DataSource, Repository } from 'typeorm';
 
 @Injectable()
