@@ -5,6 +5,14 @@ import * as bcrypt from 'bcrypt';
 import { CreateOrphanageUserDto } from './dto/create-orphanage-user.dto';
 import { OrphanageUsersService } from './orphanage-user.service';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { CustomValidationException } from 'src/commons/customValidation';
+
+const validationPipe = new ValidationPipe({
+  exceptionFactory: (errors) => {
+    const message = Object.values(errors[0].constraints).join(', ');
+    return new CustomValidationException(message);
+  },
+});
 
 @ApiTags('MEMBERS: Users and OrphanageUsers')
 @Controller('members')
@@ -35,7 +43,7 @@ export class MembersController {
     [password는 name과 같은 문자열을 포함할 수 없습니다.\
     \nBad Reqeust - 비밀번호는 8글자 이상으로 ^[A-Za-zd!@#$%^&*()]{8,30}가 포함되어야 합니다.',
   })
-  async createUser(@Body(ValidationPipe) createUserDto: CreateUserDto) {
+  async createUser(@Body(validationPipe) createUserDto: CreateUserDto) {
     const hashedPassword = await bcrypt.hash(
       createUserDto.password,
       this.PASSWORD_SALT,
