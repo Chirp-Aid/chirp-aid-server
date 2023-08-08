@@ -2,8 +2,9 @@ import {
   Column,
   Entity,
   JoinColumn,
+  ManyToMany,
   ManyToOne,
-  OneToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { OrphanageUser } from './orphanage-user.entity';
@@ -17,7 +18,7 @@ export class Request {
   @Column()
   count: number;
 
-  @Column()
+  @Column({default: 'REQUESTED'})
   state: string;
 
   @Column({ length: 150 })
@@ -27,7 +28,7 @@ export class Request {
   @JoinColumn({ name: 'orphanage_user_id' })
   orphanage_user_id: OrphanageUser;
 
-  @OneToOne(() => Product, (product_id) => product_id.product_id)
+  @ManyToOne(() => Product, (product_id) => product_id.product_id)
   @JoinColumn({ name: 'product_id' })
   product_id: Product;
 }
