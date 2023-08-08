@@ -1,6 +1,7 @@
 import {
   ConflictException,
   Injectable,
+  NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, Repository } from 'typeorm';
@@ -27,14 +28,19 @@ export class OrphanageUsersService {
     await queryRunner.startTransaction();
 
     try {
-      if (await this.usersRepository.findOne({where: [{ email }],}))
+      if (await this.usersRepository.findOne({where: { email }}))
       {
-        throw new ConflictException('존재하는 이메일 또는 닉네임입니다.');
+        throw new ConflictException('존재하는 이메일입니다.');
       }
-
+      
       const orphange = await this.orphanageRepository.findOne({
         where: { orphanage_name: orphanageName },
       });
+      
+      if(!orphange)
+      {
+        throw new NotFoundException('해당 보육원을 찾을 수 없습니다.');
+      }
 
       const newUser = new OrphanageUser();
       newUser.orphanage_user_id = uuid.v1();
@@ -45,15 +51,23 @@ export class OrphanageUsersService {
 
       const user = await queryRunner.manager.save(newUser);
       await queryRunner.commitTransaction();
-
       console.log(`save OrphanageUser : ${user.email}`);
 
       return createOrphanageUserDto;
 
     } catch (error) {
       await queryRunner.rollbackTransaction();
+      if(error.errno == 1062){
+        console.log(`이미 해당 보육원의 계정은 존재합니다. or_name: ${orphanageName}`);
+        return {
+          statusCode: 409,
+          message: '이미 해당 보육원의 계정은 존재합니다.',
+          error: 'Conflict',
+        };
+      }
       console.log(error['response']);
       return error['response'];
+
     } finally {
       await queryRunner.release();
     }

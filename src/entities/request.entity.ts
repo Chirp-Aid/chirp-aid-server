@@ -17,10 +17,10 @@ export class Request {
     message: string;
 
     @ManyToOne(() => OrphanageUser, { onDelete: 'CASCADE' })
-    @JoinColumn()
+    @JoinColumn({ name: 'orphanage_user_id'})
     orphanage_user_id: OrphanageUser;
 
     @OneToOne(()=> Product, (product_id)=>product_id.product_id)
-    @JoinColumn()
+    @JoinColumn({ name: 'product_id'})
     product_id: Product
 }

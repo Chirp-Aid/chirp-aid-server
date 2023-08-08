@@ -8,6 +8,6 @@ export class Product {
     @Column({ length: 50})
     product_name: string;
 
-    @Column({ length: 150 })
+    @Column()
     price: number;
 }

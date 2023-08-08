@@ -15,10 +15,10 @@ export class OrphanageUser {
   @Column({ length: 60 })
   password: string;
 
-  @Column()
+  @Column({ nullable: true })
   refresh_token: string;
 
-  @Column()
+  @Column({ nullable: true })
   fcm_token: string;
 
   @OneToOne(() => Orphanage, { onDelete: 'CASCADE' })

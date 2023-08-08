@@ -12,6 +12,8 @@ import { OrphanagesModule } from './orphanages/orphanages.module';
 import { Orphanage } from './entities/orphanage.entity';
 import { OrphanageUser } from './entities/orphanage-user.entity';
 import { RequestsModule } from './requests/requests.module';
+import { Request } from './entities/request.entity';
+import { Product } from './entities/product.entity';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -24,7 +26,7 @@ import { RequestsModule } from './requests/requests.module';
       username: process.env.DATABASE_USERNAME,
       password: process.env.DATABASE_PASSWORD,
       database: process.env.DATABASE_NAME,
-      entities: [User, Orphanage, OrphanageUser],
+      entities: [User, Orphanage, OrphanageUser, Request, Product],
       synchronize: true,
     }),
     NotificationsModule,

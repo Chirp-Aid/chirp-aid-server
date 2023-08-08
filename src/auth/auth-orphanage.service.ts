@@ -106,12 +106,14 @@ export class OrphanageAuthService {
       console.log(error['response'])
       return error['response'];
     }
-    return this.orphanageRepository
+    finally {
+      return this.orphanageRepository
       .createQueryBuilder('user')
       .select(['user.name', 'user.email', 'orphanage.orphanage_name'])
       .innerJoin('user.orphanage', 'orphanage')
       .where('user.email = :email', { email })
       .getOne();
+    }
   }
 
   async restoreAccessToken({ user }) {
