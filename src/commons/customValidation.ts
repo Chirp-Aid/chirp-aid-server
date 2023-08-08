@@ -1,7 +1,11 @@
-import { BadRequestException } from '@nestjs/common';
+import { BadRequestException, ValidationError } from '@nestjs/common';
 
 export class CustomValidationException extends BadRequestException {
-  constructor(message: string) {
+  constructor(validationErrors: ValidationError[]) {
+    const message = validationErrors
+      .map((error) => Object.values(error.constraints).join(', '))
+      .join(', ');
+      
     super(message);
   }
 }
