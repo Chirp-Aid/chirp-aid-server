@@ -1,4 +1,12 @@
-import { Body, Controller, Post, Get, Req, UseGuards, Res } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Post,
+  Get,
+  Req,
+  UseGuards,
+  Res,
+} from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { IOAuthUser } from './auth.userInterface';
 import { SaveFcmDto } from './dto/save-fcm.dto';
@@ -8,8 +16,6 @@ import { AuthService } from './auth.service';
 import { OrphanageLoginDto } from './dto/orphanage-login.dto';
 import { OrphanageAuthService } from './auth-orphanage.service';
 import { ApiHeader, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { User } from '../entities/user.entity';
-import { OrphanageUser } from '../entities/orphanage-user.entity';
 
 @ApiTags('AUTH: Login and SaveFCM')
 @Controller('auth')
@@ -23,15 +29,19 @@ export class AuthController {
   @Post('users')
   @ApiOperation({
     summary: '사용자 로그인',
-    description: '사용자가 로그인을 시도하면 body에는 AT가, hearders에는 RT가 반환됩니다.',
+    description:
+      '사용자가 로그인을 시도하면 body에는 AT가, hearders에는 RT가 반환됩니다.',
   })
   @ApiResponse({
     status: 200,
     description: 'JWT 발급 성공',
     type: String,
     headers: {
-      'refreshToken' : { description: 'RefreshToken', example: 'flgbkjndvdakjk...' },
-    }
+      refreshToken: {
+        description: 'RefreshToken',
+        example: 'flgbkjndvdakjk...',
+      },
+    },
   })
   @ApiResponse({
     status: 404,
@@ -51,7 +61,8 @@ export class AuthController {
   @Post('users/fcm')
   @ApiOperation({
     summary: '사용자 fcm 저장',
-    description: '사용자가 로그인 요청을 통해 AT를 발급 받으면, AT를 headers에 넣은 후 FCM Token 저장을 요청합니다.',
+    description:
+      '사용자가 로그인 요청을 통해 AT를 발급 받으면, AT를 headers에 넣은 후 FCM Token 저장을 요청합니다.',
   })
   @ApiHeader({
     name: 'Authorization',
@@ -102,7 +113,7 @@ export class AuthController {
   @ApiResponse({
     status: 200,
     description: 'AT 재발급 성공',
-    type: String
+    type: String,
   })
   @ApiResponse({
     status: 401,
@@ -113,12 +124,12 @@ export class AuthController {
     return this.authService.restoreAccessToken({ user: req.user });
   }
 
-
   //로그인
   @Post('orphanages')
   @ApiOperation({
     summary: '사용자 로그인',
-    description: '사용자가 로그인을 시도하면 body에는 AT가, hearders에는 RT가 반환됩니다.',
+    description:
+      '사용자가 로그인을 시도하면 body에는 AT가, hearders에는 RT가 반환됩니다.',
   })
   @ApiResponse({
     status: 200,
@@ -146,7 +157,8 @@ export class AuthController {
   @Post('orphanages/fcm')
   @ApiOperation({
     summary: '보육원 계정 fcm 저장',
-    description: '보육원 계정이 로그인 요청을 통해 AT를 발급 받으면, AT를 headers에 넣은 후 FCM Token 저장을 요청합니다.',
+    description:
+      '보육원 계정이 로그인 요청을 통해 AT를 발급 받으면, AT를 headers에 넣은 후 FCM Token 저장을 요청합니다.',
   })
   @ApiHeader({
     name: 'Authorization',
@@ -166,7 +178,7 @@ export class AuthController {
           properties: {
             orphanage_name: { type: 'string', example: 'name1' },
           },
-        }
+        },
       },
     },
   })
@@ -187,7 +199,8 @@ export class AuthController {
   @Get('orphanages/refresh')
   @ApiOperation({
     summary: '보육원 계정 AT 재발급',
-    description: '보육원 계정의 Access Token 재발급을 Refresh Token으로 요청합니다.',
+    description:
+      '보육원 계정의 Access Token 재발급을 Refresh Token으로 요청합니다.',
   })
   @ApiHeader({
     name: 'Authorization',
@@ -197,7 +210,7 @@ export class AuthController {
   @ApiResponse({
     status: 200,
     description: 'AT 재발급 성공',
-    type: String
+    type: String,
   })
   @ApiResponse({
     status: 401,

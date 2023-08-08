@@ -28,17 +28,15 @@ export class OrphanageUsersService {
     await queryRunner.startTransaction();
 
     try {
-      if (await this.usersRepository.findOne({where: { email }}))
-      {
+      if (await this.usersRepository.findOne({ where: { email } })) {
         throw new ConflictException('존재하는 이메일입니다.');
       }
-      
+
       const orphange = await this.orphanageRepository.findOne({
         where: { orphanage_name: orphanageName },
       });
-      
-      if(!orphange)
-      {
+
+      if (!orphange) {
         throw new NotFoundException('해당 보육원을 찾을 수 없습니다.');
       }
 
@@ -54,11 +52,12 @@ export class OrphanageUsersService {
       console.log(`save OrphanageUser : ${user.email}`);
 
       return createOrphanageUserDto;
-
     } catch (error) {
       await queryRunner.rollbackTransaction();
-      if(error.errno == 1062){
-        console.log(`이미 해당 보육원의 계정은 존재합니다. or_name: ${orphanageName}`);
+      if (error.errno == 1062) {
+        console.log(
+          `이미 해당 보육원의 계정은 존재합니다. or_name: ${orphanageName}`,
+        );
         return {
           statusCode: 409,
           message: '이미 해당 보육원의 계정은 존재합니다.',
@@ -67,7 +66,6 @@ export class OrphanageUsersService {
       }
       console.log(error['response']);
       return error['response'];
-
     } finally {
       await queryRunner.release();
     }

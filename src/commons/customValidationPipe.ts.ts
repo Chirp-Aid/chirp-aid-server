@@ -1,4 +1,9 @@
-import { ValidationPipe, ArgumentMetadata, BadRequestException, PipeTransform, Injectable } from '@nestjs/common';
+import {
+  ValidationPipe,
+  ArgumentMetadata,
+  PipeTransform,
+  Injectable,
+} from '@nestjs/common';
 import { CustomValidationException } from './customValidation';
 
 @Injectable()
@@ -7,7 +12,7 @@ export class CustomValidationPipe implements PipeTransform<any> {
     const validationPipe = new ValidationPipe({
       exceptionFactory: (errors) => new CustomValidationException(errors),
     });
-    
+
     return validationPipe.transform(value, metadata);
   }
 }

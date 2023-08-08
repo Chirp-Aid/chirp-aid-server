@@ -1,4 +1,4 @@
-import { Controller, Post, Body} from '@nestjs/common';
+import { Controller, Post, Body } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UsersService } from './users.service';
 import * as bcrypt from 'bcrypt';
@@ -6,7 +6,6 @@ import { CreateOrphanageUserDto } from './dto/create-orphanage-user.dto';
 import { OrphanageUsersService } from './orphanage-user.service';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CustomValidationPipe } from 'src/commons/customValidationPipe.ts';
-
 
 @ApiTags('MEMBERS: Users and OrphanageUsers')
 @Controller('members')
@@ -20,7 +19,8 @@ export class MembersController {
   @Post('/new/users')
   @ApiOperation({
     summary: '사용자 회원가입',
-    description: '사용자 회원가입 후 입력된 값을 확인하기 위해 다시 사용자 정보를 반환합니다.',
+    description:
+      '사용자 회원가입 후 입력된 값을 확인하기 위해 다시 사용자 정보를 반환합니다.',
   })
   @ApiResponse({
     status: 201,
@@ -33,7 +33,8 @@ export class MembersController {
   })
   @ApiResponse({
     status: 400,
-    description: 'Bad Reqeust - \
+    description:
+      'Bad Reqeust - \
     [password는 name과 같은 문자열을 포함할 수 없습니다.\
     \nBad Reqeust - 비밀번호는 8글자 이상으로 ^[A-Za-zd!@#$%^&*()]{8,30}가 포함되어야 합니다.',
   })
@@ -49,7 +50,8 @@ export class MembersController {
   @Post('/new/orphanages')
   @ApiOperation({
     summary: '보육원 계정 회원가입',
-    description: '보육원 계정 회원가입 후 입력된 값을 확인하기 위해 다시 보육원 계정 정보를 반환합니다.',
+    description:
+      '보육원 계정 회원가입 후 입력된 값을 확인하기 위해 다시 보육원 계정 정보를 반환합니다.',
   })
   @ApiResponse({
     status: 201,
@@ -62,7 +64,8 @@ export class MembersController {
   })
   @ApiResponse({
     status: 400,
-    description: 'Bad Reqeust - \
+    description:
+      'Bad Reqeust - \
     [password는 name과 같은 문자열을 포함할 수 없습니다.\
     \nBad Reqeust - 비밀번호는 8글자 이상으로 ^[A-Za-zd!@#$%^&*()]{8,30}가 포함되어야 합니다.',
   })

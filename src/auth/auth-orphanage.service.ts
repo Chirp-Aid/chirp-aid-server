@@ -85,9 +85,9 @@ export class OrphanageAuthService {
   async saveFcmToken(saveFcmDto: SaveOrphanageFcmDto) {
     const { email, fcmToken } = saveFcmDto;
 
-    try{
+    try {
       const user = await this.orphanageRepository.findOne({
-        where: {email: email},
+        where: { email: email },
       });
       if (!user) {
         console.log(`unexisted email: ${email}`);
@@ -103,16 +103,15 @@ export class OrphanageAuthService {
           .execute();
       });
     } catch (error) {
-      console.log(error['response'])
+      console.log(error['response']);
       return error['response'];
-    }
-    finally {
+    } finally {
       return this.orphanageRepository
-      .createQueryBuilder('user')
-      .select(['user.name', 'user.email', 'orphanage.orphanage_name'])
-      .innerJoin('user.orphanage', 'orphanage')
-      .where('user.email = :email', { email })
-      .getOne();
+        .createQueryBuilder('user')
+        .select(['user.name', 'user.email', 'orphanage.orphanage_name'])
+        .innerJoin('user.orphanage', 'orphanage')
+        .where('user.email = :email', { email })
+        .getOne();
     }
   }
 

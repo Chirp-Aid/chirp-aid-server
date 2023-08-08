@@ -5,7 +5,7 @@ export class CustomValidationException extends BadRequestException {
     const message = validationErrors
       .map((error) => Object.values(error.constraints).join(', '))
       .join(', ');
-      
+
     super(message);
   }
 }

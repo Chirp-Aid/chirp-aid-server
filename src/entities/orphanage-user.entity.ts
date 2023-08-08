@@ -22,6 +22,6 @@ export class OrphanageUser {
   fcm_token: string;
 
   @OneToOne(() => Orphanage, { onDelete: 'CASCADE' })
-  @JoinColumn({ name: "orphanage_id" })
+  @JoinColumn({ name: 'orphanage_id' })
   orphanage_id: Orphanage;
 }

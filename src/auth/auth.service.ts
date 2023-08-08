@@ -1,6 +1,5 @@
 import {
   Injectable,
-  InternalServerErrorException,
   NotFoundException,
   UnprocessableEntityException,
 } from '@nestjs/common';
@@ -84,7 +83,7 @@ export class AuthService {
   //여기서 본인의 정보를 업데이트 하는지 한 번 더 확인하는 부분 추가 구현 필요
   async saveFcmToken(saveFcmDto: SaveFcmDto) {
     const { email, fcmToken } = saveFcmDto;
-    try{
+    try {
       const user = await this.usersRepository.findOne({
         where: { email: email },
       });
@@ -100,14 +99,22 @@ export class AuthService {
           .where('email = :email', { email })
           .execute();
       });
-
     } catch (error) {
-      console.log(error['response'])
+      console.log(error['response']);
       return error['response'];
     }
     return await this.usersRepository.findOne({
-      where: {email: email},
-      select: ['email', 'name', 'age', 'sex', 'nickname', 'region', 'phone_number', 'profile_photo']
+      where: { email: email },
+      select: [
+        'email',
+        'name',
+        'age',
+        'sex',
+        'nickname',
+        'region',
+        'phone_number',
+        'profile_photo',
+      ],
     });
   }
 
