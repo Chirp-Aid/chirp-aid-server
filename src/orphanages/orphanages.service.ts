@@ -4,11 +4,13 @@ import { UpdateOrphanageDto } from './dto/update-orphanage.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Orphanage } from '../entities/orphanage.entity';
 import { DataSource, Repository } from 'typeorm';
+import { OrphanageUser } from 'src/entities/orphanage-user.entity';
 
 @Injectable()
 export class OrphanagesService {
   constructor(
     @InjectRepository(Orphanage) private orphanageRepository: Repository<Orphanage>,
+    @InjectRepository(OrphanageUser) private orphanageUserRepository: Repository<OrphanageUser>,
     private dataSource: DataSource,
   ){}
 
@@ -19,8 +21,8 @@ export class OrphanagesService {
   }
 
   async findOne(id: number) {
-    const orphanage = await this.orphanageRepository
-    .createQueryBuilder('orphanage')
+    const result = await this.orphanageUserRepository
+    .createQueryBuilder('orphanage_user')
     .select([
       'orphanage.orphanage_name',
       'orphanage.address',
@@ -31,13 +33,15 @@ export class OrphanagesService {
       'orphanage_user.name',
       'orphanage_user.email',
     ])
-    .leftJoin('orphanage', 'orphanage_user.orphanage_id')
-    .where({})
-    .getMany();
+    .leftJoin('orphanage_user.orphanage_id', 'orphanage')
+    .where('orphanage_user.orphanage_id = :id', { id })
+    .getOne();
   
-    console.log(orphanage);
-    
-    return orphanage;
+    if (result) {
+      const { name, email, orphanage_id: orphanageInfo } = result;
+      console.log(orphanageInfo);
+      return { name, email, ...orphanageInfo };
+    }
   
   }
 }
