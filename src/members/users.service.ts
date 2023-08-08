@@ -9,6 +9,7 @@ import * as uuid from 'uuid';
 export class UsersService {
   constructor(
     @InjectRepository(User) private usersRepository: Repository<User>,
+
     private dataSource: DataSource,
   ) {}
 
@@ -61,4 +62,5 @@ export class UsersService {
       await queryRunner.release();
     }
   }
+
 }

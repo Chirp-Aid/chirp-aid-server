@@ -57,7 +57,7 @@ export class AuthController {
       .send(await this.authService.login(loginUserDto, res));
   }
 
-  //fcm 저장
+  //fcm 저장 ==> GET으로 바꾸고 헤더로 받아야함!!
   @Post('users/fcm')
   @ApiOperation({
     summary: '사용자 fcm 저장',
@@ -153,7 +153,7 @@ export class AuthController {
       .send(await this.orphanageAuthService.login(loginUserDto, res));
   }
 
-  //fcm 저장
+  //fcm 저장 ==> GET으로 바꾸고 헤더로 받아야함!!
   @Post('orphanages/fcm')
   @ApiOperation({
     summary: '보육원 계정 fcm 저장',
