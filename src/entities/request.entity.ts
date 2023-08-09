@@ -16,10 +16,10 @@ export class Request {
   @Column()
   count: number;
 
-  @Column({default: 0})
+  @Column({ default: 0 })
   supported_count: number;
 
-  @Column({default: 'REQUESTED'})
+  @Column({ default: 'REQUESTED' })
   state: string;
 
   @Column({ length: 150 })

@@ -61,10 +61,10 @@ export class MembersController {
   @ApiResponse({
     status: 400,
     description:
-    'Bad Reqeust - \
+      'Bad Reqeust - \
     [password는 name과 같은 문자열을 포함할 수 없습니다.\
       \nBad Reqeust - 비밀번호는 8글자 이상으로 ^[A-Za-zd!@#$%^&*()]{8,30}가 포함되어야 합니다.',
-    })
+  })
   @ApiResponse({
     status: 404,
     description: 'Not Found - 해당 보육원을 찾을 수 없습니다.',

@@ -50,7 +50,6 @@ export class OrphanageUsersService {
       const user = await queryRunner.manager.save(newUser);
       await queryRunner.commitTransaction();
       console.log(`save OrphanageUser : ${user.email}`);
-
     } catch (error) {
       await queryRunner.rollbackTransaction();
       if (error.errno == 1062) {

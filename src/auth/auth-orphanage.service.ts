@@ -20,7 +20,6 @@ export class OrphanageAuthService {
     private dataSource: DataSource,
   ) {}
 
-
   getAccessToken({ orphanageUser, res }) {
     const accessToken = this.jwtService.sign(
       {
@@ -36,7 +35,6 @@ export class OrphanageAuthService {
     return accessToken;
   }
 
-
   setRefreshToken({ orphanageUser, res }) {
     const refreshToken = this.jwtService.sign(
       {
@@ -51,7 +49,6 @@ export class OrphanageAuthService {
     res.setHeader(`refresh-token`, refreshToken);
     return refreshToken;
   }
-
 
   async login(orphanageLoginDto: OrphanageLoginDto, res: Response) {
     const { email, password } = orphanageLoginDto;
@@ -75,7 +72,6 @@ export class OrphanageAuthService {
     console.log(`succeed OrphanageUser Login : ${user.email}`);
   }
 
-
   async saveRefreshToken(userId: string, newToken: string) {
     await this.orphanageRepository
       .createQueryBuilder()
@@ -85,10 +81,9 @@ export class OrphanageAuthService {
       .execute();
   }
 
-
   //여기서 본인의 정보를 업데이트 하는지 한 번 더 확인하는 부분 추가 구현 필요
   async saveFcmToken(req) {
-    const email = req.user.email
+    const email = req.user.email;
     const fcmToken = req.headers['fcm-token'];
 
     try {
@@ -121,10 +116,8 @@ export class OrphanageAuthService {
     // }
   }
 
-
   async restoreAccessToken({ user, res }) {
-    const jwt = this.getAccessToken({ orphanageUser: user, res });
+    await this.getAccessToken({ orphanageUser: user, res });
     console.log(`restore AT for OrphanageUser : ${user.email}`);
-    return jwt;
   }
 }

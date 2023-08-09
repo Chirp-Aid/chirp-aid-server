@@ -8,7 +8,9 @@ import { Favorites } from 'src/entities/favorites.entity';
 import { User } from 'src/entities/user.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([User, Orphanage, OrphanageUser, Favorites])],
+  imports: [
+    TypeOrmModule.forFeature([User, Orphanage, OrphanageUser, Favorites]),
+  ],
   controllers: [OrphanagesController],
   providers: [OrphanagesService],
 })

@@ -1,8 +1,8 @@
-import { IsString } from "class-validator";
+import { IsString } from 'class-validator';
 
 export class CreateFavoriteDto {
-    orphanage_id: number;
+  orphanage_id: number;
 
-    @IsString()
-    user_id: string;
+  @IsString()
+  user_id: string;
 }

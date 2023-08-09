@@ -14,7 +14,13 @@ import { LoginDto } from './dto/login.dto';
 import { AuthService } from './auth.service';
 import { OrphanageLoginDto } from './dto/orphanage-login.dto';
 import { OrphanageAuthService } from './auth-orphanage.service';
-import { ApiHeader, ApiHeaders, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiHeader,
+  ApiHeaders,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 
 @ApiTags('AUTH: Login and SaveFCM')
 @Controller('auth')
@@ -28,8 +34,7 @@ export class AuthController {
   @Post('users')
   @ApiOperation({
     summary: '사용자 로그인',
-    description:
-      '사용자가 로그인을 시도하면 hearders에 AT와 RT가 반환됩니다.',
+    description: '사용자가 로그인을 시도하면 hearders에 AT와 RT가 반환됩니다.',
   })
   @ApiResponse({
     status: 200,
@@ -60,8 +65,6 @@ export class AuthController {
       .send(await this.authService.login(loginUserDto, res));
   }
 
-
-
   @Get('users/fcm')
   @ApiOperation({
     summary: '사용자 fcm 저장',
@@ -78,24 +81,11 @@ export class AuthController {
       name: 'fcm-token',
       description: 'FCM Token',
       example: 'dsgfabndRdgbfdsvaghfb9',
-    }
+    },
   ])
   @ApiResponse({
     status: 200,
     description: 'FCM Token 저장 성공 및 로그인 성공',
-    // schema: {
-    //   type: 'object',
-    //   properties: {
-    //     name: { type: 'string', example: '홍길동' },
-    //     email: { type: 'string', example: 'email@email.com' },
-    //     age: { type: 'number', example: 23 },
-    //     sex: { type: 'string', example: 'm' },
-    //     nickname: { type: 'string', example: '와이리' },
-    //     region: { type: 'string', example: '서울' },
-    //     phone_number: { type: 'string', example: '01012345678' },
-    //     profile_photo: { type: 'string', example: 'url' },
-    //   },
-    // },
   })
   @ApiResponse({
     status: 401,
@@ -131,10 +121,16 @@ export class AuthController {
     description: 'Unauthorized - JWT 토큰 에러',
   })
   @UseGuards(AuthGuard('refresh'))
-  async restoreAccessToken(@Req() req: Request & IOAuthUser, res:Response) {
-    return this.authService.restoreAccessToken({ user: req.user, res });
+  async refreshAccessToken(
+    @Req() req: Request & IOAuthUser,
+    @Res() res: Response,
+  ) {
+    return res
+      .status(200)
+      .send(await this.authService.refreshAccessToken({ user: req.user, res }));
   }
 
+  //#############################################
   //로그인
   @Post('orphanages')
   @ApiOperation({
@@ -174,7 +170,6 @@ export class AuthController {
       .send(await this.orphanageAuthService.login(loginUserDto, res));
   }
 
-
   @Get('orphanages/fcm')
   @ApiOperation({
     summary: '보육원 계정 fcm 저장',
@@ -191,7 +186,7 @@ export class AuthController {
       name: 'fcm-token',
       description: 'FCM Token',
       example: 'dsgfabndRdgbfdsvaghfb9',
-    }
+    },
   ])
   @ApiResponse({
     status: 200,
@@ -232,7 +227,17 @@ export class AuthController {
     description: 'Unauthorized - JWT 토큰 에러',
   })
   @UseGuards(AuthGuard('refresh'))
-  async restoreOrphanageAccessToken(@Req() req: Request & IOAuthUser, @Res() res: Response) {
-    return this.orphanageAuthService.restoreAccessToken({ user: req.user, res });
+  async restoreOrphanageAccessToken(
+    @Req() req: Request & IOAuthUser,
+    @Res() res: Response,
+  ) {
+    return res
+      .status(200)
+      .send(
+        await this.orphanageAuthService.restoreAccessToken({
+          user: req.user,
+          res,
+        }),
+      );
   }
 }

@@ -19,7 +19,6 @@ export class AuthService {
     private dataSource: DataSource,
   ) {}
 
-
   getAccessToken({ user, res }) {
     const accessToken = this.jwtService.sign(
       {
@@ -35,7 +34,6 @@ export class AuthService {
     return accessToken;
   }
 
-
   setRefreshToken({ user, res }) {
     const refreshToken = this.jwtService.sign(
       {
@@ -50,7 +48,6 @@ export class AuthService {
     res.setHeader(`refresh-token`, refreshToken);
     return refreshToken;
   }
-
 
   async login(loginUserDto: LoginDto, res: Response) {
     const { email, password } = loginUserDto;
@@ -74,7 +71,6 @@ export class AuthService {
     console.log(`succeed Login : ${user.email}`);
   }
 
-
   async saveRefreshToken(userId: string, newToken: string) {
     await this.usersRepository
       .createQueryBuilder()
@@ -84,10 +80,9 @@ export class AuthService {
       .execute();
   }
 
-
   //여기서 본인의 정보를 업데이트 하는지 한 번 더 확인하는 부분 추가 구현 필요
   async saveFcmToken(req) {
-    const email = req.user.email
+    const email = req.user.email;
     const fcmToken = req.headers['fcm-token'];
 
     try {
@@ -125,10 +120,8 @@ export class AuthService {
     // });
   }
 
-
-  async restoreAccessToken({ user, res }) {
-    const jwt = this.getAccessToken({ user, res });
+  async refreshAccessToken({ user, res }) {
+    await this.getAccessToken({ user, res });
     console.log(`restore AT for User : ${user.email}`);
-    return jwt;
   }
 }
