@@ -2,9 +2,7 @@ import {
   Column,
   Entity,
   JoinColumn,
-  ManyToMany,
   ManyToOne,
-  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { OrphanageUser } from './orphanage-user.entity';
@@ -17,6 +15,9 @@ export class Request {
 
   @Column()
   count: number;
+
+  @Column({default: 0})
+  supported_count: number;
 
   @Column({default: 'REQUESTED'})
   state: string;
