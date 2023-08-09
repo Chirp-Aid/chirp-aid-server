@@ -1,8 +1,29 @@
-FROM node:18-alpine
-RUN mkdir -p /app
-WORKDIR /app
-COPY . .
+# DEVELOPMENT
+FROM node:18-alpine As development
+
+WORKDIR /usr/src/app
+
+COPY package*.json ./
+
 RUN npm install
+
+COPY . .
+
 RUN npm run build
-EXPOSE 3000
+
+
+
+# PRODUCTION
+FROM node:18-alpine As production
+
+WORKDIR /usr/src/app
+
+COPY package*.json ./
+
+RUN npm ci --only=production
+
+COPY . .
+
+COPY --from=development /usr/src/app/dist ./dist
+
 CMD [ "node", "dist/main.js" ]

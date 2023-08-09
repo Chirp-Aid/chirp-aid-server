@@ -1,4 +1,6 @@
 .git
 Dockerfile
+.dockerignore
 node_modules
-.env.development
+dist
+npm-debug.log
