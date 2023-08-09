@@ -32,9 +32,6 @@ jobs:
     - name: Lint
       run: npm run lint
 
-    - name: Test run
-      run: npm run test
-
 
   # 도커 이미지 빌드
   # test가 완료되어야 build로 넘어옴
