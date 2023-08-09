@@ -10,7 +10,6 @@ import * as bcrypt from 'bcrypt';
 import { Response } from 'express';
 import { OrphanageUser } from '../entities/orphanage-user.entity';
 import { OrphanageLoginDto } from './dto/orphanage-login.dto';
-import { SaveOrphanageFcmDto } from './dto/save-orphanage-fcm.dto';
 
 @Injectable()
 export class OrphanageAuthService {

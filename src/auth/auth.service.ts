@@ -10,7 +10,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { LoginDto } from './dto/login.dto';
 import * as bcrypt from 'bcrypt';
 import { Response } from 'express';
-import { SaveFcmDto } from '../auth/dto/save-fcm.dto';
 
 @Injectable()
 export class AuthService {

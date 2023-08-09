@@ -9,13 +9,12 @@ import {
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { IOAuthUser } from './auth.userInterface';
-import { SaveFcmDto } from './dto/save-fcm.dto';
 import { Response } from 'express';
 import { LoginDto } from './dto/login.dto';
 import { AuthService } from './auth.service';
 import { OrphanageLoginDto } from './dto/orphanage-login.dto';
 import { OrphanageAuthService } from './auth-orphanage.service';
-import { ApiHeader, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiHeader, ApiHeaders, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('AUTH: Login and SaveFCM')
 @Controller('auth')
@@ -30,15 +29,19 @@ export class AuthController {
   @ApiOperation({
     summary: '사용자 로그인',
     description:
-      '사용자가 로그인을 시도하면 body에는 AT가, hearders에는 RT가 반환됩니다.',
+      '사용자가 로그인을 시도하면 hearders에 AT와 RT가 반환됩니다.',
   })
   @ApiResponse({
     status: 200,
     description: 'JWT 발급 성공',
     type: String,
     headers: {
+      accessToken: {
+        description: "'access-token'으로 들어갑니다.",
+        example: 'flgbkjndvdakjk...',
+      },
       refreshToken: {
-        description: 'RefreshToken',
+        description: "'refresh-token'으로 들어갑니다.",
         example: 'flgbkjndvdakjk...',
       },
     },
@@ -63,29 +66,36 @@ export class AuthController {
   @ApiOperation({
     summary: '사용자 fcm 저장',
     description:
-      '사용자가 로그인 요청을 통해 AT를 발급 받으면, AT를 headers에 넣은 후 FCM Token 저장을 요청합니다.',
+      '사용자가 로그인 요청을 통해 AT를 발급 받으면, AT와 FCM Token을 헤더로 요청하여 FCM Token 저장을 요청합니다.',
   })
-  @ApiHeader({
-    name: 'Authorization',
-    description: 'Bearer Token (Access Token)',
-    example: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9',
-  })
+  @ApiHeaders([
+    {
+      name: 'Authorization',
+      description: 'Bearer {Access Token}',
+      example: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9',
+    },
+    {
+      name: 'fcm-token',
+      description: 'FCM Token',
+      example: 'dsgfabndRdgbfdsvaghfb9',
+    }
+  ])
   @ApiResponse({
     status: 200,
     description: 'FCM Token 저장 성공 및 로그인 성공',
-    schema: {
-      type: 'object',
-      properties: {
-        name: { type: 'string', example: '홍길동' },
-        email: { type: 'string', example: 'email@email.com' },
-        age: { type: 'number', example: 23 },
-        sex: { type: 'string', example: 'm' },
-        nickname: { type: 'string', example: '와이리' },
-        region: { type: 'string', example: '서울' },
-        phone_number: { type: 'string', example: '01012345678' },
-        profile_photo: { type: 'string', example: 'url' },
-      },
-    },
+    // schema: {
+    //   type: 'object',
+    //   properties: {
+    //     name: { type: 'string', example: '홍길동' },
+    //     email: { type: 'string', example: 'email@email.com' },
+    //     age: { type: 'number', example: 23 },
+    //     sex: { type: 'string', example: 'm' },
+    //     nickname: { type: 'string', example: '와이리' },
+    //     region: { type: 'string', example: '서울' },
+    //     phone_number: { type: 'string', example: '01012345678' },
+    //     profile_photo: { type: 'string', example: 'url' },
+    //   },
+    // },
   })
   @ApiResponse({
     status: 401,
@@ -108,7 +118,7 @@ export class AuthController {
   })
   @ApiHeader({
     name: 'Authorization',
-    description: 'Bearer Token (Refresh Token)',
+    description: 'Bearer {Refresh Token}',
     example: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9',
   })
   @ApiResponse({
@@ -128,14 +138,24 @@ export class AuthController {
   //로그인
   @Post('orphanages')
   @ApiOperation({
-    summary: '사용자 로그인',
+    summary: '보육원 계정 로그인',
     description:
-      '사용자가 로그인을 시도하면 body에는 AT가, hearders에는 RT가 반환됩니다.',
+      '보육원 계정이 로그인을 시도하면 hearders에 AT와 RT가 반환됩니다.',
   })
   @ApiResponse({
     status: 200,
-    description: '로그인 성공',
+    description: 'JWT 발급 성공',
     type: String,
+    headers: {
+      accessToken: {
+        description: "'access-token'으로 들어갑니다.",
+        example: 'flgbkjndvdakjk...',
+      },
+      refreshToken: {
+        description: "'refresh-token'으로 들어갑니다.",
+        example: 'flgbkjndvdakjk...',
+      },
+    },
   })
   @ApiResponse({
     status: 404,
@@ -161,27 +181,21 @@ export class AuthController {
     description:
       '보육원 계정이 로그인 요청을 통해 AT를 발급 받으면, AT를 headers에 넣은 후 FCM Token 저장을 요청합니다.',
   })
-  @ApiHeader({
-    name: 'Authorization',
-    description: 'Bearer Token (Access Token)',
-    example: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9',
-  })
+  @ApiHeaders([
+    {
+      name: 'Authorization',
+      description: 'Bearer {Access Token}',
+      example: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9',
+    },
+    {
+      name: 'fcm-token',
+      description: 'FCM Token',
+      example: 'dsgfabndRdgbfdsvaghfb9',
+    }
+  ])
   @ApiResponse({
     status: 200,
     description: 'FCM Token 저장 성공 및 로그인 성공',
-    schema: {
-      type: 'object',
-      properties: {
-        name: { type: 'string', example: '홍길동' },
-        email: { type: 'string', example: 'email@email.com' },
-        orphanage: {
-          type: 'object',
-          properties: {
-            orphanage_name: { type: 'string', example: 'name1' },
-          },
-        },
-      },
-    },
   })
   @ApiResponse({
     status: 401,
@@ -205,7 +219,7 @@ export class AuthController {
   })
   @ApiHeader({
     name: 'Authorization',
-    description: 'Bearer Token (Refresh Token)',
+    description: 'Bearer {Refresh Token}',
     example: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9',
   })
   @ApiResponse({

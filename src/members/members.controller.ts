@@ -59,15 +59,30 @@ export class MembersController {
     type: CreateOrphanageUserDto,
   })
   @ApiResponse({
-    status: 409,
-    description: 'Conflict - 존재하는 이메일 또는 닉네임입니다.',
+    status: 400,
+    description:
+    'Bad Reqeust - \
+    [password는 name과 같은 문자열을 포함할 수 없습니다.\
+      \nBad Reqeust - 비밀번호는 8글자 이상으로 ^[A-Za-zd!@#$%^&*()]{8,30}가 포함되어야 합니다.',
+    })
+  @ApiResponse({
+    status: 404,
+    description: 'Not Found - 해당 보육원을 찾을 수 없습니다.',
   })
   @ApiResponse({
-    status: 400,
+    status: 409,
+    description: 'Conflict - 존재하는 이메일입니다.',
+  })
+  @ApiResponse({
+    status: 409,
     description:
       'Bad Reqeust - \
     [password는 name과 같은 문자열을 포함할 수 없습니다.\
     \nBad Reqeust - 비밀번호는 8글자 이상으로 ^[A-Za-zd!@#$%^&*()]{8,30}가 포함되어야 합니다.',
+  })
+  @ApiResponse({
+    status: 409,
+    description: 'Conflict - 이미 해당 보육원의 계정은 존재합니다.',
   })
   async createOrphanageUser(
     @Body(CustomValidationPipe) createOrphanageUserDto: CreateOrphanageUserDto,
