@@ -57,8 +57,9 @@ export class AuthController {
       .send(await this.authService.login(loginUserDto, res));
   }
 
-  //fcm 저장 ==> GET으로 바꾸고 헤더로 받아야함!!
-  @Post('users/fcm')
+
+
+  @Get('users/fcm')
   @ApiOperation({
     summary: '사용자 fcm 저장',
     description:
@@ -95,8 +96,8 @@ export class AuthController {
     description: 'Not Found - 존재하지 않는 이메일입니다.',
   })
   @UseGuards(AuthGuard('access'))
-  async saveFcmToken(@Body() saveFcmDto: SaveFcmDto) {
-    return await this.authService.saveFcmToken(saveFcmDto);
+  async saveFcmToken(@Req() req: Request & IOAuthUser) {
+    return await this.authService.saveFcmToken(req);
   }
 
   //RT로 새로운 AT 발급 요청
@@ -153,8 +154,8 @@ export class AuthController {
       .send(await this.orphanageAuthService.login(loginUserDto, res));
   }
 
-  //fcm 저장 ==> GET으로 바꾸고 헤더로 받아야함!!
-  @Post('orphanages/fcm')
+
+  @Get('orphanages/fcm')
   @ApiOperation({
     summary: '보육원 계정 fcm 저장',
     description:
@@ -191,8 +192,8 @@ export class AuthController {
     description: 'Not Found - 존재하지 않는 이메일입니다.',
   })
   @UseGuards(AuthGuard('access'))
-  async saveOrphanageFcmToken(@Body() saveFcmDto: SaveFcmDto) {
-    return await this.orphanageAuthService.saveFcmToken(saveFcmDto);
+  async saveOrphanageFcmToken(@Req() req: Request & IOAuthUser) {
+    return await this.orphanageAuthService.saveFcmToken(req);
   }
 
   //RT로 새로운 AT 발급 요청

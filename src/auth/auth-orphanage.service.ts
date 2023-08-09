@@ -21,6 +21,7 @@ export class OrphanageAuthService {
     private dataSource: DataSource,
   ) {}
 
+
   getAccessToken({ orphanageUser, res }) {
     const accessToken = this.jwtService.sign(
       {
@@ -36,6 +37,7 @@ export class OrphanageAuthService {
     return accessToken;
   }
 
+
   setRefreshToken({ orphanageUser, res }) {
     const refreshToken = this.jwtService.sign(
       {
@@ -50,6 +52,7 @@ export class OrphanageAuthService {
     res.setHeader(`refresh-token`, refreshToken);
     return refreshToken;
   }
+
 
   async login(orphanageLoginDto: OrphanageLoginDto, res: Response) {
     const { email, password } = orphanageLoginDto;
@@ -73,6 +76,7 @@ export class OrphanageAuthService {
     console.log(`succeed OrphanageUser Login : ${user.email}`);
   }
 
+
   async saveRefreshToken(userId: string, newToken: string) {
     await this.orphanageRepository
       .createQueryBuilder()
@@ -82,9 +86,11 @@ export class OrphanageAuthService {
       .execute();
   }
 
+
   //여기서 본인의 정보를 업데이트 하는지 한 번 더 확인하는 부분 추가 구현 필요
-  async saveFcmToken(saveFcmDto: SaveOrphanageFcmDto) {
-    const { email, fcmToken } = saveFcmDto;
+  async saveFcmToken(req) {
+    const email = req.user.email
+    const fcmToken = req.headers['fcm-token'];
 
     try {
       const user = await this.orphanageRepository.findOne({
@@ -106,15 +112,16 @@ export class OrphanageAuthService {
     } catch (error) {
       console.log(error['response']);
       return error['response'];
-    } finally {
-      return this.orphanageRepository
-        .createQueryBuilder('user')
-        .select(['user.name', 'user.email', 'orphanage.orphanage_name'])
-        .innerJoin('user.orphanage', 'orphanage')
-        .where('user.email = :email', { email })
-        .getOne();
-    }
+    } //finally {
+    //   return this.orphanageRepository
+    //     .createQueryBuilder('user')
+    //     .select(['user.name', 'user.email', 'orphanage.orphanage_name'])
+    //     .innerJoin('user.orphanage', 'orphanage')
+    //     .where('user.email = :email', { email })
+    //     .getOne();
+    // }
   }
+
 
   async restoreAccessToken({ user, res }) {
     const jwt = this.getAccessToken({ orphanageUser: user, res });

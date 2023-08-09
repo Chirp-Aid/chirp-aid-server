@@ -20,6 +20,7 @@ export class AuthService {
     private dataSource: DataSource,
   ) {}
 
+
   getAccessToken({ user, res }) {
     const accessToken = this.jwtService.sign(
       {
@@ -35,6 +36,7 @@ export class AuthService {
     return accessToken;
   }
 
+
   setRefreshToken({ user, res }) {
     const refreshToken = this.jwtService.sign(
       {
@@ -49,6 +51,7 @@ export class AuthService {
     res.setHeader(`refresh-token`, refreshToken);
     return refreshToken;
   }
+
 
   async login(loginUserDto: LoginDto, res: Response) {
     const { email, password } = loginUserDto;
@@ -72,6 +75,7 @@ export class AuthService {
     console.log(`succeed Login : ${user.email}`);
   }
 
+
   async saveRefreshToken(userId: string, newToken: string) {
     await this.usersRepository
       .createQueryBuilder()
@@ -81,9 +85,12 @@ export class AuthService {
       .execute();
   }
 
+
   //여기서 본인의 정보를 업데이트 하는지 한 번 더 확인하는 부분 추가 구현 필요
-  async saveFcmToken(saveFcmDto: SaveFcmDto) {
-    const { email, fcmToken } = saveFcmDto;
+  async saveFcmToken(req) {
+    const email = req.user.email
+    const fcmToken = req.headers['fcm-token'];
+
     try {
       const user = await this.usersRepository.findOne({
         where: { email: email },
@@ -104,20 +111,21 @@ export class AuthService {
       console.log(error['response']);
       return error['response'];
     }
-    return await this.usersRepository.findOne({
-      where: { email: email },
-      select: [
-        'email',
-        'name',
-        'age',
-        'sex',
-        'nickname',
-        'region',
-        'phone_number',
-        'profile_photo',
-      ],
-    });
+    // return await this.usersRepository.findOne({
+    //   where: { email: email },
+    //   select: [
+    //     'email',
+    //     'name',
+    //     'age',
+    //     'sex',
+    //     'nickname',
+    //     'region',
+    //     'phone_number',
+    //     'profile_photo',
+    //   ],
+    // });
   }
+
 
   async restoreAccessToken({ user, res }) {
     const jwt = this.getAccessToken({ user, res });
