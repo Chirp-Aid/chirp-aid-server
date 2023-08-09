@@ -52,8 +52,7 @@ export class UsersService {
       const user = await queryRunner.manager.save(newUser);
       await queryRunner.commitTransaction();
       console.log(`save User : ${user.email}`);
-
-      return createUserDto;
+      
     } catch (error) {
       await queryRunner.rollbackTransaction();
       console.log(error['response']);

@@ -21,8 +21,8 @@ export class OrphanageAuthService {
     private dataSource: DataSource,
   ) {}
 
-  getAccessToken({ orphanageUser }) {
-    return this.jwtService.sign(
+  getAccessToken({ orphanageUser, res }) {
+    const accessToken = this.jwtService.sign(
       {
         email: orphanageUser.email,
         sub: orphanageUser.orphanage_user_id,
@@ -32,6 +32,8 @@ export class OrphanageAuthService {
         expiresIn: '1d',
       },
     );
+    res.setHeader(`access-token`, accessToken);
+    return accessToken;
   }
 
   setRefreshToken({ orphanageUser, res }) {
@@ -45,7 +47,7 @@ export class OrphanageAuthService {
         expiresIn: '1w',
       },
     );
-    res.setHeader(`refreshToekn`, refreshToken);
+    res.setHeader(`refresh-token`, refreshToken);
     return refreshToken;
   }
 
@@ -67,9 +69,8 @@ export class OrphanageAuthService {
 
     const refresh_token = this.setRefreshToken({ orphanageUser: user, res });
     this.saveRefreshToken(user.orphanage_user_id, refresh_token);
-    const jwt = this.getAccessToken({ orphanageUser: user });
+    await this.getAccessToken({ orphanageUser: user, res });
     console.log(`succeed OrphanageUser Login : ${user.email}`);
-    return jwt;
   }
 
   async saveRefreshToken(userId: string, newToken: string) {
@@ -115,8 +116,8 @@ export class OrphanageAuthService {
     }
   }
 
-  async restoreAccessToken({ user }) {
-    const jwt = this.getAccessToken({ orphanageUser: user });
+  async restoreAccessToken({ user, res }) {
+    const jwt = this.getAccessToken({ orphanageUser: user, res });
     console.log(`restore AT for OrphanageUser : ${user.email}`);
     return jwt;
   }

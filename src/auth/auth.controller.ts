@@ -120,8 +120,8 @@ export class AuthController {
     description: 'Unauthorized - JWT 토큰 에러',
   })
   @UseGuards(AuthGuard('refresh'))
-  async restoreAccessToken(@Req() req: Request & IOAuthUser) {
-    return this.authService.restoreAccessToken({ user: req.user });
+  async restoreAccessToken(@Req() req: Request & IOAuthUser, res:Response) {
+    return this.authService.restoreAccessToken({ user: req.user, res });
   }
 
   //로그인
@@ -217,7 +217,7 @@ export class AuthController {
     description: 'Unauthorized - JWT 토큰 에러',
   })
   @UseGuards(AuthGuard('refresh'))
-  async restoreOrphanageAccessToken(@Req() req: Request & IOAuthUser) {
-    return this.orphanageAuthService.restoreAccessToken({ user: req.user });
+  async restoreOrphanageAccessToken(@Req() req: Request & IOAuthUser, @Res() res: Response) {
+    return this.orphanageAuthService.restoreAccessToken({ user: req.user, res });
   }
 }

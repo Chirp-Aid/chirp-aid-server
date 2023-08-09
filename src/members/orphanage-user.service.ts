@@ -21,7 +21,7 @@ export class OrphanageUsersService {
   ) {}
 
   async create(createOrphanageUserDto: CreateOrphanageUserDto) {
-    const { name, email, password, orphanageName } = createOrphanageUserDto;
+    const { name, email, password, orphanage_name } = createOrphanageUserDto;
     const queryRunner = this.dataSource.createQueryRunner();
 
     await queryRunner.connect();
@@ -33,7 +33,7 @@ export class OrphanageUsersService {
       }
 
       const orphange = await this.orphanageRepository.findOne({
-        where: { orphanage_name: orphanageName },
+        where: { orphanage_name: orphanage_name },
       });
 
       if (!orphange) {
@@ -51,12 +51,11 @@ export class OrphanageUsersService {
       await queryRunner.commitTransaction();
       console.log(`save OrphanageUser : ${user.email}`);
 
-      return createOrphanageUserDto;
     } catch (error) {
       await queryRunner.rollbackTransaction();
       if (error.errno == 1062) {
         console.log(
-          `이미 해당 보육원의 계정은 존재합니다. or_name: ${orphanageName}`,
+          `이미 해당 보육원의 계정은 존재합니다. or_name: ${orphanage_name}`,
         );
         return {
           statusCode: 409,

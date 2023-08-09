@@ -20,8 +20,8 @@ export class AuthService {
     private dataSource: DataSource,
   ) {}
 
-  getAccessToken({ user }) {
-    return this.jwtService.sign(
+  getAccessToken({ user, res }) {
+    const accessToken = this.jwtService.sign(
       {
         email: user.email,
         sub: user.user_id,
@@ -31,6 +31,8 @@ export class AuthService {
         expiresIn: '1d',
       },
     );
+    res.setHeader(`access-token`, accessToken);
+    return accessToken;
   }
 
   setRefreshToken({ user, res }) {
@@ -44,7 +46,7 @@ export class AuthService {
         expiresIn: '1w',
       },
     );
-    res.setHeader(`refreshToekn`, refreshToken);
+    res.setHeader(`refresh-token`, refreshToken);
     return refreshToken;
   }
 
@@ -66,9 +68,8 @@ export class AuthService {
 
     const refresh_token = this.setRefreshToken({ user, res });
     this.saveRefreshToken(user.user_id, refresh_token);
-    const jwt = this.getAccessToken({ user });
+    await this.getAccessToken({ user, res });
     console.log(`succeed Login : ${user.email}`);
-    return jwt;
   }
 
   async saveRefreshToken(userId: string, newToken: string) {
@@ -118,8 +119,8 @@ export class AuthService {
     });
   }
 
-  async restoreAccessToken({ user }) {
-    const jwt = this.getAccessToken({ user });
+  async restoreAccessToken({ user, res }) {
+    const jwt = this.getAccessToken({ user, res });
     console.log(`restore AT for User : ${user.email}`);
     return jwt;
   }
