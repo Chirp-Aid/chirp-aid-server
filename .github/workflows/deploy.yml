@@ -62,7 +62,7 @@ jobs:
         echo "DATABASE_USERNAME=${{ secrets.DATABASE_USERNAME }}" >> .env
         echo "DATABASE_PASSWORD=${{ secrets.DATABASE_PASSWORD }}" >> .env
         echo "DATABASE_NAME=${{ secrets.DATABASE_NAME }}" >> .env
-        echo "FIREBASE_CONFIG=\"${{ secrets.FIREBASE_CONFIG }}\"" >> .env
+        echo "FIREBASE_CONFIG=${{ secrets.FIREBASE_CONFIG }}" >> .env
         echo "JWT_ACCESS_TOKEN=${{ secrets.JWT_ACCESS_TOKEN }}" >> .env
         echo "JWT_REFRESH_TOKEN=${{ secrets.JWT_REFRESH_TOKEN }}" >> .env
 
