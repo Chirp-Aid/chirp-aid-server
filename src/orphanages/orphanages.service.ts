@@ -95,7 +95,7 @@ export class OrphanagesService {
 
     try {
       const orphanage = await this.orphanageRepository.findOne({
-        where: { orphanage_id: orphanage_id },
+        where: { orphanage_id: orphanage_id.orphanage_id },
       });
 
       if (!orphanage) {
