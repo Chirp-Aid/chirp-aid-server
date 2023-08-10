@@ -1,8 +1,9 @@
-import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Req, UseGuards } from '@nestjs/common';
 import { OrphanagesService } from './orphanages.service';
 import { CreateFavoriteDto } from './dto/create-favorite.dto';
 import { ApiHeader, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
+import { IOAuthUser } from 'src/auth/auth.userInterface';
 
 @ApiTags('ORPHANAGES: 보육원 관련 요청')
 @Controller('orphanages')
@@ -90,7 +91,7 @@ export class OrphanagesController {
     description: 'Unauthorized - JWT 토큰 에러',
   })
   @UseGuards(AuthGuard('access'))
-  async createFavorite(@Body() createFavoriteDto: CreateFavoriteDto) {
-    return await this.orphanagesService.createFavorite(createFavoriteDto);
+  async createFavorite(@Body() orphanage_id: string, @Req() req: Request & IOAuthUser): Promise<any> {
+    return await this.orphanagesService.createFavorite({user: req.user, orphanage_id});
   }
 }

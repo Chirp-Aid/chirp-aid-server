@@ -8,7 +8,6 @@ import { Orphanage } from '../entities/orphanage.entity';
 import { DataSource, Repository } from 'typeorm';
 import { OrphanageUser } from 'src/entities/orphanage-user.entity';
 import { Favorites } from 'src/entities/favorites.entity';
-import { CreateFavoriteDto } from './dto/create-favorite.dto';
 import { User } from 'src/entities/user.entity';
 import { Request } from 'src/entities/request.entity';
 
@@ -87,8 +86,8 @@ export class OrphanagesService {
 
   }
 
-  async createFavorite(createFavoriteDto: CreateFavoriteDto) {
-    const { orphanage_id, user_id } = createFavoriteDto;
+  async createFavorite({user, orphanage_id}) {
+    const user_id = user.user_id;
     const queryRunner = this.dataSource.createQueryRunner();
 
     await queryRunner.connect();
@@ -129,12 +128,21 @@ export class OrphanagesService {
 
       await this.favsRepository.save(newFavorite);
       await queryRunner.commitTransaction();
+
     } catch (error) {
       await queryRunner.rollbackTransaction();
       console.log(error['response']);
       return error['response'];
     } finally {
       await queryRunner.release();
+    }
+  }
+
+  async findUserFavorites({user})
+  {
+    try{
+    } catch(error) {
+
     }
   }
 }
