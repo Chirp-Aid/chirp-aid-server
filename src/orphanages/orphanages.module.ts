@@ -6,10 +6,11 @@ import { Orphanage } from '../entities/orphanage.entity';
 import { OrphanageUser } from 'src/entities/orphanage-user.entity';
 import { Favorites } from 'src/entities/favorites.entity';
 import { User } from 'src/entities/user.entity';
+import { Request } from 'src/entities/request.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([User, Orphanage, OrphanageUser, Favorites]),
+    TypeOrmModule.forFeature([User, Orphanage, OrphanageUser, Favorites, Request]),
   ],
   controllers: [OrphanagesController],
   providers: [OrphanagesService],

@@ -10,6 +10,7 @@ import { OrphanageUser } from 'src/entities/orphanage-user.entity';
 import { Favorites } from 'src/entities/favorites.entity';
 import { CreateFavoriteDto } from './dto/create-favorite.dto';
 import { User } from 'src/entities/user.entity';
+import { Request } from 'src/entities/request.entity';
 
 @Injectable()
 export class OrphanagesService {
@@ -20,6 +21,7 @@ export class OrphanagesService {
     @InjectRepository(OrphanageUser)
     private orphanageUserRepository: Repository<OrphanageUser>,
     @InjectRepository(Favorites) private favsRepository: Repository<Favorites>,
+    @InjectRepository(Request) private requestRepository: Repository<Request>,
     private dataSource: DataSource,
   ) {}
 
@@ -32,7 +34,7 @@ export class OrphanagesService {
   async findOne(id: number) {
     // 보육원 계정 & 보육원 정보 가져오기
     try {
-      const result = await this.orphanageUserRepository
+      const orphanage = await this.orphanageUserRepository
         .createQueryBuilder('orphanage_user')
         .select([
           'orphanage.orphanage_name',
@@ -42,29 +44,47 @@ export class OrphanagesService {
           'orphanage.description',
           'orphanage.photo',
           'orphanage_user.name',
-          'orphanage_user.email',
+          'orphanage_user.orphanage_user_id',
         ])
         .leftJoin('orphanage_user.orphanage_id', 'orphanage')
         .where('orphanage_user.orphanage_id = :id', { id })
         .getOne();
 
-      if (!result) {
+      if (!orphanage)
+      {
         console.log(`해당 보육원을 찾지 못 했습니다. orphanage_id : ${id}`);
         throw new NotFoundException('해당 보육원을 찾지 못 했습니다.');
       }
-      const { name, email, orphanage_id: orphanageInfo } = result;
+
+      const orphanage_user_id = orphanage.orphanage_user_id;
+
+      const getRequests = await this.requestRepository
+        .createQueryBuilder('requests')
+        .where('requests.orphanage_user_id.orphanage_user_id = :orphanage_user_id', {
+          orphanage_user_id,
+        })
+        .leftJoinAndSelect('requests.product_id', 'product')
+        .getMany(); 
+
+      const requests = getRequests.map((request) => ({
+        request_id: request.request_id,
+        product_name: request.product_id.product_name,
+        price: request.product_id.price,
+        count: request.count,
+        supported_count: request.supported_count,
+        message: request.message,
+        product_photo: request.product_id.product_photo,
+      }))
+
+      const { name, email, orphanage_id: orphanageInfo } = orphanage;
       console.log(orphanageInfo);
-      return { name, email, ...orphanageInfo };
+      return { name, email, ...orphanageInfo, requests };
+
     } catch (error) {
-      console.log(error['response']);
+      console.log(error);
       return error['response'];
     }
 
-    //보육원 요청 목록 가져오기
-    try {
-    } catch (error) {}
-
-    //객체 합치기
   }
 
   async createFavorite(createFavoriteDto: CreateFavoriteDto) {
