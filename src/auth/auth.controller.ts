@@ -39,7 +39,6 @@ export class AuthController {
   @ApiResponse({
     status: 200,
     description: 'JWT 발급 성공',
-    type: String,
     headers: {
       accessToken: {
         description: "'access-token'으로 들어갑니다.",
@@ -114,7 +113,12 @@ export class AuthController {
   @ApiResponse({
     status: 200,
     description: 'AT 재발급 성공',
-    type: String,
+    headers: {
+      accessToken: {
+        description: "'access-token'으로 들어갑니다.",
+        example: 'flgbkjndvdakjk...',
+      },
+    },
   })
   @ApiResponse({
     status: 401,
@@ -141,7 +145,6 @@ export class AuthController {
   @ApiResponse({
     status: 200,
     description: 'JWT 발급 성공',
-    type: String,
     headers: {
       accessToken: {
         description: "'access-token'으로 들어갑니다.",
@@ -220,7 +223,12 @@ export class AuthController {
   @ApiResponse({
     status: 200,
     description: 'AT 재발급 성공',
-    type: String,
+    headers: {
+      accessToken: {
+        description: "'access-token'으로 들어갑니다.",
+        example: 'flgbkjndvdakjk...',
+      },
+    },
   })
   @ApiResponse({
     status: 401,
