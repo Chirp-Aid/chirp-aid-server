@@ -23,8 +23,8 @@ export class RequestsService {
     private dataSource: DataSource,
   ) {}
 
-  async createRequest(createRequestDto: CreateRequestDto) {
-    const { orphanage_user_id, product_name, count, message } =
+  async createRequest(createRequestDto: CreateRequestDto, orphanage_user_id: string) {
+    const {product_name, count, message } =
       createRequestDto;
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();

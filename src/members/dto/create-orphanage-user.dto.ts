@@ -48,5 +48,5 @@ export class CreateOrphanageUserDto {
     example: '금오보육원',
     description: 'The name of Orphanage',
   })
-  orphanage_name: string;
+  orphanageName: string;
 }
