@@ -61,8 +61,9 @@ export class OrphanagesService {
     //객체 합치기
   }
 
-  async createFavorite(createFavoriteDto: CreateFavoriteDto){
-    const {orphanage_id, user_id} = createFavoriteDto;
+  //보육원 즐겨찾기 추가
+  
+  async createFavorite(orphanage_id: number, user_id: string){
     const queryRunner = this.dataSource.createQueryRunner();
 
     await queryRunner.connect();

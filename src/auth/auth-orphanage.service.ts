@@ -1,6 +1,7 @@
 import {
   Injectable,
   NotFoundException,
+  UnauthorizedException,
   UnprocessableEntityException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
@@ -10,14 +11,13 @@ import * as bcrypt from 'bcrypt';
 import { Response } from 'express';
 import { OrphanageUser } from '../entities/orphanage-user.entity';
 import { OrphanageLoginDto } from './dto/orphanage-login.dto';
-import { SaveOrphanageFcmDto } from './dto/save-orphanage-fcm.dto';
 
 @Injectable()
 export class OrphanageAuthService {
   constructor(
     private readonly jwtService: JwtService,
     @InjectRepository(OrphanageUser)
-    private orphanageRepository: Repository<OrphanageUser>,
+    private orphanageUserRepository: Repository<OrphanageUser>,
     private dataSource: DataSource,
   ) {}
 
@@ -51,7 +51,7 @@ export class OrphanageAuthService {
 
   async login(orphanageLoginDto: OrphanageLoginDto, res: Response) {
     const { email, password } = orphanageLoginDto;
-    const user = await this.orphanageRepository.findOne({
+    const user = await this.orphanageUserRepository.findOne({
       where: { email: email },
     });
     if (!user) {
@@ -73,7 +73,7 @@ export class OrphanageAuthService {
   }
 
   async saveRefreshToken(userId: string, newToken: string) {
-    await this.orphanageRepository
+    await this.orphanageUserRepository
       .createQueryBuilder()
       .update(OrphanageUser)
       .set({ refresh_token: newToken })
@@ -82,17 +82,22 @@ export class OrphanageAuthService {
   }
 
   //여기서 본인의 정보를 업데이트 하는지 한 번 더 확인하는 부분 추가 구현 필요
-  async saveFcmToken(saveFcmDto: SaveOrphanageFcmDto) {
-    const { email, fcmToken } = saveFcmDto;
+  async saveFcmToken(fcmToken: string, email: string, orphanage_user_id: string) {
 
+    
     try {
-      const user = await this.orphanageRepository.findOne({
+      const user = await this.orphanageUserRepository.findOne({
         where: { email: email },
       });
       if (!user) {
         console.log(`unexisted email: ${email}`);
         throw new NotFoundException('존재하지 않는 이메일입니다.');
       }
+
+      // if (user.orphanage_user_id != orphanage_user_id){
+      //   console.log(`AT is different from UserInfo: ${email}`);
+      //   throw new UnauthorizedException(`AT와 사용자의 정보가 일치하지 않습니다.`);
+      // }
 
       await this.dataSource.transaction(async (manager) => {
         await manager
@@ -102,15 +107,17 @@ export class OrphanageAuthService {
           .where('email = :email', { email })
           .execute();
       });
+
     } catch (error) {
       console.log(error['response']);
       return error['response'];
+
     } finally {
-      return this.orphanageRepository
-        .createQueryBuilder('user')
-        .select(['user.name', 'user.email', 'orphanage.orphanage_name'])
-        .innerJoin('user.orphanage', 'orphanage')
-        .where('user.email = :email', { email })
+      return this.orphanageUserRepository
+        .createQueryBuilder('orphanage_user')
+        .select(['orphanage_user.name', 'orphanage_user.email', 'orphanage.orphanage_name'])
+        .innerJoin('orphanage_user.orphanage_id', 'orphanage')
+        .where('orphanage_user.email = :email', { email })
         .getOne();
     }
   }

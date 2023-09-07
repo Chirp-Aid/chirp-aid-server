@@ -6,6 +6,7 @@ import { User } from '../entities/user.entity';
 import { AuthController } from './auth.controller';
 import { OrphanageUser } from '../entities/orphanage-user.entity';
 import { OrphanageAuthService } from './auth-orphanage.service';
+import { Orphanage } from 'src/entities/orphanage.entity';
 
 @Module({
   imports: [

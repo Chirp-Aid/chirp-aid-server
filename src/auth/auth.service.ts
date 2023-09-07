@@ -1,6 +1,7 @@
 import {
   Injectable,
   NotFoundException,
+  UnauthorizedException,
   UnprocessableEntityException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
@@ -81,8 +82,7 @@ export class AuthService {
   }
 
   //여기서 본인의 정보를 업데이트 하는지 한 번 더 확인하는 부분 추가 구현 필요
-  async saveFcmToken(saveFcmDto: SaveFcmDto) {
-    const { email, fcmToken } = saveFcmDto;
+  async saveFcmToken(fcmToken: string, email: string, user_id: string) {
     try {
       const user = await this.usersRepository.findOne({
         where: { email: email },
@@ -91,6 +91,12 @@ export class AuthService {
         console.log(`unexisted email: ${email}`);
         throw new NotFoundException('존재하지 않는 이메일입니다.');
       }
+
+      // if (user.user_id != user_id){
+      //   console.log(`AT is different from UserInfo: ${email}`);
+      //   throw new UnauthorizedException(`AT와 사용자의 정보가 일치하지 않습니다.`);
+      // }
+
       await this.dataSource.transaction(async (manager) => {
         await manager
           .createQueryBuilder()

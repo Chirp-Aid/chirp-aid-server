@@ -6,6 +6,8 @@ import {
   Req,
   UseGuards,
   Res,
+  Request,
+  Headers,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { IOAuthUser } from './auth.userInterface';
@@ -58,7 +60,7 @@ export class AuthController {
   }
 
   //fcm 저장 ==> GET으로 바꾸고 헤더로 받아야함!!
-  @Post('users/fcm')
+  @Get('users/fcm')
   @ApiOperation({
     summary: '사용자 fcm 저장',
     description:
@@ -68,6 +70,11 @@ export class AuthController {
     name: 'Authorization',
     description: 'Bearer Token (Access Token)',
     example: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9',
+  })
+  @ApiHeader({
+    name: 'FCM Token',
+    description: 'String',
+    example: 'iIsInR5cCI6IkpXVCJ9',
   })
   @ApiResponse({
     status: 200,
@@ -95,8 +102,10 @@ export class AuthController {
     description: 'Not Found - 존재하지 않는 이메일입니다.',
   })
   @UseGuards(AuthGuard('access'))
-  async saveFcmToken(@Body() saveFcmDto: SaveFcmDto) {
-    return await this.authService.saveFcmToken(saveFcmDto);
+  async saveFcmToken(@Headers('fcm-token') fcmToken: string, @Request() req) {
+    const email = req.user.email;
+    const user_id = req.user.user_id;
+    return await this.authService.saveFcmToken(fcmToken, email, user_id);
   }
 
   //RT로 새로운 AT 발급 요청
@@ -154,7 +163,7 @@ export class AuthController {
   }
 
   //fcm 저장 ==> GET으로 바꾸고 헤더로 받아야함!!
-  @Post('orphanages/fcm')
+  @Get('orphanages/fcm')
   @ApiOperation({
     summary: '보육원 계정 fcm 저장',
     description:
@@ -164,6 +173,11 @@ export class AuthController {
     name: 'Authorization',
     description: 'Bearer Token (Access Token)',
     example: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9',
+  })
+  @ApiHeader({
+    name: 'FCM Token',
+    description: 'String',
+    example: 'iIsInR5cCI6IkpXVCJ9',
   })
   @ApiResponse({
     status: 200,
@@ -191,8 +205,10 @@ export class AuthController {
     description: 'Not Found - 존재하지 않는 이메일입니다.',
   })
   @UseGuards(AuthGuard('access'))
-  async saveOrphanageFcmToken(@Body() saveFcmDto: SaveFcmDto) {
-    return await this.orphanageAuthService.saveFcmToken(saveFcmDto);
+  async saveOrphanageFcmToken(@Headers('fcm-token') fcmToken: string, @Request() req) {
+    const email = req.user.email;
+    const orphanage_user_id = req.user.user_id;
+    return await this.orphanageAuthService.saveFcmToken(fcmToken, email, orphanage_user_id);
   }
 
   //RT로 새로운 AT 발급 요청
