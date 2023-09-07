@@ -1,7 +1,7 @@
 import { Column, Entity, JoinColumn, OneToOne, PrimaryColumn } from 'typeorm';
 import { Orphanage } from '../entities/orphanage.entity';
 
-@Entity('orphanager_user')
+@Entity('orphanage_user')
 export class OrphanageUser {
   @PrimaryColumn()
   orphanage_user_id: string;
