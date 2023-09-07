@@ -73,11 +73,33 @@ async createFavorite(user_id, orphanage_id) {
     }
 }
 
-async findUserFavorites({user})
+async getFavorites(user_id)
 {
     try{
-    } catch(error) {
+        const favorites = await this.favsRepository.find({
+            where:{user_id: user_id}, relations: ['orphanage_id']
+        })
 
+        if (!favorites || favorites.length == 0){
+            return { orphanages: [] };
+        }
+
+        const orphanages = favorites.map((favorite) => ({
+            orphanage_id: favorite.orphanage_id.orphanage_id,
+            orphanage_name: favorite.orphanage_id.orphanage_name,
+            address: favorite.orphanage_id.address,
+            phone_number: favorite.orphanage_id.phone_number,
+            photo: favorite.orphanage_id.photo
+        }))
+
+        console.log(favorites)
+        console.log(orphanages);
+
+        return { orphanages };
+
+    } catch(error) {
+        console.log(error);
+        return error;
     }
 }
 }

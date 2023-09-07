@@ -1,6 +1,6 @@
 import { Body, Controller, Get, Param, Post, Req, Request, UseGuards } from '@nestjs/common';
 import { OrphanagesService } from './orphanages.service';
-import { CreateFavoriteDto } from './dto/create-favorite.dto';
+import { CreateFavoriteDto } from '../favorites/dto/create-favorite.dto';
 import { ApiHeader, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
 import { IOAuthUser } from 'src/auth/auth.userInterface';
