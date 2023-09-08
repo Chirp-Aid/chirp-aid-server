@@ -4,7 +4,7 @@ import { CreateRequestDto } from './dto/create-request.dto';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
 
-@ApiTags('REQUEST: 요청 관련 요청')
+@ApiTags('REQUEST: 요청 글 관련 요청')
 @Controller('requests')
 export class RequestsController {
   constructor(private readonly requestsService: RequestsService) {}

@@ -5,7 +5,7 @@ import { ApiHeader, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
 import { IOAuthUser } from 'src/auth/auth.userInterface';
 
-@ApiTags('ORPHANAGES: 보육원 관련 요청')
+@ApiTags('ORPHANAGES: 보육원 정보 관련 요청')
 @Controller('orphanages')
 export class OrphanagesController {
   constructor(private readonly orphanagesService: OrphanagesService) {}

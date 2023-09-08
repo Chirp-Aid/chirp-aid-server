@@ -22,7 +22,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 
-@ApiTags('AUTH: Login and SaveFCM')
+@ApiTags('AUTH: 로그인, fcm토큰 저장, RT 재발급')
 @Controller('auth')
 export class AuthController {
   constructor(

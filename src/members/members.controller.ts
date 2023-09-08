@@ -7,7 +7,7 @@ import { OrphanageUsersService } from './orphanage-user.service';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CustomValidationPipe } from 'src/commons/customValidationPipe.ts';
 
-@ApiTags('MEMBERS: Users and OrphanageUsers')
+@ApiTags('MEMBERS: 회원가입, 사용자 정보 조회')
 @Controller('members')
 export class MembersController {
   private PASSWORD_SALT = 10;
