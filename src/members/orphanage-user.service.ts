@@ -9,6 +9,7 @@ import * as uuid from 'uuid';
 import { OrphanageUser } from '../entities/orphanage-user.entity';
 import { CreateOrphanageUserDto } from './dto/create-orphanage-user.dto';
 import { Orphanage } from 'src/entities/orphanage.entity';
+import { UpdateOrphanageUserDto } from './dto/update-orphanage-user.dto';
 
 @Injectable()
 export class OrphanageUsersService {
@@ -68,4 +69,57 @@ export class OrphanageUsersService {
       await queryRunner.release();
     }
   }
+
+
+  async updateUserInfo(userId: string, udpateUserDto: UpdateOrphanageUserDto){
+    const {
+      name,
+      password
+    } = udpateUserDto;
+
+    const queryRunner = this.dataSource.createQueryRunner();
+
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+
+    try {
+      
+      this.usersRepository.update(
+        {orphanage_user_id: userId},
+        {name:name,
+          password: password,});
+
+      console.log(`update OrphanageUserInfo : ${userId}`);
+      await queryRunner.commitTransaction();
+
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+      console.log(error['response']);
+      return error['response'];
+
+    } finally {
+      await queryRunner.release();
+    }
+
+  }
+
+
+  async getUserInfo(user_id: string){
+    try{
+      const getUser = await this.usersRepository.findOne({where: {orphanage_user_id: user_id}})
+      delete getUser.orphanage_user_id;
+      delete getUser.password;
+      delete getUser.refreshToken;
+      delete getUser.fcmToken;
+      
+      console.log(`Get UserInfo : ${getUser.email}`);
+      return getUser;
+
+    } catch (error) {
+      console.log(error['response']);
+      return error['response'];
+    }
+
+  }
+
 }

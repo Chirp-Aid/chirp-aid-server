@@ -16,10 +16,10 @@ export class OrphanageUser {
   password: string;
 
   @Column({ nullable: true })
-  refresh_token: string;
+  refreshToken: string;
 
   @Column({ nullable: true })
-  fcm_token: string;
+  fcmToken: string;
 
   @OneToOne(() => Orphanage, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'orphanage_id' })

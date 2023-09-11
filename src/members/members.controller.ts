@@ -7,8 +7,8 @@ import { OrphanageUsersService } from './orphanage-user.service';
 import { ApiHeader, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CustomValidationPipe } from 'src/commons/customValidationPipe.ts';
 import { AuthGuard } from '@nestjs/passport';
-import { GetUserDto } from './dto/get-user.dto';
-import { Auth } from 'firebase-admin/lib/auth/auth';
+import { UpdateUserDto } from './dto/update-user.dto';
+import { UpdateOrphanageUserDto } from './dto/update-orphanage-user.dto';
 
 @ApiTags('MEMBERS: 회원가입, 사용자 정보 조회')
 @Controller('members')
@@ -122,14 +122,14 @@ export class MembersController {
     description: 'Conflict - 존재하는 닉네임입니다.',
   })
   @UseGuards(AuthGuard('access'))
-  async updateUserInfo(@Body(CustomValidationPipe) getUserDto: GetUserDto, @Request() req){
+  async updateUserInfo(@Body(CustomValidationPipe) updateUserDto: UpdateUserDto, @Request() req){
     const user_id = req.user.user_id;
     const hashedPassword = await bcrypt.hash(
-      getUserDto.password,
+      updateUserDto.password,
       this.PASSWORD_SALT,
     );
-    const updated = { ...getUserDto, password: hashedPassword };
-    return await this.usersService.updateUserInfo(user_id, updated);
+    const updateDto = { ...updateUserDto, password: hashedPassword };
+    return await this.usersService.updateUserInfo(user_id, updateDto);
   }
 
   @Get('users/info')
@@ -163,5 +163,56 @@ export class MembersController {
   async getUserInfo(@Request() req){
     const user_id = req.user.user_id;
     return await this.usersService.getUserInfo(user_id);
+  }
+
+  //#################################
+  @Patch('orphanages/info')
+  @ApiOperation({
+    summary: '보육원 계정 정보 수정',
+    description:
+      '보육원 계정 정보를 수정합니다. 이메일은 수정할 수 없습니다.',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'OK',
+  })
+  @ApiResponse({
+    status: 400,
+    description:
+      'Bad Reqeust - ',
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Unaothorized',
+  })
+  @UseGuards(AuthGuard('access'))
+  async updateOrphanageUserInfo(@Body(CustomValidationPipe) updateUserDto: UpdateOrphanageUserDto, @Request() req){
+    const user_id = req.user.user_id;
+    const hashedPassword = await bcrypt.hash(
+      updateUserDto.password,
+      this.PASSWORD_SALT,
+    );
+    const updateDto = { ...updateUserDto, password: hashedPassword };
+    return await this.orphanageUserService.updateUserInfo(user_id, updateDto);
+  }
+
+  @Get('orphanages/info')
+  @ApiOperation({
+    summary: '보육원 계정 정보 조회',
+    description: '보육원 계정의 정보를 반환합니다. 이때 비밀번호, RT, FCM TOKEN은 제외합니다.',
+  })
+  @ApiHeader({
+    name: 'Authorization',
+    description: 'Bearer {Access Token}',
+    example: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9',
+  })
+  @ApiResponse({
+    status: 200,
+    description: '사용자 정보를 반환합니다.',
+  })
+  @UseGuards(AuthGuard('access'))
+  async getOrphanageUserInfo(@Request() req){
+    const user_id = req.user.user_id;
+    return await this.orphanageUserService.getUserInfo(user_id);
   }
 }

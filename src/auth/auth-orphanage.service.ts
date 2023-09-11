@@ -76,7 +76,7 @@ export class OrphanageAuthService {
     await this.orphanageRepository
       .createQueryBuilder()
       .update(OrphanageUser)
-      .set({ refresh_token: newToken })
+      .set({ refreshToken: newToken })
       .where('orphanage_user_id = :userId', { userId })
       .execute();
   }
@@ -99,7 +99,7 @@ export class OrphanageAuthService {
         await manager
           .createQueryBuilder()
           .update(OrphanageUser)
-          .set({ fcm_token: fcmToken })
+          .set({ fcmToken: fcmToken })
           .where('email = :email', { email })
           .execute();
       });

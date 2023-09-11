@@ -8,7 +8,7 @@ import {
 } from 'class-validator';
 import { NotIn } from '../../not-in';
 
-export class GetUserDto {
+export class UpdateUserDto {
     @Transform((params) => params.value.trim())
     @NotIn('password', {
     message: 'password는 name과 같은 문자열을 포함할 수 없습니다. ',

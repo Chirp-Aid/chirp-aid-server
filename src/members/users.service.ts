@@ -4,9 +4,7 @@ import { User } from '../entities/user.entity';
 import { DataSource, Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import * as uuid from 'uuid';
-import { GetUserDto } from './dto/get-user.dto';
-import { NotFoundError } from 'rxjs';
-import { error } from 'console';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
 export class UsersService {
@@ -65,7 +63,7 @@ export class UsersService {
     }
   }
 
-  async updateUserInfo(userId: string, getUserDto: GetUserDto){
+  async updateUserInfo(userId: string, updateUserDto: UpdateUserDto){
     const {
       name,
       password,
@@ -75,7 +73,7 @@ export class UsersService {
       region,
       phone_number,
       profile_photo,
-    } = getUserDto;
+    } = updateUserDto;
 
     const queryRunner = this.dataSource.createQueryRunner();
 
