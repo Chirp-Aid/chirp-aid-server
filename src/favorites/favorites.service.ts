@@ -40,7 +40,7 @@ async createFavorite(user_id, orphanage_id) {
     }
 
     const user = await this.userRepository.findOne({
-        where: {user_id: user_id}
+        where: {userId: user_id}
     })
 
     if(!user){

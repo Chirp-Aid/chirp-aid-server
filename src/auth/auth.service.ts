@@ -66,7 +66,7 @@ export class AuthService {
     }
 
     const refresh_token = this.setRefreshToken({ user, res });
-    this.saveRefreshToken(user.user_id, refresh_token);
+    this.saveRefreshToken(user.userId, refresh_token);
     await this.getAccessToken({ user, res });
     console.log(`succeed Login : ${user.email}`);
   }
@@ -75,7 +75,7 @@ export class AuthService {
     await this.usersRepository
       .createQueryBuilder()
       .update(User)
-      .set({ refresh_token: newToken })
+      .set({ refreshToken: newToken })
       .where('user_id = :userId', { userId })
       .execute();
   }
@@ -97,7 +97,7 @@ export class AuthService {
         await manager
           .createQueryBuilder()
           .update(User)
-          .set({ fcm_token: fcmToken })
+          .set({ fcmToken: fcmToken })
           .where('email = :email', { email })
           .execute();
       });

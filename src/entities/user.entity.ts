@@ -3,7 +3,7 @@ import { Column, Entity, PrimaryColumn } from 'typeorm';
 @Entity('user')
 export class User {
   @PrimaryColumn()
-  user_id?: string;
+  userId?: string;
 
   @Column({ length: 15 })
   name: string;
@@ -21,20 +21,20 @@ export class User {
   sex: string;
 
   @Column({ unique: true, length: 15 })
-  nickname: string;
+  nickName: string;
 
   @Column()
   region: string;
 
   @Column({ length: 15 })
-  phone_number: string;
+  phoneNumber: string;
 
   @Column()
-  profile_photo: string;
+  profilePhoto: string;
 
   @Column({ default: 'none' })
-  refresh_token: string;
+  refreshToken: string;
 
   @Column({ default: 'none' })
-  fcm_token: string;
+  fcmToken: string;
 }

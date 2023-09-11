@@ -21,18 +21,15 @@ export class OrphanagesController {
     description: 'OK',
     schema: {
       type: 'object',
-      properties: {
-        orphanage: {
-          type: 'object',
-          properties: {
-            orphanage_id: { type: 'int', example: '1' },
-            orphanage_name: { type: 'string', example: 'orphanage1' },
-            address: { type: 'string', example: 'addr1' },
-            phone_number: { type: 'string', example: '054-123-1234' },
-            photo: { type: 'string', example: 'url' },
-          },
+        properties: {
+          orphanages: {type: 'object', example: [{
+            orphanage_id: 1,
+            orphanage_name: 'orphanage1',
+            address: 'addr1',
+            phone_number: '054-123-1234',
+            photo: 'url',
+          }]}
         },
-      },
     },
   })
   async findAll() {
@@ -48,6 +45,27 @@ export class OrphanagesController {
   @ApiResponse({
     status: 200,
     description: 'OK',
+    schema: {
+      type: 'object',
+        properties: {
+          name: { type: 'string', example: '보육원 계정주 이름' },
+          orphanage_name: { type: 'string', example: 'orphanage1' },
+          address: { type: 'string', example: 'addr1' },
+          homepage_link: { type: 'string', example: 'homepage_link' },
+          description: { type: 'string', example: '보육원 한줄 소개(설명)' },
+          phone_number: { type: 'string', example: '054-123-1234' },
+          photo: { type: 'string', example: 'url' },
+          reqeusts: {type: 'object', example: [{
+            request_id: 1,
+            product_name: '초코파이',
+            price: 10000,
+            count: 40,
+            supported_count: 0,
+            message: '사주세요',
+            product_photo: 'url'
+          }]}
+        },
+    },
   })
   @ApiResponse({
     status: 404,
