@@ -87,7 +87,7 @@ export class UsersService {
         where: { nickname: nickname },
       });
 
-      if (checkuser.user_id != userId) {
+      if (checkuser && checkuser.user_id != userId) {
         throw new ConflictException('존재하는 닉네임입니다.');
       }
 
@@ -109,7 +109,7 @@ export class UsersService {
       await queryRunner.commitTransaction();
     } catch (error) {
       await queryRunner.rollbackTransaction();
-      console.log(error['response']);
+      console.log(error);
       return error['response'];
     } finally {
       await queryRunner.release();
