@@ -34,6 +34,14 @@ export class FavoritesController {
     status: 401,
     description: 'Unauthorized - JWT 토큰 에러',
   })
+  @ApiResponse({
+    status: 404,
+    description: 'Not Found - 해당 보육원을 찾을 수 없습니다.',
+  })
+  @ApiResponse({
+    status: 409,
+    description: 'Conflict - 이미 해당 조합의 즐겨찾기가 존재합니다.'
+  })
   @UseGuards(AuthGuard('access'))
   async createFavorite(
     @Body() createFavoriteDto: CreateFavoriteDto,

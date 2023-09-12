@@ -43,9 +43,9 @@ export class FavoritesService {
         where: { user_id: user_id },
       });
 
-      if (!user) {
-        throw new NotFoundException('해당 사용자를 찾을 수 없습니다.');
-      }
+      // if (!user) {
+      //   throw new NotFoundException('해당 사용자를 찾을 수 없습니다.');
+      // }
 
       const exist = await this.favsRepository
         .createQueryBuilder('favorites')

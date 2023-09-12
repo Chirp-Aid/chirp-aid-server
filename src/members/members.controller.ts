@@ -222,6 +222,10 @@ export class MembersController {
     status: 200,
     description: '사용자 정보를 반환합니다.',
   })
+  @ApiResponse({
+    status: 401,
+    description: 'Unaothorized',
+  })
   @UseGuards(AuthGuard('access'))
   async getOrphanageUserInfo(@Request() req) {
     const userId = req.user.user_id;
