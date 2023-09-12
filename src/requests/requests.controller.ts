@@ -30,7 +30,8 @@ export class RequestsController {
   })
   @ApiResponse({
     status: 404,
-    description: 'Not Found - 해당 물품을 찾을 수 없습니다.',
+    description: 'Not Found - 해당 물품을 찾을 수 없습니다.\
+    \nNot Found - 해당 사용자를 찾을 수 없습니다. (보육원 계정이 아닌 일반 사용자 계정으로 요청글을 올리는 시도할 경우)',
   })
   @UseGuards(AuthGuard('access'))
   async createRequest(
