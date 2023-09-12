@@ -28,7 +28,7 @@ export class OrphanageAuthService {
       },
       {
         secret: process.env.JWT_ACCESS_TOKEN,
-        expiresIn: '1d',
+        expiresIn: process.env.JWT_ACCESS_TOKEN_EXPIRES,
       },
     );
     res.setHeader(`access-token`, accessToken);
@@ -43,7 +43,7 @@ export class OrphanageAuthService {
       },
       {
         secret: process.env.JWT_REFRESH_TOKEN,
-        expiresIn: '1w',
+        expiresIn: process.env.JWT_REFRESH_TOKEN_EXPIRES,
       },
     );
     res.setHeader(`refresh-token`, refreshToken);
@@ -76,7 +76,7 @@ export class OrphanageAuthService {
     await this.orphanageRepository
       .createQueryBuilder()
       .update(OrphanageUser)
-      .set({ refreshToken: newToken })
+      .set({ refresh_token: newToken })
       .where('orphanage_user_id = :userId', { userId })
       .execute();
   }
@@ -99,7 +99,7 @@ export class OrphanageAuthService {
         await manager
           .createQueryBuilder()
           .update(OrphanageUser)
-          .set({ fcmToken: fcmToken })
+          .set({ fcm_token: fcmToken })
           .where('email = :email', { email })
           .execute();
       });

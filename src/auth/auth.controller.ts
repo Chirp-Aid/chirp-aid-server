@@ -239,13 +239,11 @@ export class AuthController {
     @Req() req: Request & IOAuthUser,
     @Res() res: Response,
   ) {
-    return res
-      .status(200)
-      .send(
-        await this.orphanageAuthService.restoreAccessToken({
-          user: req.user,
-          res,
-        }),
-      );
+    return res.status(200).send(
+      await this.orphanageAuthService.restoreAccessToken({
+        user: req.user,
+        res,
+      }),
+    );
   }
 }

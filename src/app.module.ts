@@ -37,7 +37,7 @@ import { FavoritesModule } from './favorites/favorites.module';
     CommonModule,
     OrphanagesModule,
     RequestsModule,
-    FavoritesModule
+    FavoritesModule,
   ],
   controllers: [AppController],
   providers: [AppService],

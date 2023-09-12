@@ -27,7 +27,7 @@ export class AuthService {
       },
       {
         secret: process.env.JWT_ACCESS_TOKEN,
-        expiresIn: '1d',
+        expiresIn: process.env.JWT_ACCESS_TOKEN_EXPIRES,
       },
     );
     res.setHeader(`access-token`, accessToken);
@@ -42,7 +42,7 @@ export class AuthService {
       },
       {
         secret: process.env.JWT_REFRESH_TOKEN,
-        expiresIn: '1w',
+        expiresIn: process.env.JWT_REFRESH_TOKEN_EXPIRES,
       },
     );
     res.setHeader(`refresh-token`, refreshToken);
@@ -65,8 +65,8 @@ export class AuthService {
       throw new UnprocessableEntityException('비밀번호가 일치하지 않습니다.');
     }
 
-    const refresh_token = this.setRefreshToken({ user, res });
-    this.saveRefreshToken(user.userId, refresh_token);
+    const refreshToken = this.setRefreshToken({ user, res });
+    this.saveRefreshToken(user.user_id, refreshToken);
     await this.getAccessToken({ user, res });
     console.log(`succeed Login : ${user.email}`);
   }
@@ -75,7 +75,7 @@ export class AuthService {
     await this.usersRepository
       .createQueryBuilder()
       .update(User)
-      .set({ refreshToken: newToken })
+      .set({ refresh_token: newToken })
       .where('user_id = :userId', { userId })
       .execute();
   }
@@ -97,7 +97,7 @@ export class AuthService {
         await manager
           .createQueryBuilder()
           .update(User)
-          .set({ fcmToken: fcmToken })
+          .set({ fcm_token: fcmToken })
           .where('email = :email', { email })
           .execute();
       });

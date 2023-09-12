@@ -8,7 +8,7 @@ import {
   MaxLength,
   MinLength,
 } from 'class-validator';
-import { NotIn } from '../../not-in';
+import { NotIn } from '../../commons/not-in';
 
 export class CreateUserDto {
   @Transform((params) => params.value.trim())

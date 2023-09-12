@@ -1,13 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
-import {
-  IsEmail,
-  IsString,
-  Matches,
-  MaxLength,
-  MinLength,
-} from 'class-validator';
-import { NotIn } from '../../not-in';
+import { IsString, Matches, MaxLength, MinLength } from 'class-validator';
+import { NotIn } from '../../commons/not-in';
 
 export class UpdateOrphanageUserDto {
   @Transform((params) => params.value.trim())

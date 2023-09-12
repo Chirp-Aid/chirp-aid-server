@@ -1,4 +1,12 @@
-import { Controller, Post, Body, Patch, UseGuards, Request, Get } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  Patch,
+  UseGuards,
+  Request,
+  Get,
+} from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UsersService } from './users.service';
 import * as bcrypt from 'bcrypt';
@@ -101,8 +109,7 @@ export class MembersController {
   @Patch('users/info')
   @ApiOperation({
     summary: '사용자 정보 수정',
-    description:
-      '사용자 정보를 수정합니다. 이메일은 수정할 수 없습니다.',
+    description: '사용자 정보를 수정합니다. 이메일은 수정할 수 없습니다.',
   })
   @ApiResponse({
     status: 200,
@@ -110,8 +117,7 @@ export class MembersController {
   })
   @ApiResponse({
     status: 400,
-    description:
-      'Bad Reqeust - ',
+    description: 'Bad Reqeust - ',
   })
   @ApiResponse({
     status: 401,
@@ -122,20 +128,24 @@ export class MembersController {
     description: 'Conflict - 존재하는 닉네임입니다.',
   })
   @UseGuards(AuthGuard('access'))
-  async updateUserInfo(@Body(CustomValidationPipe) updateUserDto: UpdateUserDto, @Request() req){
-    const user_id = req.user.user_id;
+  async updateUserInfo(
+    @Body(CustomValidationPipe) updateUserDto: UpdateUserDto,
+    @Request() req,
+  ) {
+    const userId = req.user.user_id;
     const hashedPassword = await bcrypt.hash(
       updateUserDto.password,
       this.PASSWORD_SALT,
     );
     const updateDto = { ...updateUserDto, password: hashedPassword };
-    return await this.usersService.updateUserInfo(user_id, updateDto);
+    return await this.usersService.updateUserInfo(userId, updateDto);
   }
 
   @Get('users/info')
   @ApiOperation({
     summary: '사용자 정보 조회',
-    description: '사용자의 정보를 반환합니다. 이때 비밀번호, RT, FCM TOKEN은 제외합니다.',
+    description:
+      '사용자의 정보를 반환합니다. 이때 비밀번호, RT, FCM TOKEN은 제외합니다.',
   })
   @ApiHeader({
     name: 'Authorization',
@@ -148,29 +158,28 @@ export class MembersController {
     schema: {
       type: 'object',
       properties: {
-        name: {type: 'string', example: 'user1'},
-        email: {type: 'string', example: 'user@gmail.com'},
-        age: {type: 'int', example: '23'},
-        sex: {type: 'string', example: 'f'},
-        nickname: {type: 'string', example: 'test'},
-        region: {type: 'string', example: '구미'},
-        phone_number: {type: 'string', example: 'user1'},
-        profile_photo: {type: 'string', example: 'url'}
-      }
-    }
+        name: { type: 'string', example: 'user1' },
+        email: { type: 'string', example: 'user@gmail.com' },
+        age: { type: 'int', example: '23' },
+        sex: { type: 'string', example: 'f' },
+        nickname: { type: 'string', example: 'test' },
+        region: { type: 'string', example: '구미' },
+        phone_number: { type: 'string', example: 'user1' },
+        profile_photo: { type: 'string', example: 'url' },
+      },
+    },
   })
   @UseGuards(AuthGuard('access'))
-  async getUserInfo(@Request() req){
-    const user_id = req.user.user_id;
-    return await this.usersService.getUserInfo(user_id);
+  async getUserInfo(@Request() req) {
+    const userId = req.user.user_id;
+    return await this.usersService.getUserInfo(userId);
   }
 
   //#################################
   @Patch('orphanages/info')
   @ApiOperation({
     summary: '보육원 계정 정보 수정',
-    description:
-      '보육원 계정 정보를 수정합니다. 이메일은 수정할 수 없습니다.',
+    description: '보육원 계정 정보를 수정합니다. 이메일은 수정할 수 없습니다.',
   })
   @ApiResponse({
     status: 200,
@@ -178,28 +187,31 @@ export class MembersController {
   })
   @ApiResponse({
     status: 400,
-    description:
-      'Bad Reqeust - ',
+    description: 'Bad Reqeust - ',
   })
   @ApiResponse({
     status: 401,
     description: 'Unaothorized',
   })
   @UseGuards(AuthGuard('access'))
-  async updateOrphanageUserInfo(@Body(CustomValidationPipe) updateUserDto: UpdateOrphanageUserDto, @Request() req){
-    const user_id = req.user.user_id;
+  async updateOrphanageUserInfo(
+    @Body(CustomValidationPipe) updateUserDto: UpdateOrphanageUserDto,
+    @Request() req,
+  ) {
+    const userId = req.user.user_id;
     const hashedPassword = await bcrypt.hash(
       updateUserDto.password,
       this.PASSWORD_SALT,
     );
     const updateDto = { ...updateUserDto, password: hashedPassword };
-    return await this.orphanageUserService.updateUserInfo(user_id, updateDto);
+    return await this.orphanageUserService.updateUserInfo(userId, updateDto);
   }
 
   @Get('orphanages/info')
   @ApiOperation({
     summary: '보육원 계정 정보 조회',
-    description: '보육원 계정의 정보를 반환합니다. 이때 비밀번호, RT, FCM TOKEN은 제외합니다.',
+    description:
+      '보육원 계정의 정보를 반환합니다. 이때 비밀번호, RT, FCM TOKEN은 제외합니다.',
   })
   @ApiHeader({
     name: 'Authorization',
@@ -211,8 +223,8 @@ export class MembersController {
     description: '사용자 정보를 반환합니다.',
   })
   @UseGuards(AuthGuard('access'))
-  async getOrphanageUserInfo(@Request() req){
-    const user_id = req.user.user_id;
-    return await this.orphanageUserService.getUserInfo(user_id);
+  async getOrphanageUserInfo(@Request() req) {
+    const userId = req.user.user_id;
+    return await this.orphanageUserService.getUserInfo(userId);
   }
 }

@@ -1,4 +1,4 @@
-import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
+import { ConflictException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../entities/user.entity';
 import { DataSource, Repository } from 'typeorm';
@@ -23,8 +23,8 @@ export class UsersService {
       sex,
       nickname,
       region,
-      phone_number,
-      profile_photo,
+      phone_number: phoneNumber,
+      profile_photo: profilePhoto,
     } = createUserDto;
 
     const queryRunner = this.dataSource.createQueryRunner();
@@ -34,22 +34,24 @@ export class UsersService {
 
     try {
       if (
-        await this.usersRepository.findOne({ where: [{ nickName: nickname }, { email }] })
+        await this.usersRepository.findOne({
+          where: [{ nickname: nickname }, { email }],
+        })
       ) {
         throw new ConflictException('존재하는 이메일 또는 닉네임입니다.');
       }
 
       const newUser = new User();
-      newUser.userId = uuid.v1();
+      newUser.user_id = uuid.v1();
       newUser.name = name;
       newUser.email = email;
       newUser.password = password;
       newUser.age = age;
       newUser.sex = sex;
-      newUser.nickName = nickname;
+      newUser.nickname = nickname;
       newUser.region = region;
-      newUser.phoneNumber = phone_number;
-      newUser.profilePhoto = profile_photo;
+      newUser.phone_number = phoneNumber;
+      newUser.profile_photo = profilePhoto;
 
       const user = await queryRunner.manager.save(newUser);
       await queryRunner.commitTransaction();
@@ -63,7 +65,7 @@ export class UsersService {
     }
   }
 
-  async updateUserInfo(userId: string, updateUserDto: UpdateUserDto){
+  async updateUserInfo(userId: string, updateUserDto: UpdateUserDto) {
     const {
       name,
       password,
@@ -71,8 +73,8 @@ export class UsersService {
       sex,
       nickname,
       region,
-      phone_number,
-      profile_photo,
+      phone_number: phoneNumber,
+      profile_photo: profilePhoto,
     } = updateUserDto;
 
     const queryRunner = this.dataSource.createQueryRunner();
@@ -81,56 +83,54 @@ export class UsersService {
     await queryRunner.startTransaction();
 
     try {
-
       const checkuser = await this.usersRepository.findOne({
-        where: {nickName: nickname}
+        where: { nickname: nickname },
       });
 
-      if (checkuser.userId != userId){
+      if (checkuser.user_id != userId) {
         throw new ConflictException('존재하는 닉네임입니다.');
       }
-      
+
       this.usersRepository.update(
-        {userId: userId},
-        {name:name,
+        { user_id: userId },
+        {
+          name: name,
           password: password,
           age: age,
           sex: sex,
-          nickName: nickname,
+          nickname: nickname,
           region: region,
-          phoneNumber: phone_number,
-          profilePhoto: profile_photo});
+          phone_number: phoneNumber,
+          profile_photo: profilePhoto,
+        },
+      );
 
       console.log(`update UserInfo : ${userId}`);
       await queryRunner.commitTransaction();
-
     } catch (error) {
       await queryRunner.rollbackTransaction();
       console.log(error['response']);
       return error['response'];
-
     } finally {
       await queryRunner.release();
     }
-
   }
 
-
-  async getUserInfo(user_id: string){
-    try{
-      const getUser = await this.usersRepository.findOne({where: {userId: user_id}})
-      delete getUser.userId;
+  async getUserInfo(userId: string) {
+    try {
+      const getUser = await this.usersRepository.findOne({
+        where: { user_id: userId },
+      });
+      delete getUser.user_id;
       delete getUser.password;
-      delete getUser.refreshToken;
-      delete getUser.fcmToken;
-      
+      delete getUser.refresh_token;
+      delete getUser.fcm_token;
+
       console.log(`Get UserInfo : ${getUser.email}`);
       return getUser;
-
     } catch (error) {
       console.log(error['response']);
       return error['response'];
     }
-
   }
 }

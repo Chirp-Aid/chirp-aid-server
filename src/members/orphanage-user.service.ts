@@ -22,7 +22,7 @@ export class OrphanageUsersService {
   ) {}
 
   async create(createOrphanageUserDto: CreateOrphanageUserDto) {
-    const { name, email, password, orphanageName } = createOrphanageUserDto;
+    const { name, email, password, orphanage_name: orphanageName } = createOrphanageUserDto;
     const queryRunner = this.dataSource.createQueryRunner();
 
     await queryRunner.connect();
@@ -46,7 +46,7 @@ export class OrphanageUsersService {
       newUser.name = name;
       newUser.email = email;
       newUser.password = password;
-      newUser.orphanage_id = orphange;
+      newUser.orphanag_id = orphange;
 
       const user = await queryRunner.manager.save(newUser);
       await queryRunner.commitTransaction();
@@ -70,12 +70,8 @@ export class OrphanageUsersService {
     }
   }
 
-
-  async updateUserInfo(userId: string, udpateUserDto: UpdateOrphanageUserDto){
-    const {
-      name,
-      password
-    } = udpateUserDto;
+  async updateUserInfo(userId: string, udpateUserDto: UpdateOrphanageUserDto) {
+    const { name, password } = udpateUserDto;
 
     const queryRunner = this.dataSource.createQueryRunner();
 
@@ -83,43 +79,37 @@ export class OrphanageUsersService {
     await queryRunner.startTransaction();
 
     try {
-      
       this.usersRepository.update(
-        {orphanage_user_id: userId},
-        {name:name,
-          password: password,});
+        { orphanage_user_id: userId },
+        { name: name, password: password },
+      );
 
       console.log(`update OrphanageUserInfo : ${userId}`);
       await queryRunner.commitTransaction();
-
     } catch (error) {
       await queryRunner.rollbackTransaction();
       console.log(error['response']);
       return error['response'];
-
     } finally {
       await queryRunner.release();
     }
-
   }
 
-
-  async getUserInfo(user_id: string){
-    try{
-      const getUser = await this.usersRepository.findOne({where: {orphanage_user_id: user_id}})
+  async getUserInfo(userId: string) {
+    try {
+      const getUser = await this.usersRepository.findOne({
+        where: { orphanage_user_id: userId },
+      });
       delete getUser.orphanage_user_id;
       delete getUser.password;
-      delete getUser.refreshToken;
-      delete getUser.fcmToken;
-      
+      delete getUser.refresh_token;
+      delete getUser.fcm_token;
+
       console.log(`Get UserInfo : ${getUser.email}`);
       return getUser;
-
     } catch (error) {
       console.log(error['response']);
       return error['response'];
     }
-
   }
-
 }

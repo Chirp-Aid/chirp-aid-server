@@ -10,7 +10,13 @@ import { Request } from 'src/entities/request.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([User, Orphanage, OrphanageUser, Favorites, Request]),
+    TypeOrmModule.forFeature([
+      User,
+      Orphanage,
+      OrphanageUser,
+      Favorites,
+      Request,
+    ]),
   ],
   controllers: [OrphanagesController],
   providers: [OrphanagesService],

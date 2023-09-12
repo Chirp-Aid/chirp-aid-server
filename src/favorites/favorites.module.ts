@@ -9,10 +9,16 @@ import { FavoritesController } from './favorites.controller';
 import { FavoritesService } from './favorites.service';
 
 @Module({
-    imports: [
-    TypeOrmModule.forFeature([User, Orphanage, OrphanageUser, Favorites, Request]),
-    ],
-    controllers: [FavoritesController],
-    providers: [FavoritesService],
-    })
+  imports: [
+    TypeOrmModule.forFeature([
+      User,
+      Orphanage,
+      OrphanageUser,
+      Favorites,
+      Request,
+    ]),
+  ],
+  controllers: [FavoritesController],
+  providers: [FavoritesService],
+})
 export class FavoritesModule {}

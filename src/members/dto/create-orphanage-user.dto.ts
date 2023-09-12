@@ -7,7 +7,7 @@ import {
   MaxLength,
   MinLength,
 } from 'class-validator';
-import { NotIn } from '../../not-in';
+import { NotIn } from '../../commons/not-in';
 
 export class CreateOrphanageUserDto {
   @Transform((params) => params.value.trim())
@@ -48,5 +48,5 @@ export class CreateOrphanageUserDto {
     example: '금오보육원',
     description: 'The name of Orphanage',
   })
-  orphanageName: string;
+  orphanage_name: string;
 }

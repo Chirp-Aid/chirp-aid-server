@@ -1,8 +1,4 @@
-import {
-  ConflictException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateRequestDto } from './dto/create-request.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Orphanage } from 'src/entities/orphanage.entity';
@@ -23,16 +19,18 @@ export class RequestsService {
     private dataSource: DataSource,
   ) {}
 
-  async createRequest(createRequestDto: CreateRequestDto, orphanage_user_id: string) {
-    const {product_name, count, message } =
-      createRequestDto;
+  async createRequest(
+    createRequestDto: CreateRequestDto,
+    orphanageUserId: string,
+  ) {
+    const { product_name: productName, count, message } = createRequestDto;
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
     await queryRunner.startTransaction();
 
     try {
       const orphanageUser = await this.usersRepository.findOne({
-        where: { orphanage_user_id },
+        where: { orphanage_user_id: orphanageUserId },
       });
 
       if (!orphanageUser) {
@@ -40,7 +38,7 @@ export class RequestsService {
       }
 
       const product = await this.productRepository.findOne({
-        where: { product_name },
+        where: { product_name: productName },
       });
 
       if (!product) {

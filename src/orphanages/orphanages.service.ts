@@ -49,21 +49,23 @@ export class OrphanagesService {
         .where('orphanage_user.orphanage_id = :id', { id })
         .getOne();
 
-      if (!orphanage)
-      {
+      if (!orphanage) {
         console.log(`해당 보육원을 찾지 못 했습니다. orphanage_id : ${id}`);
         throw new NotFoundException('해당 보육원을 찾지 못 했습니다.');
       }
 
-      const orphanage_user_id = orphanage.orphanage_user_id;
+      const orphanageUserId = orphanage.orphanage_user_id;
 
       const getRequests = await this.requestRepository
         .createQueryBuilder('requests')
-        .where('requests.orphanage_user_id.orphanage_user_id = :orphanage_user_id', {
-          orphanage_user_id,
-        })
+        .where(
+          'requests.orphanage_user_id.orphanage_user_id = :orphanage_user_id',
+          {
+            orphanage_user_id: orphanageUserId,
+          },
+        )
         .leftJoinAndSelect('requests.product_id', 'product')
-        .getMany(); 
+        .getMany();
 
       const requests = getRequests.map((request) => ({
         request_id: request.request_id,
@@ -73,73 +75,65 @@ export class OrphanagesService {
         supported_count: request.supported_count,
         message: request.message,
         product_photo: request.product_id.product_photo,
-      }))
+      }));
 
-      const { name, email, orphanage_id: orphanageInfo } = orphanage;
+      const { name, email, orphanag_id: orphanageInfo } = orphanage;
       console.log(orphanageInfo);
       return { name, email, ...orphanageInfo, requests };
-
     } catch (error) {
       console.log(error);
       return error['response'];
     }
-
   }
 
-  async createFavorite(user_id, orphanage_id) {
+  async createFavorite(userId: string, orphanageId: number) {
     const queryRunner = this.dataSource.createQueryRunner();
 
     await queryRunner.connect();
     await queryRunner.startTransaction();
 
-    try{
+    try {
       const orphanage = await this.orphanageRepository.findOne({
-          where: {orphanage_id: orphanage_id}
-      })
-  
-      if(!orphanage){
-          throw new NotFoundException('해당 보육원을 찾을 수 없습니다.');
+        where: { orphanage_id: orphanageId },
+      });
+
+      if (!orphanage) {
+        throw new NotFoundException('해당 보육원을 찾을 수 없습니다.');
       }
-  
+
       const user = await this.userRepository.findOne({
-          where: {userId: user_id}
-      })
-  
-      if(!user){
-          throw new NotFoundException('해당 사용자를 찾을 수 없습니다.');
+        where: { user_id: userId },
+      });
+
+      if (!user) {
+        throw new NotFoundException('해당 사용자를 찾을 수 없습니다.');
       }
-  
+
       const exist = await this.favsRepository
-      .createQueryBuilder('favorites')
-      .where('favorites.orphanage_id.orphanage_id = :orphanage_id', { orphanage_id })
-      .andWhere('favorites.user_id.user_id = :user_id', { user_id })
-      .getOne();
-  
-      if (exist){
+        .createQueryBuilder('favorites')
+        .where('favorites.orphanage_id.orphanage_id = :orphanage_id', {
+          orphanage_id: orphanageId,
+        })
+        .andWhere('favorites.user_id.user_id = :user_id', { user_id: userId })
+        .getOne();
+
+      if (exist) {
         throw new ConflictException('이미 해당 조합의 즐겨찾기가 존재합니다.');
       }
-  
+
       const newFavorite = new Favorites();
       newFavorite.orphanage_id = orphanage;
       newFavorite.user_id = user;
-  
+
       await this.favsRepository.save(newFavorite);
       await queryRunner.commitTransaction();
-  
     } catch (error) {
-        await queryRunner.rollbackTransaction();
-        console.log(error['response']);
-        return error['response'];
+      await queryRunner.rollbackTransaction();
+      console.log(error['response']);
+      return error['response'];
     } finally {
-        await queryRunner.release();
+      await queryRunner.release();
     }
   }
 
-  async findUserFavorites({user})
-  {
-    try{
-    } catch(error) {
-
-    }
-  }
 }

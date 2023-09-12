@@ -1,4 +1,11 @@
-import { Body, Controller, Get, Param, Post, Req, Request, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  Request,
+  UseGuards,
+} from '@nestjs/common';
 import { ApiHeader, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
 import { FavoritesService } from './favorites.service';
@@ -28,10 +35,13 @@ export class FavoritesController {
     description: 'Unauthorized - JWT 토큰 에러',
   })
   @UseGuards(AuthGuard('access'))
-  async createFavorite(@Body() createFavoriteDto: CreateFavoriteDto, @Request() req): Promise<any> {
-    const user_id = req.user.user_id;
-    const orphanage_id = createFavoriteDto.orphanage_id
-    return await this.favoritesService.createFavorite(user_id, orphanage_id);
+  async createFavorite(
+    @Body() createFavoriteDto: CreateFavoriteDto,
+    @Request() req,
+  ): Promise<any> {
+    const userId = req.user.user_id;
+    const orphanageId = createFavoriteDto.orphanage_id;
+    return await this.favoritesService.createFavorite(userId, orphanageId);
   }
 
   @Get()
@@ -69,7 +79,7 @@ export class FavoritesController {
   })
   @UseGuards(AuthGuard('access'))
   async getFavorites(@Request() req): Promise<any> {
-    const user_id = req.user.user_id;
-    return await this.favoritesService.getFavorites(user_id);
+    const userId = req.user.user_id;
+    return await this.favoritesService.getFavorites(userId);
   }
 }

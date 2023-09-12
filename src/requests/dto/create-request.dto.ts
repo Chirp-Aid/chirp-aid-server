@@ -1,14 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString, Matches, MaxLength, MinLength } from 'class-validator';
+import { IsString, MaxLength, MinLength } from 'class-validator';
 
 export class CreateRequestDto {
-  // @IsString()
-  // @ApiProperty({
-  //   example: 'aksdghksbdhvjdndvcx',
-  //   description: 'The id number of OrphanageUser',
-  // })
-  // orphanage_user_id: string;
-
   @IsString()
   @MinLength(2)
   @MaxLength(50)
