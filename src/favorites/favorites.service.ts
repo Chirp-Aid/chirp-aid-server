@@ -43,9 +43,9 @@ export class FavoritesService {
         where: { user_id: user_id },
       });
 
-      // if (!user) {
-      //   throw new NotFoundException('해당 사용자를 찾을 수 없습니다.');
-      // }
+      if (!user) {
+        throw new NotFoundException('해당 사용자를 찾을 수 없습니다.');
+      }
 
       const exist = await this.favsRepository
         .createQueryBuilder('favorites')
@@ -76,6 +76,15 @@ export class FavoritesService {
 
   async getFavorites(user_id) {
     try {
+
+      const user = await this.userRepository.findOne({
+        where: { user_id: user_id },
+      });
+
+      if (!user) {
+        throw new NotFoundException('해당 사용자를 찾을 수 없습니다.');
+      }
+
       const favorites = await this.favsRepository.find({
         where: { user_id: user_id },
         relations: ['orphanage_id'],
@@ -98,8 +107,8 @@ export class FavoritesService {
 
       return { orphanages };
     } catch (error) {
-      console.log(error);
-      return error;
+      console.log(error['response']);
+      return error['response'];
     }
   }
 }

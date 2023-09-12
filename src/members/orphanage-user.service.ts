@@ -100,6 +100,10 @@ export class OrphanageUsersService {
       const getUser = await this.usersRepository.findOne({
         where: { orphanage_user_id: userId },
       });
+
+      if (!getUser){
+        throw new NotFoundException('해당 사용자를 찾을 수 없습니다.');
+      }
       delete getUser.orphanage_user_id;
       delete getUser.password;
       delete getUser.refresh_token;
