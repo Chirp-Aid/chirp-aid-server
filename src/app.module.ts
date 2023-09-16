@@ -15,6 +15,8 @@ import { RequestsModule } from './requests/requests.module';
 import { Request } from './entities/request.entity';
 import { Product } from './entities/product.entity';
 import { Favorites } from './entities/favorites.entity';
+import { FavoritesModule } from './favorites/favorites.module';
+import { DonateModule } from './donate/donate.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -36,6 +38,8 @@ import { Favorites } from './entities/favorites.entity';
     CommonModule,
     OrphanagesModule,
     RequestsModule,
+    FavoritesModule,
+    DonateModule,
   ],
   controllers: [AppController],
   providers: [AppService],

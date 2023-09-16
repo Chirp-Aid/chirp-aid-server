@@ -1,16 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
-import {
-  IsEmail,
-  IsInt,
-  IsString,
-  Matches,
-  MaxLength,
-  MinLength,
-} from 'class-validator';
+import { IsInt, IsString, MaxLength, MinLength } from 'class-validator';
 import { NotIn } from '../../commons/not-in';
 
-export class CreateUserDto {
+export class UpdateUserDto {
   @Transform((params) => params.value.trim())
   @NotIn('password', {
     message: 'password는 name과 같은 문자열을 포함할 수 없습니다. ',
@@ -25,19 +18,6 @@ export class CreateUserDto {
   readonly name: string;
 
   @IsString()
-  @IsEmail()
-  @MaxLength(60)
-  @ApiProperty({
-    example: 'email@email.com',
-    description: 'The eamil of User',
-  })
-  readonly email: string;
-
-  @IsString()
-  @Matches(/^[A-Za-z\d!@#$%^&*()]{8,30}$/, {
-    message:
-      '비밀번호는 8글자 이상으로 ^[A-Za-zd!@#$%^&*()]{8,30}가 포함되어야 합니다.',
-  })
   @ApiProperty({
     example: 'abc123!!',
     description: 'The password of User',

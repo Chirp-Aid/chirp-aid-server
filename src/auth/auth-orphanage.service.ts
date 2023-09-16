@@ -10,7 +10,6 @@ import * as bcrypt from 'bcrypt';
 import { Response } from 'express';
 import { OrphanageUser } from '../entities/orphanage-user.entity';
 import { OrphanageLoginDto } from './dto/orphanage-login.dto';
-import { SaveOrphanageFcmDto } from './dto/save-orphanage-fcm.dto';
 
 @Injectable()
 export class OrphanageAuthService {
@@ -21,17 +20,19 @@ export class OrphanageAuthService {
     private dataSource: DataSource,
   ) {}
 
-  getAccessToken({ orphanageUser }) {
-    return this.jwtService.sign(
+  getAccessToken({ orphanageUser, res }) {
+    const accessToken = this.jwtService.sign(
       {
         email: orphanageUser.email,
         sub: orphanageUser.orphanage_user_id,
       },
       {
         secret: process.env.JWT_ACCESS_TOKEN,
-        expiresIn: '1d',
+        expiresIn: process.env.JWT_ACCESS_TOKEN_EXPIRES,
       },
     );
+    res.setHeader(`access-token`, accessToken);
+    return accessToken;
   }
 
   setRefreshToken({ orphanageUser, res }) {
@@ -42,10 +43,10 @@ export class OrphanageAuthService {
       },
       {
         secret: process.env.JWT_REFRESH_TOKEN,
-        expiresIn: '1w',
+        expiresIn: process.env.JWT_REFRESH_TOKEN_EXPIRES,
       },
     );
-    res.setHeader(`refreshToekn`, refreshToken);
+    res.setHeader(`refresh-token`, refreshToken);
     return refreshToken;
   }
 
@@ -67,9 +68,8 @@ export class OrphanageAuthService {
 
     const refresh_token = this.setRefreshToken({ orphanageUser: user, res });
     this.saveRefreshToken(user.orphanage_user_id, refresh_token);
-    const jwt = this.getAccessToken({ orphanageUser: user });
+    await this.getAccessToken({ orphanageUser: user, res });
     console.log(`succeed OrphanageUser Login : ${user.email}`);
-    return jwt;
   }
 
   async saveRefreshToken(userId: string, newToken: string) {
@@ -82,8 +82,9 @@ export class OrphanageAuthService {
   }
 
   //여기서 본인의 정보를 업데이트 하는지 한 번 더 확인하는 부분 추가 구현 필요
-  async saveFcmToken(saveFcmDto: SaveOrphanageFcmDto) {
-    const { email, fcmToken } = saveFcmDto;
+  async saveFcmToken(req) {
+    const email = req.user.email;
+    const fcmToken = req.headers['fcm-token'];
 
     try {
       const user = await this.orphanageRepository.findOne({
@@ -105,19 +106,18 @@ export class OrphanageAuthService {
     } catch (error) {
       console.log(error['response']);
       return error['response'];
-    } finally {
-      return this.orphanageRepository
-        .createQueryBuilder('user')
-        .select(['user.name', 'user.email', 'orphanage.orphanage_name'])
-        .innerJoin('user.orphanage', 'orphanage')
-        .where('user.email = :email', { email })
-        .getOne();
-    }
+    } //finally {
+    //   return this.orphanageRepository
+    //     .createQueryBuilder('user')
+    //     .select(['user.name', 'user.email', 'orphanage.orphanage_name'])
+    //     .innerJoin('user.orphanage', 'orphanage')
+    //     .where('user.email = :email', { email })
+    //     .getOne();
+    // }
   }
 
-  async restoreAccessToken({ user }) {
-    const jwt = this.getAccessToken({ orphanageUser: user });
+  async restoreAccessToken({ user, res }) {
+    await this.getAccessToken({ orphanageUser: user, res });
     console.log(`restore AT for OrphanageUser : ${user.email}`);
-    return jwt;
   }
 }

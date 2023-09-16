@@ -10,4 +10,7 @@ export class Product {
 
   @Column()
   price: number;
+
+  @Column()
+  product_photo: string;
 }

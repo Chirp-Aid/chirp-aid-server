@@ -4,6 +4,7 @@ import { User } from '../entities/user.entity';
 import { DataSource, Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import * as uuid from 'uuid';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
 export class UsersService {
@@ -22,9 +23,10 @@ export class UsersService {
       sex,
       nickname,
       region,
-      phone_number,
-      profile_photo,
+      phone_number: phoneNumber,
+      profile_photo: profilePhoto,
     } = createUserDto;
+
     const queryRunner = this.dataSource.createQueryRunner();
 
     await queryRunner.connect();
@@ -32,7 +34,9 @@ export class UsersService {
 
     try {
       if (
-        await this.usersRepository.findOne({ where: [{ nickname }, { email }] })
+        await this.usersRepository.findOne({
+          where: [{ nickname: nickname }, { email }],
+        })
       ) {
         throw new ConflictException('존재하는 이메일 또는 닉네임입니다.');
       }
@@ -46,14 +50,12 @@ export class UsersService {
       newUser.sex = sex;
       newUser.nickname = nickname;
       newUser.region = region;
-      newUser.phone_number = phone_number;
-      newUser.profile_photo = profile_photo;
+      newUser.phone_number = phoneNumber;
+      newUser.profile_photo = profilePhoto;
 
       const user = await queryRunner.manager.save(newUser);
       await queryRunner.commitTransaction();
       console.log(`save User : ${user.email}`);
-
-      return createUserDto;
     } catch (error) {
       await queryRunner.rollbackTransaction();
       console.log(error['response']);
@@ -63,4 +65,72 @@ export class UsersService {
     }
   }
 
+  async updateUserInfo(userId: string, updateUserDto: UpdateUserDto) {
+    const {
+      name,
+      password,
+      age,
+      sex,
+      nickname,
+      region,
+      phone_number: phoneNumber,
+      profile_photo: profilePhoto,
+    } = updateUserDto;
+
+    const queryRunner = this.dataSource.createQueryRunner();
+
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+
+    try {
+      const checkuser = await this.usersRepository.findOne({
+        where: { nickname: nickname },
+      });
+
+      if (checkuser && checkuser.user_id != userId) {
+        throw new ConflictException('존재하는 닉네임입니다.');
+      }
+
+      this.usersRepository.update(
+        { user_id: userId },
+        {
+          name: name,
+          password: password,
+          age: age,
+          sex: sex,
+          nickname: nickname,
+          region: region,
+          phone_number: phoneNumber,
+          profile_photo: profilePhoto,
+        },
+      );
+
+      console.log(`update UserInfo : ${userId}`);
+      await queryRunner.commitTransaction();
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+      console.log(error);
+      return error['response'];
+    } finally {
+      await queryRunner.release();
+    }
+  }
+
+  async getUserInfo(userId: string) {
+    try {
+      const getUser = await this.usersRepository.findOne({
+        where: { user_id: userId },
+      });
+      delete getUser.user_id;
+      delete getUser.password;
+      delete getUser.refresh_token;
+      delete getUser.fcm_token;
+
+      console.log(`Get UserInfo : ${getUser.email}`);
+      return getUser;
+    } catch (error) {
+      console.log(error['response']);
+      return error['response'];
+    }
+  }
 }

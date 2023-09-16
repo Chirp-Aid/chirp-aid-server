@@ -10,7 +10,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { LoginDto } from './dto/login.dto';
 import * as bcrypt from 'bcrypt';
 import { Response } from 'express';
-import { SaveFcmDto } from '../auth/dto/save-fcm.dto';
 
 @Injectable()
 export class AuthService {
@@ -20,17 +19,19 @@ export class AuthService {
     private dataSource: DataSource,
   ) {}
 
-  getAccessToken({ user }) {
-    return this.jwtService.sign(
+  getAccessToken({ user, res }) {
+    const accessToken = this.jwtService.sign(
       {
         email: user.email,
         sub: user.user_id,
       },
       {
         secret: process.env.JWT_ACCESS_TOKEN,
-        expiresIn: '1d',
+        expiresIn: process.env.JWT_ACCESS_TOKEN_EXPIRES,
       },
     );
+    res.setHeader(`access-token`, accessToken);
+    return accessToken;
   }
 
   setRefreshToken({ user, res }) {
@@ -41,10 +42,10 @@ export class AuthService {
       },
       {
         secret: process.env.JWT_REFRESH_TOKEN,
-        expiresIn: '1w',
+        expiresIn: process.env.JWT_REFRESH_TOKEN_EXPIRES,
       },
     );
-    res.setHeader(`refreshToekn`, refreshToken);
+    res.setHeader(`refresh-token`, refreshToken);
     return refreshToken;
   }
 
@@ -64,11 +65,10 @@ export class AuthService {
       throw new UnprocessableEntityException('비밀번호가 일치하지 않습니다.');
     }
 
-    const refresh_token = this.setRefreshToken({ user, res });
-    this.saveRefreshToken(user.user_id, refresh_token);
-    const jwt = this.getAccessToken({ user });
+    const refreshToken = this.setRefreshToken({ user, res });
+    this.saveRefreshToken(user.user_id, refreshToken);
+    await this.getAccessToken({ user, res });
     console.log(`succeed Login : ${user.email}`);
-    return jwt;
   }
 
   async saveRefreshToken(userId: string, newToken: string) {
@@ -81,8 +81,10 @@ export class AuthService {
   }
 
   //여기서 본인의 정보를 업데이트 하는지 한 번 더 확인하는 부분 추가 구현 필요
-  async saveFcmToken(saveFcmDto: SaveFcmDto) {
-    const { email, fcmToken } = saveFcmDto;
+  async saveFcmToken(req) {
+    const email = req.user.email;
+    const fcmToken = req.headers['fcm-token'];
+
     try {
       const user = await this.usersRepository.findOne({
         where: { email: email },
@@ -103,24 +105,23 @@ export class AuthService {
       console.log(error['response']);
       return error['response'];
     }
-    return await this.usersRepository.findOne({
-      where: { email: email },
-      select: [
-        'email',
-        'name',
-        'age',
-        'sex',
-        'nickname',
-        'region',
-        'phone_number',
-        'profile_photo',
-      ],
-    });
+    // return await this.usersRepository.findOne({
+    //   where: { email: email },
+    //   select: [
+    //     'email',
+    //     'name',
+    //     'age',
+    //     'sex',
+    //     'nickname',
+    //     'region',
+    //     'phone_number',
+    //     'profile_photo',
+    //   ],
+    // });
   }
 
-  async restoreAccessToken({ user }) {
-    const jwt = this.getAccessToken({ user });
+  async refreshAccessToken({ user, res }) {
+    await this.getAccessToken({ user, res });
     console.log(`restore AT for User : ${user.email}`);
-    return jwt;
   }
 }
