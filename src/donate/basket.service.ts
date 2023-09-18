@@ -55,4 +55,37 @@ export class BasektService {
             await queryRunner.release();
         }
     }
+
+    async getBasket(userId: string)
+    {
+        const queryRunner = this.dataSource.createQueryRunner();
+        await queryRunner.connect();
+        await queryRunner.startTransaction();
+
+        try {
+            const user = await this.userRepository.findOne({
+                where: { user_id: userId },
+            });
+        
+            if (!user) {
+            throw new NotFoundException('해당 사용자를 찾을 수 없습니다.');
+            }
+
+            const baskets = await this.basketRepository.find({
+                where: { user_id: user },
+                relations: ['request_id'],
+            });
+
+            console.log(baskets);
+
+            if (!baskets || baskets.length == 0) {
+                return { baskets: [] };
+            }
+
+
+        } catch(error) {
+            console.log(error);
+            return error['response'];
+        }
+    }
 }

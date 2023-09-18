@@ -12,7 +12,11 @@ import { User } from 'src/entities/user.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([User, Request, BasketProducts]),
+    TypeOrmModule.forFeature([
+      User,
+      Request,
+      BasketProducts
+    ]),
   ],
   controllers: [DonateController],
   providers: [BasektService]
