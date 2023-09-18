@@ -10,11 +10,10 @@ export class BasketProducts{
     @Column()
     count: number;
 
-    @ManyToOne(() => User, {onDelete: 'CASCADE'})
-    @JoinColumn({ name: 'user_id '})
+    @ManyToOne(() => User, { onDelete: 'CASCADE' })
+    @JoinColumn({ name: 'user_id' })
     user_id: User;
 
-    @ManyToMany(()=> Request, {onDelete: 'CASCADE'})
-    @JoinColumn({name: 'request_id'})
+    @ManyToMany(() => Request, request => request.basket_products, { onDelete: 'CASCADE' })
     request_id: Request;
 }

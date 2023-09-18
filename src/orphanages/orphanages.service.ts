@@ -49,6 +49,8 @@ export class OrphanagesService {
         .where('orphanage_user.orphanage_id = :id', { id })
         .getOne();
 
+        console.log(orphanage);
+
       if (!orphanage) {
         console.log(`해당 보육원을 찾지 못 했습니다. orphanage_id : ${id}`);
         throw new NotFoundException('해당 보육원을 찾지 못 했습니다.');
@@ -77,7 +79,7 @@ export class OrphanagesService {
         product_photo: request.product_id.product_photo,
       }));
 
-      const { name, email, orphanag_id: orphanageInfo } = orphanage;
+      const { name, email, orphanage_id: orphanageInfo } = orphanage;
       console.log(orphanageInfo);
       return { name, email, ...orphanageInfo, requests };
     } catch (error) {

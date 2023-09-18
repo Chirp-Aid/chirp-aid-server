@@ -43,6 +43,8 @@ export class BasektService {
             newBasket.request_id = request;
             newBasket.user_id = user;
 
+            console.log(newBasket.request_id)
+
             await this.basketRepository.save(newBasket);
             await queryRunner.commitTransaction();
             console.log(`Basekt Product added : ${newBasket.user_id}`);
@@ -56,7 +58,7 @@ export class BasektService {
         }
     }
 
-    async getBasket(userId: string)
+    async getBasket(userId)
     {
         const queryRunner = this.dataSource.createQueryRunner();
         await queryRunner.connect();
@@ -71,9 +73,9 @@ export class BasektService {
             throw new NotFoundException('해당 사용자를 찾을 수 없습니다.');
             }
 
+            console.log('??');
             const baskets = await this.basketRepository.find({
-                where: { user_id: user },
-                relations: ['request_id'],
+                where: { user_id: userId },
             });
 
             console.log(baskets);
@@ -82,6 +84,7 @@ export class BasektService {
                 return { baskets: [] };
             }
 
+            const basektProducts = baskets.map((basket) => ({}))
 
         } catch(error) {
             console.log(error);

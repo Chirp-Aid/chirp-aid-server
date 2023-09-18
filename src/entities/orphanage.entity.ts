@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { OrphanageUser } from './orphanage-user.entity';
 
 @Entity('orphanage')
 export class Orphanage {
@@ -22,4 +23,7 @@ export class Orphanage {
 
   @Column()
   photo: string;
+
+  @OneToOne(() => OrphanageUser, user => user.orphanage_id)
+  user: OrphanageUser;
 }
