@@ -1,10 +1,10 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Request } from 'src/entities/request.entity';
 import { User } from 'src/entities/user.entity';
 import { DataSource, Repository } from 'typeorm';
 import { AddBasektDto } from './dto/add-basket.dto';
-import { BasketProduct } from 'src/entities/basket-products.entity';
+import { BasketProduct } from 'src/entities/basket_product.entity';
 
 @Injectable()
 export class BasketService {
@@ -30,7 +30,7 @@ export class BasketService {
                 throw new NotFoundException('해당 사용자를 찾을 수 없습니다.');
             }
 
-            const request = await this.requestRepository.find({
+            const request = await this.requestRepository.findOne({
                 where: {request_id: requestId},
             });
 
@@ -38,16 +38,25 @@ export class BasketService {
                 throw new NotFoundException('해당 요청을 찾을 수 없습니다.');
             }
 
+            const exist = await this.basketRepository
+                .createQueryBuilder('basket_product')
+                .where('basket_product.user_id.user_id = :user_id', {user_id: userId})
+                .andWhere('basket_product.request_id.request_id = :request_id', {request_id: requestId})
+                .getOne();
+
+            if(exist){
+                throw new ConflictException('해당 물품은 이미 장바구니에 있습니다.');
+            }
+
             const newBasket = new BasketProduct();
             newBasket.count = count;
-            newBasket.requests = request;
             newBasket.user_id = user;
-
-            console.log(newBasket.requests)
+            newBasket.request_id = request;
 
             await this.basketRepository.save(newBasket);
+
             await queryRunner.commitTransaction();
-            console.log(`Basekt Product added : ${newBasket.user_id}`);
+            console.log(`Basket Product added : ${addBasektDto}`);
             
         } catch(error){
             await queryRunner.rollbackTransaction();
@@ -73,18 +82,25 @@ export class BasketService {
             throw new NotFoundException('해당 사용자를 찾을 수 없습니다.');
             }
 
-            console.log('??');
-            const baskets = await this.basketRepository.find({
-                where: { user_id: userId },
-            });
+            // const baskets = await this.basketRepository.find({
+            //     where: { user_id: userId },
+            //     select: ['request_id', 'count']
+            // });
 
-            console.log(baskets);
+            const baskets = await this.basketRepository
+                .createQueryBuilder('basket_product')
+                .select('request.product_id')
+                .where('basket_product.user_id.user_id = :user_id', {user_id: userId})
+                .leftJoin('basket_product.request_id', 'request')
+                .getMany();
 
             if (!baskets || baskets.length == 0) {
                 return { baskets: [] };
             }
 
-            const basektProducts = baskets.map((basket) => ({}))
+            console.log(`baskets : ${baskets}`)
+
+            return {baskets: baskets};
 
         } catch(error) {
             console.log(error);

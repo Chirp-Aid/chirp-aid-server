@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryColumn } from 'typeorm';
+import { Column, Entity, ManyToMany, PrimaryColumn } from 'typeorm';
+import { Request } from './request.entity';
 
 @Entity('user')
 export class User {
@@ -37,4 +38,7 @@ export class User {
 
   @Column({ default: 'none' })
   fcm_token: string;
+
+  // @ManyToMany(() => Request, request => request.users, { onDelete: 'NO ACTION' })
+  // requests?: Request[];
 }
