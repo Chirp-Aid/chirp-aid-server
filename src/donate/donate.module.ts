@@ -6,8 +6,8 @@ import { OrphanageUser } from 'src/entities/orphanage-user.entity';
 import { Orphanage } from 'src/entities/orphanage.entity';
 import { Product } from 'src/entities/product.entity';
 import { Request } from 'src/entities/request.entity';
-import { BasketProducts } from 'src/entities/basket-products.entity';
-import { BasektService } from './basket.service';
+import { BasketProduct } from 'src/entities/basket-products.entity';
+import { BasketService } from './basket.service';
 import { User } from 'src/entities/user.entity';
 
 @Module({
@@ -15,10 +15,10 @@ import { User } from 'src/entities/user.entity';
     TypeOrmModule.forFeature([
       User,
       Request,
-      BasketProducts
+      BasketProduct
     ]),
   ],
   controllers: [DonateController],
-  providers: [BasektService]
+  providers: [BasketService]
 })
 export class DonateModule {}

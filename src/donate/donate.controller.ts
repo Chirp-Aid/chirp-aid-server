@@ -1,13 +1,13 @@
 import { Body, Controller, Get, Post, Request, UseGuards } from '@nestjs/common';
 import { DonateService } from './donate.service';
 import { AddBasektDto } from './dto/add-basket.dto';
-import { BasektService } from './basket.service';
+import { BasketService } from './basket.service';
 import { AuthGuard } from '@nestjs/passport';
 
 @Controller('donate')
 export class DonateController {
   constructor(
-    private readonly basketService: BasektService
+    private readonly basketService: BasketService
     ) {}
 
   @Post('basket')

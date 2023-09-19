@@ -4,14 +4,14 @@ import { Request } from 'src/entities/request.entity';
 import { User } from 'src/entities/user.entity';
 import { DataSource, Repository } from 'typeorm';
 import { AddBasektDto } from './dto/add-basket.dto';
-import { BasketProducts } from 'src/entities/basket-products.entity';
+import { BasketProduct } from 'src/entities/basket-products.entity';
 
 @Injectable()
-export class BasektService {
+export class BasketService {
     constructor(
         @InjectRepository(User) private userRepository: Repository<User>,
         @InjectRepository(Request) private requestRepository: Repository<Request>,
-        @InjectRepository(BasketProducts) private basketRepository: Repository<BasketProducts>,
+        @InjectRepository(BasketProduct) private basketRepository: Repository<BasketProduct>,
         private dataSource: DataSource
     ){}
 
@@ -30,7 +30,7 @@ export class BasektService {
                 throw new NotFoundException('해당 사용자를 찾을 수 없습니다.');
             }
 
-            const request = await this.requestRepository.findOne({
+            const request = await this.requestRepository.find({
                 where: {request_id: requestId},
             });
 
@@ -38,12 +38,12 @@ export class BasektService {
                 throw new NotFoundException('해당 요청을 찾을 수 없습니다.');
             }
 
-            const newBasket = new BasketProducts();
+            const newBasket = new BasketProduct();
             newBasket.count = count;
-            newBasket.request_id = request;
+            newBasket.requests = request;
             newBasket.user_id = user;
 
-            console.log(newBasket.request_id)
+            console.log(newBasket.requests)
 
             await this.basketRepository.save(newBasket);
             await queryRunner.commitTransaction();

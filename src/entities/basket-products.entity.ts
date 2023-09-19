@@ -2,10 +2,10 @@ import { Column, Entity, JoinColumn, ManyToMany, ManyToOne, PrimaryGeneratedColu
 import { User } from "./user.entity";
 import { Request } from "./request.entity";
 
-@Entity('baseket_products')
-export class BasketProducts{
+@Entity('basket_product')
+export class BasketProduct{
     @PrimaryGeneratedColumn()
-    basekt_product_id: number;
+    basket_product_id: number;
 
     @Column()
     count: number;
@@ -15,5 +15,5 @@ export class BasketProducts{
     user_id: User;
 
     @ManyToMany(() => Request, request => request.basket_products, { onDelete: 'CASCADE' })
-    request_id: Request;
+    requests?: Request[];
 }

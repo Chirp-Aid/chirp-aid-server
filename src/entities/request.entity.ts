@@ -9,7 +9,7 @@ import {
 } from 'typeorm';
 import { OrphanageUser } from './orphanage-user.entity';
 import { Product } from './product.entity';
-import { BasketProducts } from './basket-products.entity';
+import { BasketProduct } from './basket-products.entity';
 
 @Entity('request')
 export class Request {
@@ -36,7 +36,11 @@ export class Request {
   @JoinColumn({ name: 'product_id' })
   product_id: Product;
 
-  @ManyToMany(() => BasketProducts)
-  @JoinTable()
-  basket_products: BasketProducts[];
+  @ManyToMany(() => BasketProduct)
+  @JoinTable({ 
+    name: 'basket_product_request',
+    joinColumn: { name: 'request_id', referencedColumnName: 'request_id' },
+    inverseJoinColumn: { name: 'basket_product_id', referencedColumnName: 'basket_product_id' }
+  })
+  basket_products?: BasketProduct[];
 }

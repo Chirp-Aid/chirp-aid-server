@@ -17,7 +17,8 @@ import { Product } from './entities/product.entity';
 import { Favorites } from './entities/favorites.entity';
 import { FavoritesModule } from './favorites/favorites.module';
 import { DonateModule } from './donate/donate.module';
-import { BasketProducts } from './entities/basket-products.entity';
+import { BasketProduct } from './entities/basket-products.entity';
+import { BasketProductRequest } from './entities/basket_products_requests.entity';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -30,7 +31,7 @@ import { BasketProducts } from './entities/basket-products.entity';
       username: process.env.DATABASE_USERNAME,
       password: process.env.DATABASE_PASSWORD,
       database: process.env.DATABASE_NAME,
-      entities: [User, Orphanage, OrphanageUser, Request, Product, Favorites,BasketProducts],
+      entities: [User, Orphanage, OrphanageUser, Request, Product, Favorites,BasketProduct, BasketProductRequest],
       synchronize: true,
     }),
     NotificationsModule,
