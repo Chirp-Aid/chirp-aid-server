@@ -82,23 +82,24 @@ export class BasketService {
             throw new NotFoundException('해당 사용자를 찾을 수 없습니다.');
             }
 
-            // const baskets = await this.basketRepository.find({
-            //     where: { user_id: userId },
-            //     select: ['request_id', 'count']
-            // });
-
             const baskets = await this.basketRepository
-                .createQueryBuilder('basket_product')
-                .select('request.product_id')
-                .where('basket_product.user_id.user_id = :user_id', {user_id: userId})
-                .leftJoin('basket_product.request_id', 'request')
-                .getMany();
-
+            .createQueryBuilder('basket_product')
+            .select([
+                'pi.product_name as product_name',
+                'basket_product.count as count',
+                'pi.price as price',
+                'o.orphanage_name as orphanage_name',
+            ])
+            .innerJoin('basket_product.user_id', 'u', 'u.user_id = :user_id', { user_id: userId })
+            .innerJoin('basket_product.request_id', 'r')
+            .innerJoin('r.orphanage_user_id', 'ou')
+            .innerJoin('ou.orphanage_id', 'o')
+            .innerJoin('r.product_id', 'pi')
+            .getRawMany();
+    
             if (!baskets || baskets.length == 0) {
                 return { baskets: [] };
             }
-
-            console.log(`baskets : ${baskets}`)
 
             return {baskets: baskets};
 
