@@ -8,7 +8,7 @@ import { Product } from 'src/entities/product.entity';
 import { Request } from 'src/entities/request.entity';
 import { BasketService } from './basket.service';
 import { User } from 'src/entities/user.entity';
-import { BasketProduct } from 'src/entities/basket_product.entity';
+import { BasketProduct } from 'src/entities/basket-product.entity';
 
 @Module({
   imports: [

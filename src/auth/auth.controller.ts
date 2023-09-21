@@ -64,7 +64,7 @@ export class AuthController {
       .send(await this.authService.login(loginUserDto, res));
   }
 
-  @Get('users/fcm')
+  @Post('users/fcm')
   @ApiOperation({
     summary: '사용자 fcm 저장',
     description:
@@ -173,7 +173,7 @@ export class AuthController {
       .send(await this.orphanageAuthService.login(loginUserDto, res));
   }
 
-  @Get('orphanages/fcm')
+  @Post('orphanages/fcm')
   @ApiOperation({
     summary: '보육원 계정 fcm 저장',
     description:

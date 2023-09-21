@@ -4,7 +4,7 @@ import { Request } from 'src/entities/request.entity';
 import { User } from 'src/entities/user.entity';
 import { DataSource, Repository } from 'typeorm';
 import { AddBasektDto } from './dto/add-basket.dto';
-import { BasketProduct } from 'src/entities/basket_product.entity';
+import { BasketProduct } from 'src/entities/basket-product.entity';
 
 @Injectable()
 export class BasketService {
