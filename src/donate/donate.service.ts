@@ -6,6 +6,7 @@ import { DataSource, Repository } from 'typeorm';
 import { Request } from 'src/entities/request.entity';
 import { BasketProduct } from 'src/entities/basket-product.entity';
 import { DonationHistory } from 'src/entities/donation-history.entity';
+import * as moment from 'moment-timezone';
 
 @Injectable()
 export class DonateService {
@@ -73,7 +74,8 @@ export class DonateService {
                 }
 
                 const donationHistory = new DonationHistory();
-                donationHistory.date = new Date();
+                const currentTime = moment.tz('Asia/Seoul').format('YYYY-DD-MM hh:mm:ss');
+                donationHistory.date = currentTime;
                 donationHistory.count = basket.count;
                 donationHistory.message = message;
                 donationHistory.request_id = request;

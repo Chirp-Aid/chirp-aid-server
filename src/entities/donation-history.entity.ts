@@ -8,7 +8,7 @@ export class DonationHistory{
     donation_history_id: number;
 
     @Column()
-    date: Date;
+    date: string;
 
     @Column()
     count: number;
