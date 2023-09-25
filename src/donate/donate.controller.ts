@@ -1,11 +1,10 @@
 import { Body, Controller, Delete, Get, Patch, Post, Request, UseGuards } from '@nestjs/common';
 import { DonateService } from './donate.service';
-import { AddBasektDto } from './dto/add-basket.dto';
 import { BasketService } from './basket.service';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiHeader, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { DonateDto } from './dto/donate.dto';
-import { BasketProduct } from 'src/entities/basket-product.entity';
+import { AddBasektDto } from './dto/add-donate.dto';
 
 @ApiTags('DONATE: 기부 관련 요청')
 @Controller('donate')

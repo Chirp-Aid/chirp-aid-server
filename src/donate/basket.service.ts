@@ -3,8 +3,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Request } from 'src/entities/request.entity';
 import { User } from 'src/entities/user.entity';
 import { DataSource, Repository } from 'typeorm';
-import { AddBasektDto } from './dto/add-basket.dto';
 import { BasketProduct } from 'src/entities/basket-product.entity';
+import { AddBasektDto } from './dto/add-donate.dto';
 
 @Injectable()
 export class BasketService {
