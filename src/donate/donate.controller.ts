@@ -4,12 +4,14 @@ import { AddBasektDto } from './dto/add-basket.dto';
 import { BasketService } from './basket.service';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiHeader, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { DonateDto } from './dto/donate.dto';
 
 @ApiTags('DONATE: 기부 관련 요청')
 @Controller('donate')
 export class DonateController {
   constructor(
-    private readonly basketService: BasketService
+    private readonly basketService: BasketService,
+    private readonly donateService: DonateService
     ) {}
 
   @Post('basket')
@@ -75,5 +77,12 @@ export class DonateController {
   {
     const userId = req.user.user_id;
     return await this.basketService.getBasket(userId);
+  }
+
+  @Post()
+  @UseGuards(AuthGuard('access'))
+  async donate(@Body() donateDto: DonateDto, @Request() req){
+    const userId = req.user.user_id;
+    return await this.donateService.donate(donateDto, userId);
   }
 }
