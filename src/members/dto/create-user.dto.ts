@@ -45,6 +45,10 @@ export class CreateUserDto {
   readonly password: string;
 
   @IsInt()
+  @ApiProperty({
+    example: 23,
+    description: 'The age of User',
+  })
   age: number;
 
   @IsString()
