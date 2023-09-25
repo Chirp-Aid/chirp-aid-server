@@ -1,10 +1,11 @@
-import { Body, Controller, Get, Post, Request, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Patch, Post, Request, UseGuards } from '@nestjs/common';
 import { DonateService } from './donate.service';
 import { AddBasektDto } from './dto/add-basket.dto';
 import { BasketService } from './basket.service';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiHeader, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { DonateDto } from './dto/donate.dto';
+import { BasketProduct } from 'src/entities/basket-product.entity';
 
 @ApiTags('DONATE: 기부 관련 요청')
 @Controller('donate')
@@ -92,6 +93,67 @@ export class DonateController {
   {
     const userId = req.user.user_id;
     return await this.basketService.getBasket(userId);
+  }
+
+  @Patch('basket')
+  @ApiOperation({
+    summary: '장바구니 수량 변경',
+    description:
+      '사용자의 장바구니 물품 수량을 변경합니다.',
+  })
+  @ApiHeader({
+    name: 'Authorization',
+    description: 'Bearer {Access Token}',
+    example: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'OK',
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Unaothorized',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Not Found - 해당 요청을 찾을 수 없습니다.\
+    \nNot Found - 해당 사용자를 찾을 수 없습니다. (사용자 계정이 아닌 보육원 계정인 경우)\
+    \nNot Found - 해당 장바구니가 존재하지 않습니다.',
+  })
+  @UseGuards(AuthGuard('access'))
+  async updateBasket(@Body() updateDto: AddBasektDto, @Request() req){
+    return await this.basketService.updateCount(req.user.user_id, updateDto);
+  }
+
+  @Delete('basket')
+  @ApiOperation({
+    summary: '장바구니 삭제',
+    description:
+      '특정 장바구니를 삭제합니다.',
+  })
+  @ApiHeader({
+    name: 'Authorization',
+    description: 'Bearer {Access Token}',
+    example: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'OK',
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Unaothorized',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Not Found - 해당 사용자를 찾을 수 없습니다. (사용자 계정이 아닌 보육원 계정인 경우)\
+    \nNot Found - 해당 장바구니가 존재하지 않습니다.',
+  })
+  @UseGuards(AuthGuard('access'))
+  async deleteBasket(@Body() deleteDto, @Request() req){
+    const userId = req.user.user_id;
+    const BasketProductId = deleteDto.basket_product_id;
+    return await this.basketService.deleteBasket(userId, BasketProductId);
   }
 
   @Post()

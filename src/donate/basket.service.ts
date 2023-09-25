@@ -15,8 +15,40 @@ export class BasketService {
         private dataSource: DataSource
     ){}
 
-    updateCount(request: Request, count: number){
-        
+    async updateCount(userId:string, updateDto: AddBasektDto){
+        const {request_id:requestId, count} = updateDto;
+        try{
+            const user = await this.userRepository.findOne({
+                where: {user_id: userId},
+            });
+    
+            if(!user){
+                throw new NotFoundException('해당 사용자를 찾을 수 없습니다.');
+            }
+
+            const request = await this.requestRepository.findOne({
+                where: {request_id: requestId},
+            });
+
+            if(!request) {
+                throw new NotFoundException('해당 요청을 찾을 수 없습니다.');
+            }
+
+            const basket = await this.basketRepository
+            .createQueryBuilder('basket_product')
+            .where('basket_product.user_id.user_id = :user_id', {user_id: userId})
+            .andWhere('basket_product.request_id.request_id = :request_id', {request_id: requestId})
+            .getOne();
+
+            if(!basket) {
+                throw new NotFoundException('해당 장바구니가 존재하지 않습니다.');
+            }
+
+            await this.basketRepository.update({user_id:user, request_id: request},{count: count})
+        } catch (error){
+            console.log(error);
+            return error['response'];
+        }
     }
 
     async addBasket(userId: string, addBasektDto: AddBasektDto){
@@ -49,15 +81,16 @@ export class BasketService {
                 .getOne();
 
             if(exist){
-                throw new ConflictException('해당 물품은 이미 장바구니에 있습니다.');
+                this.basketRepository.update({user_id: user, request_id:request}, {count: count});
             }
-
-            const newBasket = new BasketProduct();
-            newBasket.count = count;
-            newBasket.user_id = user;
-            newBasket.request_id = request;
-
-            await this.basketRepository.save(newBasket);
+            else{
+                const newBasket = new BasketProduct();
+                newBasket.count = count;
+                newBasket.user_id = user;
+                newBasket.request_id = request;
+    
+                await this.basketRepository.save(newBasket);
+            }
 
             await queryRunner.commitTransaction();
             console.log(`Basket Product added : ${addBasektDto}`);
@@ -110,6 +143,30 @@ export class BasketService {
 
         } catch(error) {
             console.log(error);
+            return error['response'];
+        }
+    }
+
+    async deleteBasket(userId: string, BasketProductId: number){
+        try{
+            const user = await this.userRepository.findOne({
+                where: {user_id: userId}
+            })
+
+            if(!user){
+                throw new NotFoundException('해당 사용자를 찾을 수 없습니다.');
+            }
+
+            const basket = await this.basketRepository.findOne({
+                where: {basket_product_id: BasketProductId}
+            })
+            
+            if(!basket){
+                throw new NotFoundException('해당 장바구니가 존재하지 않습니다.');
+            }
+            await this.basketRepository.remove(basket);
+
+        } catch(error) {
             return error['response'];
         }
     }

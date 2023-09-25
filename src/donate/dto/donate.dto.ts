@@ -1,5 +1,4 @@
 import { ApiProperty } from "@nestjs/swagger"
-import { DonateProductDto } from "./donate-product.dto";
 
 export class DonateDto{
     // @ApiProperty({
