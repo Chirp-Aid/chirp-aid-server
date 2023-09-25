@@ -95,4 +95,49 @@ export class DonateService {
         }
     }
 
+    async getDonate(userId: string){
+        const queryRunner = this.dataSource.createQueryRunner();
+        await queryRunner.connect();
+        await queryRunner.startTransaction();
+
+        try{
+            const user = await this.userRepository.findOne({
+                where: { user_id: userId },
+            });
+        
+            if (!user) {
+            throw new NotFoundException('해당 사용자를 찾을 수 없습니다.');
+            }
+
+            const donateInfo = await this.donationRepository
+                .createQueryBuilder('donation_history')
+                .select([
+                    'o.orphanage_name as orphanage_name',
+                    'donation_history.date as date',
+                    'pi.product_name as product_name',
+                    'pi.price as price',
+                    'donation_history.count as count',
+                    'donation_history.message as message'
+                ])
+                .innerJoin('donation_history.user_id', 'user', 'user.user_id= :user_id', { user_id: userId })
+                .innerJoin('donation_history.request_id', 'r')
+                .innerJoin('r.orphanage_user_id', 'ou')
+                .innerJoin('ou.orphanage_id', 'o')
+                .innerJoin('r.product_id', 'pi')
+                .getRawMany();
+
+            if (!donateInfo || donateInfo.length == 0){
+                return { donate_info: []}
+            }
+
+            return { donate_info : donateInfo};
+
+        } catch(error) {
+            console.error(error);
+            return error['response'];
+        } finally {
+
+        }
+    }
+
 }

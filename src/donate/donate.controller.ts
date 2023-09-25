@@ -190,4 +190,11 @@ export class DonateController {
     const userId = req.user.user_id;
     return await this.donateService.donate(donateDto, userId);
   }
+
+  @Get()
+  @UseGuards(AuthGuard('access'))
+  async getDonate(@Request() req){
+    const userId = req.user.user_id;
+    return await this.donateService.getDonate(userId);
+  }
 }
