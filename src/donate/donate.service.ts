@@ -17,20 +17,10 @@ export class DonateService {
         private dataSource: DataSource
     ){}
 
-    async addDonationHistory(request: Request, user: User, count: number, message: string) {
-        const donationHistory = new DonationHistory();
-        donationHistory.date = new Date();
-        donationHistory.count = count;
-        donationHistory.message = message;
-        donationHistory.request_id = request;
-        donationHistory.user_id = user;
-
-        await this.donationRepository.save(donationHistory);
-    }
-
     async donate(donateDto: DonateDto, userId: string){
         const donates = donateDto.Donates;
         const message = donateDto.message;
+        // const errors = [];
         const queryRunner = this.dataSource.createQueryRunner();
         await queryRunner.connect();
         await queryRunner.startTransaction();
@@ -53,11 +43,21 @@ export class DonateService {
                 });
     
                 if (!request) {
+                    // const errorMessage = `${request.product_id.product_name}: 해당 요청을 찾을 수 없습니다.`;
+                    // errors.push(errorMessage);
                     throw new NotFoundException(`${request.product_id.product_name}: 해당 요청을 찾을 수 없습니다.`);
                 }
     
                 if (request.state === 'COMPLETED') {
+                    // const errorMessage = `${request.product_id.product_name}: 해당 요청은 기부가 완료되었습니다.`;
+                    // errors.push(errorMessage);
                     throw new ConflictException(`${request.product_id.product_name}: 해당 요청은 기부가 완료되었습니다.`);
+                }
+
+                if(request.supported_count + donateProduct.count > request.count){
+                    // const errorMessage = `${request.product_id.product_name}: 해당 요청의 수량보다 기부 수량이 많습니다.`;
+                    // errors.push(errorMessage)
+                    throw new ConflictException(`${request.product_id.product_name}: 해당 요청의 수량보다 기부 수량이 많습니다.`)
                 }
 
                 request.supported_count += donateProduct.count;
@@ -66,21 +66,31 @@ export class DonateService {
                     request.state = 'COMPLETED';
                 }
 
-                // 변경사항을 저장합니다.
+                const donationHistory = new DonationHistory();
+                donationHistory.date = new Date();
+                donationHistory.count = donateProduct.count;
+                donationHistory.message = message;
+                donationHistory.request_id = request;
+                donationHistory.user_id = user;
+                
                 await this.requestRepository.save(request);
-                await this.addDonationHistory(request, user, donateProduct.count, message);
-
+                await this.donationRepository.save(donationHistory);
             }
 
+            // if (errors.length > 0)
+            // {
+            //     throw new ConflictException(errors.join('\n'));
+            // }
             await queryRunner.commitTransaction();
+            console.log("COMMIT");
+
         } catch (error) {
-            // 오류 발생 시 롤백합니다.
             await queryRunner.rollbackTransaction();
-            throw error; // 또는 오류를 처리하는 방식에 따라 다르게 처리할 수 있습니다.
+            console.error(error['response'])
+            return error['response'];
+            // throw error;
         } finally {
-            // 쿼리 러너를 해제합니다.
             await queryRunner.release();
         }
-    
     }
 }

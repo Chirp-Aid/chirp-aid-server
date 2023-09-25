@@ -15,6 +15,10 @@ export class BasketService {
         private dataSource: DataSource
     ){}
 
+    updateCount(request: Request, count: number){
+        
+    }
+
     async addBasket(userId: string, addBasektDto: AddBasektDto){
         const {count, request_id: requestId} = addBasektDto;
         const queryRunner = this.dataSource.createQueryRunner();
