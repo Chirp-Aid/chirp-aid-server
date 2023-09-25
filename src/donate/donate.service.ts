@@ -93,4 +93,8 @@ export class DonateService {
             await queryRunner.release();
         }
     }
+
+    deleteDonate(donate_id: number){
+        
+    }
 }

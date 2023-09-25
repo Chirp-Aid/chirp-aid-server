@@ -89,6 +89,7 @@ export class BasketService {
             const baskets = await this.basketRepository
             .createQueryBuilder('basket_product')
             .select([
+                'basket_product.basket_product_id as basket_product_id',
                 'pi.product_name as product_name',
                 'basket_product.count as count',
                 'pi.price as price',

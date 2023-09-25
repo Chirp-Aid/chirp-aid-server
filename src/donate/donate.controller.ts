@@ -61,8 +61,23 @@ export class DonateController {
     example: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9',
   })
   @ApiResponse({
-    status: 201,
-    description: 'Created',
+    status: 200,
+    description: 'OK',
+    schema: {
+      type: 'object',
+      properties: {
+        baskets: {
+          type: 'object',
+          example: [{
+            basket_product_id: 5,
+            product_name: '초코파이',
+            count: 10,
+            price: 2000,
+            orphanage_name: '보육원1'
+          }],
+        }
+      }
+    }
   })
   @ApiResponse({
     status: 401,
