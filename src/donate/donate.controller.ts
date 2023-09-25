@@ -95,6 +95,34 @@ export class DonateController {
   }
 
   @Post()
+  @ApiOperation({
+    summary: '기부하기',
+    description:
+      '특정 장바구니의 내용을 기부합니다.',
+  })
+  @ApiHeader({
+    name: 'Authorization',
+    description: 'Bearer {Access Token}',
+    example: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9',
+  })
+  @ApiResponse({
+    status: 201,
+    description: 'Created',
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Unaothorized',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Not Found - 해당 사용자를 찾을 수 없습니다. (사용자 계정이 아닌 보육원 계정인 경우)\
+    \nNot Found - {물품명}: 해당 요청을 찾을 수 없습니다.'
+  })
+  @ApiResponse({
+    status: 409,
+    description: 'Conflict - {물품명}: 해당 요청은 기부가 완료되었습니다.\
+    \nConflict - {물품명}: 해당 요청의 수량보다 기부 수량이 많습니다.',
+  })
   @UseGuards(AuthGuard('access'))
   async donate(@Body() donateDto: DonateDto, @Request() req){
     const userId = req.user.user_id;

@@ -18,7 +18,7 @@ export class DonateService {
     ){}
 
     async donate(donateDto: DonateDto, userId: string){
-        const donates = donateDto.Donates;
+        const donates = donateDto.basket_product_id;
         const message = donateDto.message;
         // const errors = [];
         const queryRunner = this.dataSource.createQueryRunner();
@@ -35,12 +35,18 @@ export class DonateService {
             }
 
             for (const donateProduct of donates) {
-                const requestId = donateProduct.request_id;
-    
-                const request = await this.requestRepository.findOne({
-                    where: { request_id: requestId },
-                    relations:['product_id']
-                });
+                const basketId = donateProduct;
+
+                const basket = await this.basketProductRepository.findOne({
+                    where: {basket_product_id: basketId},
+                    relations:['request_id', 'request_id.product_id']
+                })
+
+                if (!basket) {
+                    throw new NotFoundException('장바구니에 해당 요청이 존재하지 않습니다.');
+                }
+
+                const request = basket.request_id;
     
                 if (!request) {
                     // const errorMessage = `${request.product_id.product_name}: 해당 요청을 찾을 수 없습니다.`;
@@ -54,13 +60,13 @@ export class DonateService {
                     throw new ConflictException(`${request.product_id.product_name}: 해당 요청은 기부가 완료되었습니다.`);
                 }
 
-                if(request.supported_count + donateProduct.count > request.count){
+                if(request.supported_count + basket.count > request.count){
                     // const errorMessage = `${request.product_id.product_name}: 해당 요청의 수량보다 기부 수량이 많습니다.`;
                     // errors.push(errorMessage)
                     throw new ConflictException(`${request.product_id.product_name}: 해당 요청의 수량보다 기부 수량이 많습니다.`)
                 }
 
-                request.supported_count += donateProduct.count;
+                request.supported_count += basket.count;
 
                 if (request.supported_count >= request.count) {
                     request.state = 'COMPLETED';
@@ -68,33 +74,25 @@ export class DonateService {
 
                 const donationHistory = new DonationHistory();
                 donationHistory.date = new Date();
-                donationHistory.count = donateProduct.count;
+                donationHistory.count = basket.count;
                 donationHistory.message = message;
                 donationHistory.request_id = request;
                 donationHistory.user_id = user;
                 
                 await this.requestRepository.save(request);
                 await this.donationRepository.save(donationHistory);
+                await this.basketProductRepository.delete(basket);
             }
 
-            // if (errors.length > 0)
-            // {
-            //     throw new ConflictException(errors.join('\n'));
-            // }
             await queryRunner.commitTransaction();
-            console.log("COMMIT");
 
         } catch (error) {
             await queryRunner.rollbackTransaction();
             console.error(error['response'])
             return error['response'];
-            // throw error;
         } finally {
             await queryRunner.release();
         }
     }
 
-    deleteDonate(donate_id: number){
-        
-    }
 }
