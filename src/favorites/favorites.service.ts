@@ -24,7 +24,7 @@ export class FavoritesService {
     private dataSource: DataSource,
   ) {}
 
-  async createFavorite(user_id, orphanage_id) {
+  async createFavorite(userId, orphanage_id) {
     const queryRunner = this.dataSource.createQueryRunner();
 
     await queryRunner.connect();
@@ -40,7 +40,7 @@ export class FavoritesService {
       }
 
       const user = await this.userRepository.findOne({
-        where: { user_id: user_id },
+        where: { user_id: userId },
       });
 
       if (!user) {
@@ -52,7 +52,7 @@ export class FavoritesService {
         .where('favorites.orphanage_id.orphanage_id = :orphanage_id', {
           orphanage_id,
         })
-        .andWhere('favorites.user_id.user_id = :user_id', { user_id })
+        .andWhere('favorites.user_id.user_id = :user_id', { user_id: userId })
         .getOne();
 
       if (exist) {
@@ -74,11 +74,11 @@ export class FavoritesService {
     }
   }
 
-  async getFavorites(user_id) {
+  async getFavorites(userId:string) {
     try {
 
       const user = await this.userRepository.findOne({
-        where: { user_id: user_id },
+        where: { user_id: userId },
       });
 
       if (!user) {
@@ -86,7 +86,7 @@ export class FavoritesService {
       }
 
       const favorites = await this.favsRepository.find({
-        where: { user_id: user_id },
+        where: { user_id: user },
         relations: ['orphanage_id'],
       });
 

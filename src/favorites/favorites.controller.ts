@@ -71,13 +71,13 @@ export class FavoritesController {
       properties: {
         orphanages: {
           type: 'object',
-          properties: {
-            orphanage_id: { type: 'int', example: '1' },
-            orphanage_name: { type: 'string', example: 'orphanage1' },
-            address: { type: 'string', example: 'addr1' },
-            phone_number: { type: 'string', example: '054-123-1234' },
-            photo: { type: 'string', example: 'url' },
-          },
+          example: [{
+            orphanage_id: 1,
+            orphanage_name: 'orphanage1',
+            address: 'addr1',
+            phone_number: '054-123-1234',
+            photo: 'url',
+          }],
         },
       },
     },

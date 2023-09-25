@@ -1,4 +1,4 @@
-import { ConflictException, Injectable } from '@nestjs/common';
+import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../entities/user.entity';
 import { DataSource, Repository } from 'typeorm';
@@ -121,6 +121,10 @@ export class UsersService {
       const getUser = await this.usersRepository.findOne({
         where: { user_id: userId },
       });
+
+      if(!getUser) {
+        throw new NotFoundException('해당 사용자를 찾을 수 없습니다.');
+      }
       delete getUser.user_id;
       delete getUser.password;
       delete getUser.refresh_token;

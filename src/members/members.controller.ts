@@ -220,7 +220,14 @@ export class MembersController {
   })
   @ApiResponse({
     status: 200,
-    description: '사용자 정보를 반환합니다.',
+    description: '보육원 계정의 정보를 반환합니다.',
+    schema: {
+      type: 'object',
+      properties: {
+        email: { type: 'string', example: 'user@gmail.com' },
+        name: { type: 'string', example: 'user1' },
+      },
+    },
   })
   @ApiResponse({
     status: 401,

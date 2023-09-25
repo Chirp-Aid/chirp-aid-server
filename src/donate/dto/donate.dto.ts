@@ -1,0 +1,21 @@
+import { ApiProperty } from "@nestjs/swagger"
+
+export class DonateDto{
+    // @ApiProperty({
+    //     example: '[{ "request_id": 1, "count": 40},..]',
+    //     description: '기부할 물품 정보'
+    // })
+    // Donates: DonateProductDto[];
+
+    @ApiProperty({
+        example: '[1, 2, 3, ...]',
+        description: '기부할 장바구니 id'
+    })
+    basket_product_id: number[];
+
+    @ApiProperty({
+        example: '맛있게 먹으렴~',
+        description: '전달할 메시지'
+    })
+    message: string;
+}

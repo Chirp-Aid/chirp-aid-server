@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateRequestDto } from './dto/create-request.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Orphanage } from 'src/entities/orphanage.entity';
@@ -43,6 +43,16 @@ export class RequestsService {
 
       if (!product) {
         throw new NotFoundException('해당 물품을 찾을 수 없습니다.');
+      }
+
+      const exist = await this.requestRepository
+        .createQueryBuilder('requests')
+        .where('requests.orphanage_user_id.orphanage_user_id = :orphanage_user_id', {orphanage_user_id: orphanageUserId})
+        .andWhere('request.product_id.product_name = :product_name', {product_name: productName})
+        .getOne
+
+      if(exist) {
+        throw new ConflictException('이미 해당 요청이 존재합니다.');
       }
 
       const newRequest = new Request();

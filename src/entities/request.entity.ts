@@ -2,11 +2,14 @@ import {
   Column,
   Entity,
   JoinColumn,
+  JoinTable,
+  ManyToMany,
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { OrphanageUser } from './orphanage-user.entity';
 import { Product } from './product.entity';
+import { User } from './user.entity';
 
 @Entity('request')
 export class Request {
@@ -32,4 +35,12 @@ export class Request {
   @ManyToOne(() => Product, (product_id) => product_id.product_id)
   @JoinColumn({ name: 'product_id' })
   product_id: Product;
+
+  // @ManyToMany(() => User, {onDelete: 'NO ACTION'})
+  // @JoinTable({ 
+  //   name: 'basket_product_request',
+  //   joinColumn: { name: 'request_id', referencedColumnName: 'request_id' },
+  //   inverseJoinColumn: { name: 'user_id', referencedColumnName: 'user_id' }
+  // })
+  // users?: User[];
 }

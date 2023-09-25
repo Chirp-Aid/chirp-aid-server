@@ -16,6 +16,12 @@ import { Request } from './entities/request.entity';
 import { Product } from './entities/product.entity';
 import { Favorites } from './entities/favorites.entity';
 import { FavoritesModule } from './favorites/favorites.module';
+import { DonateModule } from './donate/donate.module';
+import { BasketProduct } from './entities/basket-product.entity';
+import { PostsModule } from './posts/posts.module';
+import { DonationHistory } from './entities/donation-history.entity';
+import { Review } from './entities/review.entity';
+import { ReviewProduct } from './entities/review-product.entity';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -28,7 +34,7 @@ import { FavoritesModule } from './favorites/favorites.module';
       username: process.env.DATABASE_USERNAME,
       password: process.env.DATABASE_PASSWORD,
       database: process.env.DATABASE_NAME,
-      entities: [User, Orphanage, OrphanageUser, Request, Product, Favorites],
+      entities: [User, Orphanage, OrphanageUser, Request, Product, Favorites,BasketProduct, DonationHistory, Review, ReviewProduct],
       synchronize: true,
     }),
     NotificationsModule,
@@ -38,6 +44,7 @@ import { FavoritesModule } from './favorites/favorites.module';
     OrphanagesModule,
     RequestsModule,
     FavoritesModule,
+    DonateModule,
   ],
   controllers: [AppController],
   providers: [AppService],

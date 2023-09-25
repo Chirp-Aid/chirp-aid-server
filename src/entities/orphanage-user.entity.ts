@@ -23,5 +23,5 @@ export class OrphanageUser {
 
   @OneToOne(() => Orphanage, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'orphanage_id' })
-  orphanag_id: Orphanage;
+  orphanage_id: Orphanage;
 }
