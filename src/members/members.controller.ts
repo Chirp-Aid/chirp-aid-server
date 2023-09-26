@@ -13,7 +13,7 @@ import * as bcrypt from 'bcrypt';
 import { CreateOrphanageUserDto } from './dto/create-orphanage-user.dto';
 import { OrphanageUsersService } from './orphanage-user.service';
 import { ApiHeader, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { CustomValidationPipe } from 'src/commons/customValidationPipe.ts';
+import { CustomValidationPipe } from 'src/commons/customValidationPipe';
 import { AuthGuard } from '@nestjs/passport';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UpdateOrphanageUserDto } from './dto/update-orphanage-user.dto';
