@@ -7,6 +7,7 @@ import { Request } from 'src/entities/request.entity';
 import { BasketProduct } from 'src/entities/basket-product.entity';
 import { DonationHistory } from 'src/entities/donation-history.entity';
 import * as moment from 'moment-timezone';
+import { ReviewProduct } from 'src/entities/review-product.entity';
 
 @Injectable()
 export class DonateService {
@@ -15,6 +16,7 @@ export class DonateService {
         @InjectRepository(Request) private requestRepository: Repository<Request>,
         @InjectRepository(BasketProduct) private basketProductRepository: Repository<BasketProduct>,
         @InjectRepository(DonationHistory) private donationRepository: Repository<DonationHistory>,
+        @InjectRepository(ReviewProduct) private reviewProductRepository: Repository<ReviewProduct>,
         private dataSource: DataSource
     ){}
 
@@ -36,11 +38,10 @@ export class DonateService {
             }
 
             for (const donateProduct of donates) {
-                const basketId = donateProduct;
 
                 const basket = await this.basketProductRepository.findOne({
-                    where: {basket_product_id: basketId},
-                    relations:['request_id', 'request_id.product_id']
+                    where: {basket_product_id: donateProduct},
+                    relations:['request_id', 'request_id.product_id', 'request_id.orphanage_user_id']
                 })
 
                 if (!basket) {
@@ -50,20 +51,14 @@ export class DonateService {
                 const request = basket.request_id;
     
                 if (!request) {
-                    // const errorMessage = `${request.product_id.product_name}: 해당 요청을 찾을 수 없습니다.`;
-                    // errors.push(errorMessage);
                     throw new NotFoundException(`${request.product_id.product_name}: 해당 요청을 찾을 수 없습니다.`);
                 }
     
                 if (request.state === 'COMPLETED') {
-                    // const errorMessage = `${request.product_id.product_name}: 해당 요청은 기부가 완료되었습니다.`;
-                    // errors.push(errorMessage);
                     throw new ConflictException(`${request.product_id.product_name}: 해당 요청은 기부가 완료되었습니다.`);
                 }
 
                 if(request.supported_count + basket.count > request.count){
-                    // const errorMessage = `${request.product_id.product_name}: 해당 요청의 수량보다 기부 수량이 많습니다.`;
-                    // errors.push(errorMessage)
                     throw new ConflictException(`${request.product_id.product_name}: 해당 요청의 수량보다 기부 수량이 많습니다.`)
                 }
 
@@ -74,15 +69,20 @@ export class DonateService {
                 }
 
                 const donationHistory = new DonationHistory();
-                const currentTime = moment.tz('Asia/Seoul').format('YYYY-DD-MM hh:mm:ss');
+                const currentTime = moment.tz('Asia/Seoul').format('YYYY-MM-DD hh:mm:ss');
                 donationHistory.date = currentTime;
                 donationHistory.count = basket.count;
                 donationHistory.message = message;
                 donationHistory.request_id = request;
                 donationHistory.user_id = user;
+
+                const donatedProduct = new ReviewProduct();
+                donatedProduct.product_id = request.product_id;
+                donatedProduct.orphanage_user_id = request.orphanage_user_id; 
                 
                 await this.requestRepository.save(request);
                 await this.donationRepository.save(donationHistory);
+                await this.reviewProductRepository.save(donatedProduct)
                 await this.basketProductRepository.delete(basket);
             }
 

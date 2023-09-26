@@ -16,7 +16,7 @@ export class Review{
     photo?: string;
 
     @Column()
-    date: Date;
+    date: string;
 
     @ManyToOne( ()=> OrphanageUser, {onDelete: 'CASCADE'})
     @JoinColumn([{name: 'orphanage_user', referencedColumnName: 'orphanage_user_id'}])

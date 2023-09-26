@@ -45,6 +45,7 @@ import { ReviewProduct } from './entities/review-product.entity';
     RequestsModule,
     FavoritesModule,
     DonateModule,
+    PostsModule
   ],
   controllers: [AppController],
   providers: [AppService],
