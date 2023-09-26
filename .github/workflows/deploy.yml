@@ -94,9 +94,9 @@ jobs:
     - name: SSH into EC2 and deploy
       uses: appleboy/ssh-action@master
       with:
-        host: ${{ env.EC2_HOST }}
-        username: ${{ env.EC2_USERNAME }}
-        key: ${{ env.SSH_PRIVATE_KEY }}
+        host: ${{ secrets.EC2_HOST }}
+        username: ${{ secrets.EC2_USERNAME }}
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
         script: |
           # Pull and run the Docker image on EC2
           aws ecr get-login-password --region ${{ env.AWS_REGION }} | docker login --username AWS --password-stdin ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}
