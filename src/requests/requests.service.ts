@@ -1,4 +1,8 @@
-import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateRequestDto } from './dto/create-request.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Orphanage } from 'src/entities/orphanage.entity';
@@ -11,7 +15,6 @@ import { Product } from 'src/entities/product.entity';
 export class RequestsService {
   constructor(
     @InjectRepository(Orphanage)
-    private orphanageRepository: Repository<Orphanage>,
     @InjectRepository(OrphanageUser)
     private usersRepository: Repository<OrphanageUser>,
     @InjectRepository(Request) private requestRepository: Repository<Request>,
@@ -47,11 +50,16 @@ export class RequestsService {
 
       const exist = await this.requestRepository
         .createQueryBuilder('requests')
-        .where('requests.orphanage_user_id.orphanage_user_id = :orphanage_user_id', {orphanage_user_id: orphanageUserId})
-        .andWhere('request.product_id.product_name = :product_name', {product_name: productName})
-        .getOne
+        .where(
+          'requests.orphanage_user_id.orphanage_user_id = :orphanage_user_id',
+          { orphanage_user_id: orphanageUserId },
+        )
+        .andWhere('requests.product_id = :product_id', {
+          product_id: product.product_id,
+        })
+        .getOne();
 
-      if(exist) {
+      if (exist) {
         throw new ConflictException('이미 해당 요청이 존재합니다.');
       }
 
@@ -67,7 +75,7 @@ export class RequestsService {
     } catch (error) {
       await queryRunner.rollbackTransaction();
       console.log(error);
-      return error['response'];
+      throw error;
     } finally {
       await queryRunner.release();
     }

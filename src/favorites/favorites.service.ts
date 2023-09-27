@@ -9,7 +9,6 @@ import { DataSource, Repository } from 'typeorm';
 import { OrphanageUser } from 'src/entities/orphanage-user.entity';
 import { Favorites } from 'src/entities/favorites.entity';
 import { User } from 'src/entities/user.entity';
-import { Request } from 'src/entities/request.entity';
 
 @Injectable()
 export class FavoritesService {
@@ -18,9 +17,8 @@ export class FavoritesService {
     @InjectRepository(Orphanage)
     private orphanageRepository: Repository<Orphanage>,
     @InjectRepository(OrphanageUser)
-    private orphanageUserRepository: Repository<OrphanageUser>,
-    @InjectRepository(Favorites) private favsRepository: Repository<Favorites>,
-    @InjectRepository(Request) private requestRepository: Repository<Request>,
+    @InjectRepository(Favorites)
+    private favsRepository: Repository<Favorites>,
     private dataSource: DataSource,
   ) {}
 
@@ -68,15 +66,14 @@ export class FavoritesService {
     } catch (error) {
       await queryRunner.rollbackTransaction();
       console.log(error['response']);
-      return error['response'];
+      throw error;
     } finally {
       await queryRunner.release();
     }
   }
 
-  async getFavorites(userId:string) {
+  async getFavorites(userId: string) {
     try {
-
       const user = await this.userRepository.findOne({
         where: { user_id: userId },
       });
@@ -108,7 +105,7 @@ export class FavoritesService {
       return { orphanages };
     } catch (error) {
       console.log(error['response']);
-      return error['response'];
+      throw error;
     }
   }
 }

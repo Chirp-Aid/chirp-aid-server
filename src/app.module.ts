@@ -1,6 +1,4 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { NotificationsModule } from './notifications/notifications.module';
@@ -22,6 +20,8 @@ import { PostsModule } from './posts/posts.module';
 import { DonationHistory } from './entities/donation-history.entity';
 import { Review } from './entities/review.entity';
 import { ReviewProduct } from './entities/review-product.entity';
+import { ReservationModule } from './reservation/reservation.module';
+import { Reservation } from './entities/reservation.entity';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -34,7 +34,19 @@ import { ReviewProduct } from './entities/review-product.entity';
       username: process.env.DATABASE_USERNAME,
       password: process.env.DATABASE_PASSWORD,
       database: process.env.DATABASE_NAME,
-      entities: [User, Orphanage, OrphanageUser, Request, Product, Favorites,BasketProduct, DonationHistory, Review, ReviewProduct],
+      entities: [
+        User,
+        Orphanage,
+        OrphanageUser,
+        Request,
+        Product,
+        Favorites,
+        BasketProduct,
+        DonationHistory,
+        Review,
+        ReviewProduct,
+        Reservation,
+      ],
       synchronize: true,
     }),
     NotificationsModule,
@@ -45,8 +57,8 @@ import { ReviewProduct } from './entities/review-product.entity';
     RequestsModule,
     FavoritesModule,
     DonateModule,
+    PostsModule,
+    ReservationModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
 })
 export class AppModule {}

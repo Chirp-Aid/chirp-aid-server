@@ -2,9 +2,7 @@ import { Controller, Post, Body } from '@nestjs/common';
 import { NotificationsService } from './notifications.service';
 import { FcmService } from './fcm.service';
 import { NotificationDto } from './dto/notification.dto';
-import { ApiTags } from '@nestjs/swagger';
 
-@ApiTags('NOTIFICATION: 알림 기능')
 @Controller('notifications')
 export class NotificationsController {
   constructor(

@@ -103,7 +103,7 @@ export class AuthService {
       });
     } catch (error) {
       console.log(error['response']);
-      return error['response'];
+      throw error;
     }
     // return await this.usersRepository.findOne({
     //   where: { email: email },

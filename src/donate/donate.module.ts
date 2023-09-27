@@ -7,6 +7,7 @@ import { User } from 'src/entities/user.entity';
 import { BasketProduct } from 'src/entities/basket-product.entity';
 import { DonationHistory } from 'src/entities/donation-history.entity';
 import { DonateService } from './donate.service';
+import { ReviewProduct } from 'src/entities/review-product.entity';
 
 @Module({
   imports: [
@@ -15,9 +16,10 @@ import { DonateService } from './donate.service';
       Request,
       BasketProduct,
       DonationHistory,
+      ReviewProduct,
     ]),
   ],
   controllers: [DonateController],
-  providers: [BasketService, DonateService]
+  providers: [BasketService, DonateService],
 })
 export class DonateModule {}
