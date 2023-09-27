@@ -1,4 +1,4 @@
-import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Request } from 'src/entities/request.entity';
 import { User } from 'src/entities/user.entity';
@@ -72,6 +72,10 @@ export class BasketService {
 
             if(!request) {
                 throw new NotFoundException('해당 요청을 찾을 수 없습니다.');
+            }
+
+            if(request.count < count){
+                throw new BadRequestException('요청 수량보다 기부 수량이 많습니다.');
             }
 
             const exist = await this.basketRepository

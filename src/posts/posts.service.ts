@@ -1,93 +1,85 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { CreatePostDto } from './dto/create-post.dto';
-import { InjectRepository } from '@nestjs/typeorm';
-import { OrphanageUser } from 'src/entities/orphanage-user.entity';
-import { DataSource, Repository } from 'typeorm';
-import { Review } from 'src/entities/review.entity';
-import { ReviewProduct } from 'src/entities/review-product.entity';
-import { Product } from 'src/entities/product.entity';
-import * as moment from 'moment-timezone';
+import { InjectRepository } from "@nestjs/typeorm";
+import { Review } from "src/entities/review.entity";
+import { Repository } from "typeorm";
+import { ReviewService } from "./reviews.service";
+import { Orphanage } from "src/entities/orphanage.entity";
+import { NotFoundException } from "@nestjs/common";
 
-@Injectable()
-export class PostsService {
-  constructor(
-    @InjectRepository(OrphanageUser) private userRepository: Repository<OrphanageUser>,
-    @InjectRepository(Review) private reviewRepository: Repository<Review>,
-    @InjectRepository(ReviewProduct) private reviewProductRepository: Repository<ReviewProduct>,
-    @InjectRepository(Product) private productRepository: Repository<Product>,
-    private dataSouce:DataSource,
-  ){}
+export class PostsService{
+    constructor(
+        private readonly reviewService: ReviewService,
+        @InjectRepository(Review) private reviewRepository: Repository<Review>,
+        @InjectRepository(Orphanage) private orphanageRepository: Repository<Orphanage>,
+    ){}
 
-  async getTags(userId: string) {
-    try{
+    // async getAllPost(){
+    //     return await this.reviewRepository.find();
+    // }
 
-      const user = await this.userRepository.findOne({
-        where: {orphanage_user_id: userId}
-      });
+    async getAllPosts(){
+        try{
+            const posts = await this.reviewRepository
+                .createQueryBuilder('review')
+                .select([
+                    'review.review_id as review_id',
+                    'review.title as title',
+                    'review.content as content',
+                    'review.photo as photo',
+                    'review.date as date',
+                    'ou.name as name',
+                    'o.orphanage_name as orphanage_name'
+                ])
+                .innerJoin('review.orphanage_user', 'ou')
+                .innerJoin('ou.orphanage_id', 'o')
+                .getRawMany();
+        for (const post of posts){
+            post.porudct_names = await this.reviewService.getProductNames(post.review_id);
+        }
 
-      if(!user){
-        throw new NotFoundException('해당 사용자를 찾을 수 없습니다.');
-      }
+        return posts
 
-      const tags = await this.reviewProductRepository
-        .createQueryBuilder('review_product')
-        .select([
-          'p.product_name as product_name'
-        ])
-        .where('review_product.orphanage_user_id.orphanage_user_id = :user_id', {user_id: userId})
-        .andWhere('review_product.review_id IS NULL')
-        .innerJoin('review_product.product_id', 'p')
-        .getRawMany();
-
-      return tags
-
-    } catch(error){
-      console.error(error);
-      return error['response'];
+        }catch(error){
+            console.error(error);
+            throw error;
+        }
     }
-  }
 
-  async createPost(createPostDto: CreatePostDto, userId: string){
-    const {title, content, photo, products} = createPostDto;
-    const queryRunner = await this.dataSouce.createQueryRunner();
-    await queryRunner.connect();
-    await queryRunner.startTransaction();
+    async getOnePost(orphanageId: number){
+        try{
+            
+            const orphanage = await this.orphanageRepository.findOne({
+                where: {orphanage_id: orphanageId}
+            })
+            
+            if(!orphanage){
+                throw new NotFoundException('해당 보육원을 찾을 수 없습니다.');
+            }
+            
+            const posts = await this.reviewRepository
+                .createQueryBuilder('review')
+                .select([
+                    'review.review_id as review_id',
+                    'review.title as title',
+                    'review.content as content',
+                    'review.photo as photo',
+                    'review.date as date',
+                ])
+                .innerJoin('review.orphanage_user', 'orphanage_user')
+                .innerJoin('orphanage_user.orphanage_id', 'orphanage')
+                .where('orphanage.orphanage_id = :orphanageId', { orphanageId })
+                .getRawMany();
 
-    try{ //인증글 중복 방지는 어떻게 하면 좋을지 ...?
-      const user = await this.userRepository.findOne({
-        where: {orphanage_user_id: userId},
-      });
+            console.log(posts)
 
-      if(!user){
-          throw new NotFoundException('해당 사용자를 찾을 수 없습니다.');
-      }
+            for (const post of posts){
+                post.porudct_names = await this.reviewService.getProductNames(post.review_id);
+            }
 
-      const newPost = new Review();
-      const currentTime = moment.tz('Asia/Seoul').format('YYYY-MM-DD hh:mm:ss');
-      newPost.date = currentTime;
-      newPost.title = title;
-      newPost.content = content;
-      newPost.orphanage_user = user;
-      if(photo) newPost.photo = photo;
-
-      await this.reviewRepository.save(newPost);
-
-      for (const product of products){
-        const productInfo = await this.productRepository.findOne({
-          where: {product_name: product.product_name}
-        })
-
-        this.reviewProductRepository.update({orphanage_user_id: user, product_id: productInfo},{review_id: newPost},)
-      }
-
-      await queryRunner.commitTransaction();
-
-    } catch(error){
-      await queryRunner.rollbackTransaction();
-      console.error(error['response'])
-      return error['response'];
-    } finally {
-      await queryRunner.release();
+            return posts;
+            
+        } catch(error){
+            console.error(error);
+            throw error;
+        }
     }
-  }
 }

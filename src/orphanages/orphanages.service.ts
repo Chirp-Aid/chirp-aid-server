@@ -26,7 +26,6 @@ export class OrphanagesService {
 
   async findAll() {
     const orphanages = await this.orphanageRepository.find();
-    console.log(orphanages);
     return await orphanages;
   }
 
@@ -80,7 +79,6 @@ export class OrphanagesService {
       }));
 
       const { name, email, orphanage_id: orphanageInfo } = orphanage;
-      console.log(orphanageInfo);
       return { name, email, ...orphanageInfo, requests };
     } catch (error) {
       console.log(error);

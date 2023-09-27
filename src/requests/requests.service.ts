@@ -48,8 +48,8 @@ export class RequestsService {
       const exist = await this.requestRepository
         .createQueryBuilder('requests')
         .where('requests.orphanage_user_id.orphanage_user_id = :orphanage_user_id', {orphanage_user_id: orphanageUserId})
-        .andWhere('request.product_id.product_name = :product_name', {product_name: productName})
-        .getOne
+        .andWhere('requests.product_id = :product_id', {product_id: product.product_id})
+        .getOne();
 
       if(exist) {
         throw new ConflictException('이미 해당 요청이 존재합니다.');
