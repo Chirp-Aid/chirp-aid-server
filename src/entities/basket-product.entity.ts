@@ -1,4 +1,4 @@
-import { Entity, JoinColumn, ManyToOne, PrimaryColumn, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Request } from "./request.entity";
 import { User } from "./user.entity";
 
@@ -8,7 +8,7 @@ export class BasketProduct
     @PrimaryGeneratedColumn()
     basket_product_id: number;
 
-    @PrimaryColumn()
+    @Column()
     count: number;
 
     @ManyToOne( ()=> Request,{ onDelete: 'NO ACTION' } )
