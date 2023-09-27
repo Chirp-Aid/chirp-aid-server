@@ -1,4 +1,8 @@
-import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../entities/user.entity';
 import { DataSource, Repository } from 'typeorm';
@@ -59,7 +63,7 @@ export class UsersService {
     } catch (error) {
       await queryRunner.rollbackTransaction();
       console.log(error['response']);
-      return error['response'];
+      throw error;
     } finally {
       await queryRunner.release();
     }
@@ -110,7 +114,7 @@ export class UsersService {
     } catch (error) {
       await queryRunner.rollbackTransaction();
       console.log(error);
-      return error['response'];
+      throw error;
     } finally {
       await queryRunner.release();
     }
@@ -122,7 +126,7 @@ export class UsersService {
         where: { user_id: userId },
       });
 
-      if(!getUser) {
+      if (!getUser) {
         throw new NotFoundException('해당 사용자를 찾을 수 없습니다.');
       }
       delete getUser.user_id;
@@ -134,7 +138,7 @@ export class UsersService {
       return getUser;
     } catch (error) {
       console.log(error['response']);
-      return error['response'];
+      throw error;
     }
   }
 }

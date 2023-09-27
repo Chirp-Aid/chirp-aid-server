@@ -1,4 +1,8 @@
-import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { DonateDto } from './dto/donate.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/entities/user.entity';
@@ -11,135 +15,147 @@ import { ReviewProduct } from 'src/entities/review-product.entity';
 
 @Injectable()
 export class DonateService {
-    constructor(
-        @InjectRepository(User) private userRepository: Repository<User>,
-        @InjectRepository(Request) private requestRepository: Repository<Request>,
-        @InjectRepository(BasketProduct) private basketProductRepository: Repository<BasketProduct>,
-        @InjectRepository(DonationHistory) private donationRepository: Repository<DonationHistory>,
-        @InjectRepository(ReviewProduct) private reviewProductRepository: Repository<ReviewProduct>,
-        private dataSource: DataSource
-    ){}
+  constructor(
+    @InjectRepository(User) private userRepository: Repository<User>,
+    @InjectRepository(Request) private requestRepository: Repository<Request>,
+    @InjectRepository(BasketProduct)
+    private basketProductRepository: Repository<BasketProduct>,
+    @InjectRepository(DonationHistory)
+    private donationRepository: Repository<DonationHistory>,
+    @InjectRepository(ReviewProduct)
+    private reviewProductRepository: Repository<ReviewProduct>,
+    private dataSource: DataSource,
+  ) {}
 
-    async donate(donateDto: DonateDto, userId: string){
-        const donates = donateDto.basket_product_id;
-        const message = donateDto.message;
-        // const errors = [];
-        const queryRunner = this.dataSource.createQueryRunner();
-        await queryRunner.connect();
-        await queryRunner.startTransaction();
+  async donate(donateDto: DonateDto, userId: string) {
+    const donates = donateDto.basket_product_id;
+    const message = donateDto.message;
+    // const errors = [];
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
 
-        try {
-            const user = await this.userRepository.findOne({
-                where: {user_id: userId},
-            });
-    
-            if(!user){
-                throw new NotFoundException('해당 사용자를 찾을 수 없습니다.');
-            }
+    try {
+      const user = await this.userRepository.findOne({
+        where: { user_id: userId },
+      });
 
-            for (const donateProduct of donates) {
+      if (!user) {
+        throw new NotFoundException('해당 사용자를 찾을 수 없습니다.');
+      }
 
-                const basket = await this.basketProductRepository.findOne({
-                    where: {basket_product_id: donateProduct},
-                    relations:['request_id', 'request_id.product_id', 'request_id.orphanage_user_id']
-                })
+      for (const donateProduct of donates) {
+        const basket = await this.basketProductRepository.findOne({
+          where: { basket_product_id: donateProduct },
+          relations: [
+            'request_id',
+            'request_id.product_id',
+            'request_id.orphanage_user_id',
+          ],
+        });
 
-                if (!basket) {
-                    throw new NotFoundException('장바구니에 해당 요청이 존재하지 않습니다.');
-                }
-
-                const request = basket.request_id;
-    
-                if (!request) {
-                    throw new NotFoundException(`${request.product_id.product_name}: 해당 요청을 찾을 수 없습니다.`);
-                }
-    
-                if (request.state === 'COMPLETED') {
-                    throw new ConflictException(`${request.product_id.product_name}: 해당 요청은 기부가 완료되었습니다.`);
-                }
-
-                if(request.supported_count + basket.count > request.count){
-                    throw new ConflictException(`${request.product_id.product_name}: 해당 요청의 수량보다 기부 수량이 많습니다.`)
-                }
-
-                request.supported_count += basket.count;
-
-                if (request.supported_count >= request.count) {
-                    request.state = 'COMPLETED';
-                }
-
-                const donationHistory = new DonationHistory();
-                const currentTime = moment.tz('Asia/Seoul').format('YYYY-MM-DD hh:mm:ss');
-                donationHistory.date = currentTime;
-                donationHistory.count = basket.count;
-                donationHistory.message = message;
-                donationHistory.request_id = request;
-                donationHistory.user_id = user;
-
-                const donatedProduct = new ReviewProduct();
-                donatedProduct.product_id = request.product_id;
-                donatedProduct.orphanage_user_id = request.orphanage_user_id; 
-                
-                await this.requestRepository.save(request);
-                await this.donationRepository.save(donationHistory);
-                await this.reviewProductRepository.save(donatedProduct)
-                await this.basketProductRepository.delete(basket);
-            }
-
-            await queryRunner.commitTransaction();
-
-        } catch (error) {
-            await queryRunner.rollbackTransaction();
-            console.error(error['response'])
-            return error['response'];
-        } finally {
-            await queryRunner.release();
+        if (!basket) {
+          throw new NotFoundException(
+            '장바구니에 해당 요청이 존재하지 않습니다.',
+          );
         }
-    }
 
-    async getDonate(userId: string){
-        const queryRunner = this.dataSource.createQueryRunner();
-        await queryRunner.connect();
-        await queryRunner.startTransaction();
+        const request = basket.request_id;
 
-        try{
-            const user = await this.userRepository.findOne({
-                where: { user_id: userId },
-            });
-        
-            if (!user) {
-            throw new NotFoundException('해당 사용자를 찾을 수 없습니다.');
-            }
-
-            const donateInfo = await this.donationRepository
-                .createQueryBuilder('donation_history')
-                .select([
-                    'o.orphanage_name as orphanage_name',
-                    'donation_history.date as date',
-                    'pi.product_name as product_name',
-                    'pi.price as price',
-                    'donation_history.count as count',
-                    'donation_history.message as message'
-                ])
-                .innerJoin('donation_history.user_id', 'user', 'user.user_id= :user_id', { user_id: userId })
-                .innerJoin('donation_history.request_id', 'r')
-                .innerJoin('r.orphanage_user_id', 'ou')
-                .innerJoin('ou.orphanage_id', 'o')
-                .innerJoin('r.product_id', 'pi')
-                .getRawMany();
-
-            if (!donateInfo || donateInfo.length == 0){
-                return { donate_info: []}
-            }
-
-            return { donate_info : donateInfo};
-
-        } catch(error) {
-            console.error(error);
-            return error['response'];
-        } finally {
-
+        if (!request) {
+          throw new NotFoundException(
+            `${request.product_id.product_name}: 해당 요청을 찾을 수 없습니다.`,
+          );
         }
-    }
 
+        if (request.state === 'COMPLETED') {
+          throw new ConflictException(
+            `${request.product_id.product_name}: 해당 요청은 기부가 완료되었습니다.`,
+          );
+        }
+
+        if (request.supported_count + basket.count > request.count) {
+          throw new ConflictException(
+            `${request.product_id.product_name}: 해당 요청의 수량보다 기부 수량이 많습니다.`,
+          );
+        }
+
+        request.supported_count += basket.count;
+
+        if (request.supported_count >= request.count) {
+          request.state = 'COMPLETED';
+        }
+
+        const donationHistory = new DonationHistory();
+        const currentTime = moment
+          .tz('Asia/Seoul')
+          .format('YYYY-MM-DD hh:mm:ss');
+        donationHistory.date = currentTime;
+        donationHistory.count = basket.count;
+        donationHistory.message = message;
+        donationHistory.request_id = request;
+        donationHistory.user_id = user;
+
+        const donatedProduct = new ReviewProduct();
+        donatedProduct.product_id = request.product_id;
+        donatedProduct.orphanage_user_id = request.orphanage_user_id;
+
+        await this.requestRepository.save(request);
+        await this.donationRepository.save(donationHistory);
+        await this.reviewProductRepository.save(donatedProduct);
+        await this.basketProductRepository.delete(basket);
+      }
+
+      await queryRunner.commitTransaction();
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+      console.error(error['response']);
+      throw error;
+    } finally {
+      await queryRunner.release();
+    }
+  }
+
+  async getDonate(userId: string) {
+    try {
+      const user = await this.userRepository.findOne({
+        where: { user_id: userId },
+      });
+
+      if (!user) {
+        throw new NotFoundException('해당 사용자를 찾을 수 없습니다.');
+      }
+
+      const donateInfo = await this.donationRepository
+        .createQueryBuilder('donation_history')
+        .select([
+          'o.orphanage_name as orphanage_name',
+          'donation_history.date as date',
+          'pi.product_name as product_name',
+          'pi.price as price',
+          'donation_history.count as count',
+          'donation_history.message as message',
+        ])
+        .innerJoin(
+          'donation_history.user_id',
+          'user',
+          'user.user_id= :user_id',
+          { user_id: userId },
+        )
+        .innerJoin('donation_history.request_id', 'r')
+        .innerJoin('r.orphanage_user_id', 'ou')
+        .innerJoin('ou.orphanage_id', 'o')
+        .innerJoin('r.product_id', 'pi')
+        .getRawMany();
+
+      if (!donateInfo || donateInfo.length == 0) {
+        return { donate_info: [] };
+      }
+
+      return { donate_info: donateInfo };
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  }
 }

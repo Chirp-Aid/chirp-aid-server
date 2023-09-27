@@ -1,27 +1,18 @@
-import {
-  ConflictException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Orphanage } from '../entities/orphanage.entity';
-import { DataSource, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { OrphanageUser } from 'src/entities/orphanage-user.entity';
-import { Favorites } from 'src/entities/favorites.entity';
-import { User } from 'src/entities/user.entity';
 import { Request } from 'src/entities/request.entity';
 
 @Injectable()
 export class OrphanagesService {
   constructor(
-    @InjectRepository(User) private userRepository: Repository<User>,
     @InjectRepository(Orphanage)
     private orphanageRepository: Repository<Orphanage>,
     @InjectRepository(OrphanageUser)
     private orphanageUserRepository: Repository<OrphanageUser>,
-    @InjectRepository(Favorites) private favsRepository: Repository<Favorites>,
     @InjectRepository(Request) private requestRepository: Repository<Request>,
-    private dataSource: DataSource,
   ) {}
 
   async findAll() {
@@ -48,10 +39,9 @@ export class OrphanagesService {
         .where('orphanage_user.orphanage_id = :id', { id })
         .getOne();
 
-        console.log(orphanage);
+      console.log(orphanage);
 
       if (!orphanage) {
-        console.log(`해당 보육원을 찾지 못 했습니다. orphanage_id : ${id}`);
         throw new NotFoundException('해당 보육원을 찾지 못 했습니다.');
       }
 
@@ -82,58 +72,7 @@ export class OrphanagesService {
       return { name, email, ...orphanageInfo, requests };
     } catch (error) {
       console.log(error);
-      return error['response'];
+      throw error;
     }
   }
-
-  async createFavorite(userId: string, orphanageId: number) {
-    const queryRunner = this.dataSource.createQueryRunner();
-
-    await queryRunner.connect();
-    await queryRunner.startTransaction();
-
-    try {
-      const orphanage = await this.orphanageRepository.findOne({
-        where: { orphanage_id: orphanageId },
-      });
-
-      if (!orphanage) {
-        throw new NotFoundException('해당 보육원을 찾을 수 없습니다.');
-      }
-
-      const user = await this.userRepository.findOne({
-        where: { user_id: userId },
-      });
-
-      if (!user) {
-        throw new NotFoundException('해당 사용자를 찾을 수 없습니다.');
-      }
-
-      const exist = await this.favsRepository
-        .createQueryBuilder('favorites')
-        .where('favorites.orphanage_id.orphanage_id = :orphanage_id', {
-          orphanage_id: orphanageId,
-        })
-        .andWhere('favorites.user_id.user_id = :user_id', { user_id: userId })
-        .getOne();
-
-      if (exist) {
-        throw new ConflictException('이미 해당 조합의 즐겨찾기가 존재합니다.');
-      }
-
-      const newFavorite = new Favorites();
-      newFavorite.orphanage_id = orphanage;
-      newFavorite.user_id = user;
-
-      await this.favsRepository.save(newFavorite);
-      await queryRunner.commitTransaction();
-    } catch (error) {
-      await queryRunner.rollbackTransaction();
-      console.log(error['response']);
-      return error['response'];
-    } finally {
-      await queryRunner.release();
-    }
-  }
-
 }

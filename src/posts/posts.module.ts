@@ -16,10 +16,10 @@ import { Orphanage } from 'src/entities/orphanage.entity';
       OrphanageUser,
       ReviewProduct,
       Review,
-      Product
+      Product,
     ]),
   ],
   controllers: [PostsController],
-  providers: [ReviewService, PostsService]
+  providers: [ReviewService, PostsService],
 })
 export class PostsModule {}

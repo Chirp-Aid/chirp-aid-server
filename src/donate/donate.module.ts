@@ -16,10 +16,10 @@ import { ReviewProduct } from 'src/entities/review-product.entity';
       Request,
       BasketProduct,
       DonationHistory,
-      ReviewProduct
+      ReviewProduct,
     ]),
   ],
   controllers: [DonateController],
-  providers: [BasketService, DonateService]
+  providers: [BasketService, DonateService],
 })
 export class DonateModule {}

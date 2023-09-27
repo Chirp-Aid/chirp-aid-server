@@ -22,7 +22,12 @@ export class OrphanageUsersService {
   ) {}
 
   async create(createOrphanageUserDto: CreateOrphanageUserDto) {
-    const { name, email, password, orphanage_name: orphanageName } = createOrphanageUserDto;
+    const {
+      name,
+      email,
+      password,
+      orphanage_name: orphanageName,
+    } = createOrphanageUserDto;
     const queryRunner = this.dataSource.createQueryRunner();
 
     await queryRunner.connect();
@@ -57,14 +62,10 @@ export class OrphanageUsersService {
         console.log(
           `이미 해당 보육원의 계정은 존재합니다. or_name: ${orphanageName}`,
         );
-        return {
-          statusCode: 409,
-          message: '이미 해당 보육원의 계정은 존재합니다.',
-          error: 'Conflict',
-        };
+        throw new ConflictException('이미 해당 보육원의 계정은 존재합니다');
       }
       console.log(error['response']);
-      return error['response'];
+      throw error;
     } finally {
       await queryRunner.release();
     }
@@ -89,7 +90,7 @@ export class OrphanageUsersService {
     } catch (error) {
       await queryRunner.rollbackTransaction();
       console.log(error['response']);
-      return error['response'];
+      throw error;
     } finally {
       await queryRunner.release();
     }
@@ -101,7 +102,7 @@ export class OrphanageUsersService {
         where: { orphanage_user_id: userId },
       });
 
-      if (!getUser){
+      if (!getUser) {
         throw new NotFoundException('해당 사용자를 찾을 수 없습니다.');
       }
       delete getUser.orphanage_user_id;
@@ -113,7 +114,7 @@ export class OrphanageUsersService {
       return getUser;
     } catch (error) {
       console.log(error['response']);
-      return error['response'];
+      throw error;
     }
   }
 }

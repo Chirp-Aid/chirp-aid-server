@@ -116,10 +116,6 @@ export class MembersController {
     description: 'OK',
   })
   @ApiResponse({
-    status: 400,
-    description: 'Bad Reqeust - ',
-  })
-  @ApiResponse({
     status: 401,
     description: 'Unaothorized',
   })
@@ -169,13 +165,16 @@ export class MembersController {
       },
     },
   })
+  @ApiResponse({
+    status: 404,
+    description: 'Not Found - 해당 사용자를 찾을 수 없습니다.',
+  })
   @UseGuards(AuthGuard('access'))
   async getUserInfo(@Request() req) {
     const userId = req.user.user_id;
     return await this.usersService.getUserInfo(userId);
   }
 
-  //#################################
   @Patch('orphanages/info')
   @ApiOperation({
     summary: '보육원 계정 정보 수정',
@@ -184,10 +183,6 @@ export class MembersController {
   @ApiResponse({
     status: 200,
     description: 'OK',
-  })
-  @ApiResponse({
-    status: 400,
-    description: 'Bad Reqeust - ',
   })
   @ApiResponse({
     status: 401,
@@ -232,6 +227,10 @@ export class MembersController {
   @ApiResponse({
     status: 401,
     description: 'Unaothorized',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Not Found - 해당 사용자를 찾을 수 없습니다.',
   })
   @UseGuards(AuthGuard('access'))
   async getOrphanageUserInfo(@Request() req) {

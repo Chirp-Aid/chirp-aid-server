@@ -24,6 +24,6 @@ export class Orphanage {
   @Column()
   photo: string;
 
-  @OneToOne(() => OrphanageUser, user => user.orphanage_id)
+  @OneToOne(() => OrphanageUser, (user) => user.orphanage_id)
   user: OrphanageUser;
 }

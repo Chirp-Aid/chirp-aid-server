@@ -9,14 +9,9 @@ import { Reservation } from 'src/entities/reservation.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([
-      OrphanageUser,
-      User,
-      Orphanage,
-      Reservation
-    ]),
+    TypeOrmModule.forFeature([OrphanageUser, User, Orphanage, Reservation]),
   ],
   controllers: [ReservationController],
-  providers: [ReservationService]
+  providers: [ReservationService],
 })
 export class ReservationModule {}

@@ -36,12 +36,13 @@ export class FavoritesController {
   })
   @ApiResponse({
     status: 404,
-    description: 'Not Found - 해당 보육원을 찾을 수 없습니다.\
+    description:
+      'Not Found - 해당 보육원을 찾을 수 없습니다.\
     \nNot Found - 해당 사용자를 찾을 수 없습니다. (보육원 계정이 아닌 일반 사용자 계정으로 요청글을 올리는 시도할 경우)',
   })
   @ApiResponse({
     status: 409,
-    description: 'Conflict - 이미 해당 조합의 즐겨찾기가 존재합니다.'
+    description: 'Conflict - 이미 해당 조합의 즐겨찾기가 존재합니다.',
   })
   @UseGuards(AuthGuard('access'))
   async createFavorite(
@@ -71,13 +72,15 @@ export class FavoritesController {
       properties: {
         orphanages: {
           type: 'object',
-          example: [{
-            orphanage_id: 1,
-            orphanage_name: 'orphanage1',
-            address: 'addr1',
-            phone_number: '054-123-1234',
-            photo: 'url',
-          }],
+          example: [
+            {
+              orphanage_id: 1,
+              orphanage_name: 'orphanage1',
+              address: 'addr1',
+              phone_number: '054-123-1234',
+              photo: 'url',
+            },
+          ],
         },
       },
     },
@@ -88,7 +91,8 @@ export class FavoritesController {
   })
   @ApiResponse({
     status: 404,
-    description: 'Not Found - 해당 사용자를 찾을 수 없습니다. (보육원 계정이 아닌 일반 사용자 계정으로 요청글을 올리는 시도할 경우)',
+    description:
+      'Not Found - 해당 사용자를 찾을 수 없습니다. (보육원 계정이 아닌 일반 사용자 계정으로 요청글을 올리는 시도할 경우)',
   })
   @UseGuards(AuthGuard('access'))
   async getFavorites(@Request() req): Promise<any> {

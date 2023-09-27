@@ -105,7 +105,7 @@ export class OrphanageAuthService {
       });
     } catch (error) {
       console.log(error['response']);
-      return error['response'];
+      throw error;
     } //finally {
     //   return this.orphanageRepository
     //     .createQueryBuilder('user')

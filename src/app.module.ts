@@ -1,6 +1,4 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { NotificationsModule } from './notifications/notifications.module';
@@ -47,7 +45,7 @@ import { Reservation } from './entities/reservation.entity';
         DonationHistory,
         Review,
         ReviewProduct,
-        Reservation
+        Reservation,
       ],
       synchronize: true,
     }),
@@ -60,9 +58,7 @@ import { Reservation } from './entities/reservation.entity';
     FavoritesModule,
     DonateModule,
     PostsModule,
-    ReservationModule
+    ReservationModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
 })
 export class AppModule {}
