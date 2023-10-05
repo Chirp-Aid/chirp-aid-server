@@ -87,9 +87,7 @@ export class DonateService {
         }
 
         const donationHistory = new DonationHistory();
-        const currentTime = moment
-          .tz('Asia/Seoul')
-          .format('YYYY-MM-DD hh:mm:ss');
+        const currentTime = moment.tz('Asia/Seoul').format('YYYY-MM-DD hh:mm:ss');
         donationHistory.date = currentTime;
         donationHistory.count = basket.count;
         donationHistory.message = message;
@@ -149,10 +147,10 @@ export class DonateService {
         .getRawMany();
 
       if (!donateInfo || donateInfo.length == 0) {
-        return { donate_info: [] };
+        return [];
       }
 
-      return { donate_info: donateInfo };
+      return donateInfo;
     } catch (error) {
       console.error(error);
       throw error;

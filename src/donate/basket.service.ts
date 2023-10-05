@@ -154,10 +154,10 @@ export class BasketService {
         .getRawMany();
 
       if (!baskets || baskets.length == 0) {
-        return { baskets: [] };
+        return [];
       }
 
-      return { baskets: baskets };
+      return baskets;
     } catch (error) {
       console.log(error);
       throw error;

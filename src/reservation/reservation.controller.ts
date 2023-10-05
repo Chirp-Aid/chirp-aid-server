@@ -31,6 +31,10 @@ export class ReservationController {
     description: 'Created',
   })
   @ApiResponse({
+    status: 400,
+    description: 'Bad Request - 날짜 형식이 올바르지 않습니다. YYYY-MM-DD 형식으로 기입하여 주십시요.'
+  })
+  @ApiResponse({
     status: 401,
     description: 'Unaothorized',
   })

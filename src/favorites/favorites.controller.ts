@@ -69,20 +69,22 @@ export class FavoritesController {
     description: 'OK',
     schema: {
       type: 'object',
-      properties: {
-        orphanages: {
-          type: 'object',
-          example: [
-            {
-              orphanage_id: 1,
-              orphanage_name: 'orphanage1',
-              address: 'addr1',
-              phone_number: '054-123-1234',
-              photo: 'url',
-            },
-          ],
+      example:[
+        {
+          "orphanage_id": 3,
+          "orphanage_name": "금오보육원",
+          "address": "주소3",
+          "phone_number": "333-3333",
+          "photo": "사진3"
         },
-      },
+        {
+          "orphanage_id": 2,
+          "orphanage_name": "보육원2",
+          "address": "주소2",
+          "phone_number": "222-2222",
+          "photo": "사진2"
+        }
+      ]
     },
   })
   @ApiResponse({

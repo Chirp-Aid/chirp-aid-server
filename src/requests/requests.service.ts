@@ -14,7 +14,6 @@ import { Product } from 'src/entities/product.entity';
 @Injectable()
 export class RequestsService {
   constructor(
-    @InjectRepository(Orphanage)
     @InjectRepository(OrphanageUser)
     private usersRepository: Repository<OrphanageUser>,
     @InjectRepository(Request) private requestRepository: Repository<Request>,

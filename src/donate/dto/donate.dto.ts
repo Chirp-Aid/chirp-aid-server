@@ -2,7 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export class DonateDto {
   @ApiProperty({
-    example: '[1, 2, 3, ...]',
+    example: [1,],
     description: '기부할 장바구니 id',
   })
   basket_product_id: number[];

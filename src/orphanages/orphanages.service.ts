@@ -47,26 +47,42 @@ export class OrphanagesService {
 
       const orphanageUserId = orphanage.orphanage_user_id;
 
-      const getRequests = await this.requestRepository
-        .createQueryBuilder('requests')
-        .where(
-          'requests.orphanage_user_id.orphanage_user_id = :orphanage_user_id',
-          {
-            orphanage_user_id: orphanageUserId,
-          },
-        )
-        .leftJoinAndSelect('requests.product_id', 'product')
-        .getMany();
+      const requests = await this.requestRepository
+      .createQueryBuilder('requests')
+      .select([
+        'requests.request_id as request_id',
+        'p.product_name as product_name',
+        'p.price as price',
+        'requests.count as count',
+        'requests.supported_count as supported_count',
+        'requests.state as state',
+        'requests.message as message',
+        'p.product_photo as product_photo'
+      ])
+      .innerJoin('requests.product_id', 'p')
+      .where('requests.orphanage_user_id.orphanage_user_id = :orphanage_user_id',{  orphanage_user_id: orphanageUserId, },)
+      .getRawMany();
 
-      const requests = getRequests.map((request) => ({
-        request_id: request.request_id,
-        product_name: request.product_id.product_name,
-        price: request.product_id.price,
-        count: request.count,
-        supported_count: request.supported_count,
-        message: request.message,
-        product_photo: request.product_id.product_photo,
-      }));
+      // const getRequests = await this.requestRepository
+      //   .createQueryBuilder('requests')
+      //   .where(
+      //     'requests.orphanage_user_id.orphanage_user_id = :orphanage_user_id',
+      //     {
+      //       orphanage_user_id: orphanageUserId,
+      //     },
+      //   )
+      //   .leftJoinAndSelect('requests.product_id', 'product')
+      //   .getMany();
+
+      // const requests = getRequests.map((request) => ({
+      //   request_id: request.request_id,
+      //   product_name: request.product_id.product_name,
+      //   price: request.product_id.price,
+      //   count: request.count,
+      //   supported_count: request.supported_count,
+      //   message: request.message,
+      //   product_photo: request.product_id.product_photo,
+      // }));
 
       const { name, email, orphanage_id: orphanageInfo } = orphanage;
       return { name, email, ...orphanageInfo, requests };
