@@ -30,8 +30,6 @@ export class MembersController {
   @Post('/new/users')
   @ApiOperation({
     summary: '사용자 회원가입',
-    description:
-      '사용자 회원가입 후 입력된 값을 확인하기 위해 다시 사용자 정보를 반환합니다.',
   })
   @ApiResponse({
     status: 201,
@@ -62,7 +60,7 @@ export class MembersController {
   @ApiOperation({
     summary: '보육원 계정 회원가입',
     description:
-      '보육원 계정 회원가입 후 입력된 값을 확인하기 위해 다시 보육원 계정 정보를 반환합니다.',
+      '보육원 계정 회원가입 시, 보육원의 정보는 기존 데이터베이스에 존재해야 합니다.',
   })
   @ApiResponse({
     status: 201,

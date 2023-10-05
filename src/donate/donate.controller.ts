@@ -200,7 +200,8 @@ export class DonateController {
   @ApiOperation({
     summary: '기부 내역 조회하기',
     description: '사용자의 기부 내역을 조회합니다.\
-    \n보육원/사용자 모두 동일하게 요청하지만, 반환값은 다릅니다!!\n',
+    \n!!보육원/사용자 모두 동일하게 요청하지만, 반환값은 다릅니다!!\
+    \n아래 응답 예시에서 첫 번째 객체는 사용자의 요청, 두 번째 객체는 보육원 계정의 요청입니다. orphanage_name과 user_nickname만 다릅니다!!!!!',
   })
   @ApiHeader({
     name: 'Authorization',
