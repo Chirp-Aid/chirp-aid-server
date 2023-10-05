@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Post,
   Request,
@@ -10,8 +11,10 @@ import { ApiHeader, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
 import { FavoritesService } from './favorites.service';
 import { CreateFavoriteDto } from 'src/favorites/dto/create-favorite.dto';
+import { DelFavoriteDto } from './dto/delete-favorite.dto';
 
 @ApiTags('Favorites: 즐겨찾기 관련 요청')
+@UseGuards(AuthGuard('access'))
 @Controller('favorites')
 export class FavoritesController {
   constructor(private readonly favoritesService: FavoritesService) {}
@@ -44,7 +47,6 @@ export class FavoritesController {
     status: 409,
     description: 'Conflict - 이미 해당 조합의 즐겨찾기가 존재합니다.',
   })
-  @UseGuards(AuthGuard('access'))
   async createFavorite(
     @Body() createFavoriteDto: CreateFavoriteDto,
     @Request() req,
@@ -69,20 +71,24 @@ export class FavoritesController {
     description: 'OK',
     schema: {
       type: 'object',
-      properties: {
-        orphanages: {
-          type: 'object',
-          example: [
-            {
-              orphanage_id: 1,
-              orphanage_name: 'orphanage1',
-              address: 'addr1',
-              phone_number: '054-123-1234',
-              photo: 'url',
-            },
-          ],
+      example:[
+        {
+          "favorite_id": 1,
+          "orphanage_id": 3,
+          "orphanage_name": "금오보육원",
+          "address": "주소3",
+          "phone_number": "333-3333",
+          "photo": "사진3"
         },
-      },
+        {
+          "favorite_id": 2,
+          "orphanage_id": 2,
+          "orphanage_name": "보육원2",
+          "address": "주소2",
+          "phone_number": "222-2222",
+          "photo": "사진2"
+        }
+      ]
     },
   })
   @ApiResponse({
@@ -94,9 +100,35 @@ export class FavoritesController {
     description:
       'Not Found - 해당 사용자를 찾을 수 없습니다. (보육원 계정이 아닌 일반 사용자 계정으로 요청글을 올리는 시도할 경우)',
   })
-  @UseGuards(AuthGuard('access'))
   async getFavorites(@Request() req): Promise<any> {
     const userId = req.user.user_id;
     return await this.favoritesService.getFavorites(userId);
+  }
+
+  @Delete()
+  @ApiOperation({
+    summary: '즐겨찾는 삭제',
+    description: '해당 즐겨찾기를 삭제합니다.',
+  })
+  @ApiHeader({
+    name: 'Authorization',
+    description: 'Bearer {Access Token}',
+    example: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'OK',
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Unauthorized - JWT 토큰 에러',
+  })
+  @ApiResponse({
+    status: 404,
+    description:
+      'Not Found - 해당 즐겨찾기를 찾을 수 없습니다.',
+  })
+  async delFavorite(@Body() delFavoriteDto: DelFavoriteDto){
+    return await this.favoritesService.delFavorite(delFavoriteDto.favorite_id);
   }
 }

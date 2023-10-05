@@ -72,20 +72,16 @@ export class DonateController {
     description: 'OK',
     schema: {
       type: 'object',
-      properties: {
-        baskets: {
-          type: 'object',
-          example: [
-            {
-              basket_product_id: 5,
-              product_name: '초코파이',
-              count: 10,
-              price: 2000,
-              orphanage_name: '보육원1',
-            },
-          ],
+      example: [
+        {
+          request_id: 1,
+          basket_product_id: 5,
+          product_name: '초코파이',
+          count: 10,
+          price: 2000,
+          orphanage_name: '보육원1',
         },
-      },
+      ],
     },
   })
   @ApiResponse({
@@ -203,7 +199,9 @@ export class DonateController {
   @Get()
   @ApiOperation({
     summary: '기부 내역 조회하기',
-    description: '사용자의 기부 내역을 조회합니다.',
+    description: '사용자의 기부 내역을 조회합니다.\
+    \n!!보육원/사용자 모두 동일하게 요청하지만, 반환값은 다릅니다!!\
+    \n아래 응답 예시에서 첫 번째 객체는 사용자의 요청, 두 번째 객체는 보육원 계정의 요청입니다. orphanage_name과 user_nickname만 다릅니다!!!!!',
   })
   @ApiHeader({
     name: 'Authorization',
@@ -213,6 +211,27 @@ export class DonateController {
   @ApiResponse({
     status: 200,
     description: 'OK',
+    schema: {
+      type: 'object',
+      example: [
+        {
+          "orphanage_name": "금오보육원",
+          "date": "2023-10-05 03:34:22",
+          "product_name": "촉촉한 초코칩",
+          "price": 2000,
+          "count": 5,
+          "message": "냠냠"
+      },
+      {
+          "user_nickname": "기부자 닉네임",
+          "date": "2023-10-05 03:46:59",
+          "product_name": "초코파이",
+          "price": 2000,
+          "count": 10,
+          "message": "끝~~~"
+      },
+      ],
+    },
   })
   @ApiResponse({
     status: 404,

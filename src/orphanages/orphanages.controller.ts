@@ -18,21 +18,27 @@ export class OrphanagesController {
     description: 'OK',
     schema: {
       type: 'object',
-      properties: {
-        orphanages: {
-          type: 'object',
-          example: [
-            {
-              orphanage_id: 1,
-              orphanage_name: 'orphanage1',
-              address: 'addr1',
-              phone_number: '054-123-1234',
-              photo: 'url',
-            },
-          ],
+      example: [
+        {
+          "orphanage_id": 1,
+          "orphanage_name": "보육원1",
+          "address": "주소1",
+          "homepage_link": "링크1",
+          "phone_number": "111-1111",
+          "description": "설명1",
+          "photo": "사진1"
         },
-      },
-    },
+        {
+          "orphanage_id": 2,
+          "orphanage_name": "보육원2",
+          "address": "주소2",
+          "homepage_link": "링크2",
+          "phone_number": "222-2222",
+          "description": "설명2",
+          "photo": "사진2"
+        },
+      ]
+    }
   })
   async findAll() {
     return await this.orphanagesService.findAll();
@@ -49,29 +55,27 @@ export class OrphanagesController {
     description: 'OK',
     schema: {
       type: 'object',
-      properties: {
-        name: { type: 'string', example: '보육원 계정주 이름' },
-        orphanage_name: { type: 'string', example: 'orphanage1' },
-        address: { type: 'string', example: 'addr1' },
-        homepage_link: { type: 'string', example: 'homepage_link' },
-        description: { type: 'string', example: '보육원 한줄 소개(설명)' },
-        phone_number: { type: 'string', example: '054-123-1234' },
-        photo: { type: 'string', example: 'url' },
-        reqeusts: {
-          type: 'object',
-          example: [
+      example:  {
+        "name": "홍길동",
+        "orphanage_name": "금오보육원",
+        "address": "주소3",
+        "homepage_link": "링크3",
+        "phone_number": "333-3333",
+        "description": "설명3",
+        "photo": "사진3",
+        "requests": [
             {
-              request_id: 1,
-              product_name: '초코파이',
-              price: 10000,
-              count: 40,
-              supported_count: 0,
-              message: '사주세요',
-              product_photo: 'url',
-            },
-          ],
-        },
-      },
+                "request_id": 6,
+                "product_name": "촉촉한 초코칩",
+                "price": 2000,
+                "count": 5,
+                "supported_count": 5,
+                "state": "COMPLETED",
+                "message": "내가 좋아하는 촉촉한 초코칩, 내가 안 좋아는 안 촉촉한 초코칩",
+                "product_photo": "초코칩 사진"
+            }
+        ]
+    }
     },
   })
   @ApiResponse({

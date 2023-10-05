@@ -10,6 +10,7 @@ import { DataSource, Repository } from 'typeorm';
 import { User } from 'src/entities/user.entity';
 import { OrphanageUser } from 'src/entities/orphanage-user.entity';
 import * as moment from 'moment-timezone';
+import { changeReservationDto } from './dto/change-reservation.dto';
 
 @Injectable()
 export class ReservationService {
@@ -118,5 +119,18 @@ export class ReservationService {
       console.error(error);
       throw error;
     }
+  }
+
+  async changeReservationState(changeDto: changeReservationDto){
+    const {reservation_id: reservationId, state, message} = changeDto;
+
+    await this.reservationRepository
+    .createQueryBuilder()
+    .update(Reservation)
+    .set({ state: state })
+    .where('reservation_id = :reservationId', { reservationId })
+    .execute();
+
+    //fcm 사용자에게 전송하기..
   }
 }

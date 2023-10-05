@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Get,
+  Patch,
   Post,
   Request,
   UseGuards,
@@ -10,8 +11,10 @@ import { ReservationService } from './reservation.service';
 import { CreateReservationDto } from './dto/create-reservation.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiHeader, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { changeReservationDto } from './dto/change-reservation.dto';
 
 @ApiTags('RESERVATION: 방문 예약 관련 요청')
+@UseGuards(AuthGuard('access'))
 @Controller('reservation')
 export class ReservationController {
   constructor(private readonly reservationService: ReservationService) {}
@@ -31,6 +34,10 @@ export class ReservationController {
     description: 'Created',
   })
   @ApiResponse({
+    status: 400,
+    description: 'Bad Request - 날짜 형식이 올바르지 않습니다. YYYY-MM-DD 형식으로 기입하여 주십시요.'
+  })
+  @ApiResponse({
     status: 401,
     description: 'Unaothorized',
   })
@@ -46,7 +53,6 @@ export class ReservationController {
     description:
       'Conflict - 이미 해당 보육원의 같은 방문 일시로 예약을 신청하였습니다.',
   })
-  @UseGuards(AuthGuard('access'))
   async createReservation(
     @Body() createReservationDto: CreateReservationDto,
     @Request() req,
@@ -100,9 +106,32 @@ export class ReservationController {
       'Not Found - 해당 물품을 찾을 수 없습니다.\
       \nNot Found - 해당 사용자를 찾을 수 없습니다.',
   })
-  @UseGuards(AuthGuard('access'))
   async getReservatino(@Request() req) {
     const userId = req.user.user_id;
     return await this.reservationService.get(userId);
+  }
+
+  @Patch()
+  @ApiOperation({
+    summary: '예약 승인/거절',
+    description:
+      '보육원 계정은 신청 받은 예약을 승인 또는 거절합니다.\
+        \n"state"의 값에 따라 승인(approve), 거절(reject)로 예약의 상태가 갱신됩니다.',
+  })
+  @ApiHeader({
+    name: 'Authorization',
+    description: 'Bearer {Access Token}',
+    example: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'OK',
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Unaothorized',
+  })
+  async changeReservationState(@Body() changeDto: changeReservationDto){
+    await this.reservationService.changeReservationState(changeDto);
   }
 }

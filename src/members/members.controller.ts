@@ -12,7 +12,7 @@ import { UsersService } from './users.service';
 import * as bcrypt from 'bcrypt';
 import { CreateOrphanageUserDto } from './dto/create-orphanage-user.dto';
 import { OrphanageUsersService } from './orphanage-user.service';
-import { ApiHeader, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiHeader, ApiHeaders, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CustomValidationPipe } from 'src/commons/customValidationPipe';
 import { AuthGuard } from '@nestjs/passport';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -30,13 +30,11 @@ export class MembersController {
   @Post('/new/users')
   @ApiOperation({
     summary: '사용자 회원가입',
-    description:
-      '사용자 회원가입 후 입력된 값을 확인하기 위해 다시 사용자 정보를 반환합니다.',
   })
   @ApiResponse({
     status: 201,
     description: 'Created',
-    type: CreateUserDto,
+    // type: CreateUserDto,
   })
   @ApiResponse({
     status: 409,
@@ -62,12 +60,12 @@ export class MembersController {
   @ApiOperation({
     summary: '보육원 계정 회원가입',
     description:
-      '보육원 계정 회원가입 후 입력된 값을 확인하기 위해 다시 보육원 계정 정보를 반환합니다.',
+      '보육원 계정 회원가입 시, 보육원의 정보는 기존 데이터베이스에 존재해야 합니다.',
   })
   @ApiResponse({
     status: 201,
     description: 'Created',
-    type: CreateOrphanageUserDto,
+    // type: CreateOrphanageUserDto,
   })
   @ApiResponse({
     status: 400,
@@ -110,6 +108,11 @@ export class MembersController {
   @ApiOperation({
     summary: '사용자 정보 수정',
     description: '사용자 정보를 수정합니다. 이메일은 수정할 수 없습니다.',
+  })
+  @ApiHeader({
+    name: 'Authorization',
+    description: 'Bearer {Access Token}',
+    example: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9',
   })
   @ApiResponse({
     status: 200,
@@ -179,6 +182,11 @@ export class MembersController {
   @ApiOperation({
     summary: '보육원 계정 정보 수정',
     description: '보육원 계정 정보를 수정합니다. 이메일은 수정할 수 없습니다.',
+  })
+  @ApiHeader({
+    name: 'Authorization',
+    description: 'Bearer {Access Token}',
+    example: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9',
   })
   @ApiResponse({
     status: 200,

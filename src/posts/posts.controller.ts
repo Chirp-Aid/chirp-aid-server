@@ -68,6 +68,10 @@ export class PostsController {
   @ApiResponse({
     status: 200,
     description: 'OK',
+    schema:{
+      type: 'object',
+      example: [{"product_name": "촉촉한 초코칩"},{"product_name": "초코파이"},]
+    }
   })
   @ApiResponse({
     status: 401,

@@ -6,7 +6,6 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { Orphanage } from '../entities/orphanage.entity';
 import { DataSource, Repository } from 'typeorm';
-import { OrphanageUser } from 'src/entities/orphanage-user.entity';
 import { Favorites } from 'src/entities/favorites.entity';
 import { User } from 'src/entities/user.entity';
 
@@ -14,15 +13,12 @@ import { User } from 'src/entities/user.entity';
 export class FavoritesService {
   constructor(
     @InjectRepository(User) private userRepository: Repository<User>,
-    @InjectRepository(Orphanage)
-    private orphanageRepository: Repository<Orphanage>,
-    @InjectRepository(OrphanageUser)
-    @InjectRepository(Favorites)
-    private favsRepository: Repository<Favorites>,
+    @InjectRepository(Orphanage) private orphanageRepository: Repository<Orphanage>,
+    @InjectRepository(Favorites) private favsRepository: Repository<Favorites>,
     private dataSource: DataSource,
   ) {}
 
-  async createFavorite(userId, orphanage_id) {
+  async createFavorite(userId, orphanageId) {
     const queryRunner = this.dataSource.createQueryRunner();
 
     await queryRunner.connect();
@@ -30,7 +26,7 @@ export class FavoritesService {
 
     try {
       const orphanage = await this.orphanageRepository.findOne({
-        where: { orphanage_id: orphanage_id },
+        where: { orphanage_id: orphanageId },
       });
 
       if (!orphanage) {
@@ -46,12 +42,10 @@ export class FavoritesService {
       }
 
       const exist = await this.favsRepository
-        .createQueryBuilder('favorites')
-        .where('favorites.orphanage_id.orphanage_id = :orphanage_id', {
-          orphanage_id,
-        })
-        .andWhere('favorites.user_id.user_id = :user_id', { user_id: userId })
-        .getOne();
+      .createQueryBuilder('favorites')
+      .where('favorites.orphanage_id.orphanage_id = :orphanage_id',{ orphanage_id: orphanageId },)
+      .andWhere('favorites.user_id.user_id = :user_id', {user_id: userId,})
+      .getOne(); 
 
       if (exist) {
         throw new ConflictException('이미 해당 조합의 즐겨찾기가 존재합니다.');
@@ -65,7 +59,7 @@ export class FavoritesService {
       await queryRunner.commitTransaction();
     } catch (error) {
       await queryRunner.rollbackTransaction();
-      console.log(error['response']);
+      console.error(error);
       throw error;
     } finally {
       await queryRunner.release();
@@ -82,30 +76,40 @@ export class FavoritesService {
         throw new NotFoundException('해당 사용자를 찾을 수 없습니다.');
       }
 
-      const favorites = await this.favsRepository.find({
-        where: { user_id: user },
-        relations: ['orphanage_id'],
-      });
+      const favorites = await this.favsRepository
+      .createQueryBuilder('favorites')
+      .select([
+        'favorites.favorite_id as favorite_id',
+        'o.orphanage_id as orphanage_id',
+        'o.orphanage_name as orphanage_name',
+        'o.address as address',
+        'o.phone_number as phone_number',
+        'o.photo as photo',
+      ])
+      .innerJoin('favorites.orphanage_id', 'o')
+      .innerJoin('favorites.user_id', 'u')
+      .where('u.user_id = :user_id', {user_id: userId})
+      .getRawMany();
 
       if (!favorites || favorites.length == 0) {
         return { orphanages: [] };
       }
 
-      const orphanages = favorites.map((favorite) => ({
-        orphanage_id: favorite.orphanage_id.orphanage_id,
-        orphanage_name: favorite.orphanage_id.orphanage_name,
-        address: favorite.orphanage_id.address,
-        phone_number: favorite.orphanage_id.phone_number,
-        photo: favorite.orphanage_id.photo,
-      }));
-
-      console.log(favorites);
-      console.log(orphanages);
-
-      return { orphanages };
+      return favorites;
     } catch (error) {
-      console.log(error['response']);
+      console.error(error);
       throw error;
     }
+  }
+
+  async delFavorite(favoriteId: number){
+    const favorite = await this.favsRepository.findOne({
+      where: { favorite_id: favoriteId },
+    });
+
+    if (!favorite) {
+      throw new NotFoundException('해당 즐겨찾기가 존재하지 않습니다.');
+    }
+    await this.favsRepository.remove(favorite);
   }
 }
