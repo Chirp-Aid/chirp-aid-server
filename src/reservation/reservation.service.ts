@@ -122,7 +122,7 @@ export class ReservationService {
   }
 
   async changeReservationState(changeDto: changeReservationDto){
-    const {reservationId, state, message} = changeDto;
+    const {reservation_id: reservationId, state, message} = changeDto;
 
     await this.reservationRepository
     .createQueryBuilder()

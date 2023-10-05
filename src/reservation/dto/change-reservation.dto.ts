@@ -7,7 +7,7 @@ export class changeReservationDto{
         example: 1,
         description: '예약 번호'
     })
-    reservationId: number;
+    reservation_id: number;
 
     @IsString()
     @ApiProperty({

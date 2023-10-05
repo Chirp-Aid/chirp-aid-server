@@ -79,6 +79,7 @@ export class FavoritesService {
       const favorites = await this.favsRepository
       .createQueryBuilder('favorites')
       .select([
+        'favorites.favorite_id as favorite_id',
         'o.orphanage_id as orphanage_id',
         'o.orphanage_name as orphanage_name',
         'o.address as address',
@@ -99,5 +100,16 @@ export class FavoritesService {
       console.error(error);
       throw error;
     }
+  }
+
+  async delFavorite(favoriteId: number){
+    const favorite = await this.favsRepository.findOne({
+      where: { favorite_id: favoriteId },
+    });
+
+    if (!favorite) {
+      throw new NotFoundException('해당 즐겨찾기가 존재하지 않습니다.');
+    }
+    await this.favsRepository.remove(favorite);
   }
 }
