@@ -74,6 +74,7 @@ export class DonateController {
       type: 'object',
       example: [
         {
+          request_id: 1,
           basket_product_id: 5,
           product_name: '초코파이',
           count: 10,
@@ -198,7 +199,8 @@ export class DonateController {
   @Get()
   @ApiOperation({
     summary: '기부 내역 조회하기',
-    description: '사용자의 기부 내역을 조회합니다.',
+    description: '사용자의 기부 내역을 조회합니다.\
+    \n보육원/사용자 모두 동일하게 요청하지만, 반환값은 다릅니다!!\n',
   })
   @ApiHeader({
     name: 'Authorization',
@@ -220,7 +222,7 @@ export class DonateController {
           "message": "냠냠"
       },
       {
-          "orphanage_name": "금오보육원",
+          "user_nickname": "기부자 닉네임",
           "date": "2023-10-05 03:46:59",
           "product_name": "초코파이",
           "price": 2000,

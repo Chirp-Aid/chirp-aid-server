@@ -12,11 +12,13 @@ import { BasketProduct } from 'src/entities/basket-product.entity';
 import { DonationHistory } from 'src/entities/donation-history.entity';
 import * as moment from 'moment-timezone';
 import { ReviewProduct } from 'src/entities/review-product.entity';
+import { OrphanageUser } from 'src/entities/orphanage-user.entity';
 
 @Injectable()
 export class DonateService {
   constructor(
     @InjectRepository(User) private userRepository: Repository<User>,
+    @InjectRepository(OrphanageUser) private orphanageUserRepository: Repository<OrphanageUser>,
     @InjectRepository(Request) private requestRepository: Repository<Request>,
     @InjectRepository(BasketProduct)
     private basketProductRepository: Repository<BasketProduct>,
@@ -120,10 +122,29 @@ export class DonateService {
         where: { user_id: userId },
       });
 
-      if (!user) {
-        throw new NotFoundException('해당 사용자를 찾을 수 없습니다.');
+      if(user){
+        return await this.getUserDonate(userId);
+      }
+      else {
+        const orphanageUser = await this.orphanageUserRepository.findOne({
+          where: {orphanage_user_id: userId}
+        });
+        if(orphanageUser) {
+          return await this.getOrphanDonate(userId);
+        }
+        else{
+          throw new NotFoundException('해당 사용자를 찾을 수 없습니다.');
+        }
       }
 
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  }
+
+  async getUserDonate(userId: string){
+    try{
       const donateInfo = await this.donationRepository
         .createQueryBuilder('donation_history')
         .select([
@@ -151,6 +172,36 @@ export class DonateService {
       }
 
       return donateInfo;
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  }
+
+  async getOrphanDonate(userId: string){
+    try{
+      const donateInfo = await this.donationRepository
+      .createQueryBuilder('donation_history')
+      .select([
+        'u.nickname as user_nickname',
+        'donation_history.date as date',
+        'pi.product_name as product_name',
+        'pi.price as price',
+        'donation_history.count as count',
+        'donation_history.message as message',
+      ])
+      .innerJoin('donation_history.user_id','u')
+      .innerJoin('donation_history.request_id', 'r')
+      .innerJoin('r.orphanage_user_id', 'ou')
+      .innerJoin('ou.orphanage_id', 'orphanage_user', 'orphanage_user.orphanage_user_id = :orphanage_user_id', {orphanage_user_id: userId})
+      .innerJoin('r.product_id', 'pi')
+      .getRawMany();
+
+    if (!donateInfo || donateInfo.length == 0) {
+      return [];
+    }
+
+    return donateInfo;
     } catch (error) {
       console.error(error);
       throw error;
