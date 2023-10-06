@@ -9,7 +9,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 export function BaseAPIDocument(app: INestApplication): void {
   const options = new DocumentBuilder()
     .setTitle('Chirp-Aid(칩에이드)')
-    .setDescription('Chirp-Aid Swagger API 서버')
+    .setDescription('Chirp-Aid Swagger API 서버 (최근 수정 : 2023.10.05)')
     .setVersion('1.0.0')
     .addBearerAuth(
       {
