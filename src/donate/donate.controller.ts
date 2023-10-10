@@ -14,6 +14,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { ApiHeader, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { DonateDto } from './dto/donate.dto';
 import { AddBasektDto } from './dto/add-donate.dto';
+import { DelBasketDto } from './dto/delete-basket.dto';
 
 @ApiTags('DONATE: 기부 관련 요청')
 @Controller('donate')
@@ -154,7 +155,7 @@ export class DonateController {
     \nNot Found - 해당 장바구니가 존재하지 않습니다.',
   })
   @UseGuards(AuthGuard('access'))
-  async deleteBasket(@Body() deleteDto, @Request() req) {
+  async deleteBasket(@Body() deleteDto:DelBasketDto, @Request() req) {
     const userId = req.user.user_id;
     const BasketProductId = deleteDto.basket_product_id;
     return await this.basketService.deleteBasket(userId, BasketProductId);
