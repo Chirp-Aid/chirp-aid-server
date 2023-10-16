@@ -20,7 +20,7 @@ export class CreatePostDto {
   photo: string;
 
   @ApiProperty({
-    example: [{"product_name": "물품명1"}, {"product_name": "물품명2"}],
+    example: [{ product_name: '물품명1' }, { product_name: '물품명2' }],
     description: '태그로부터 받은 물품명 목록',
   })
   products: Product[];
