@@ -11,6 +11,7 @@ import { User } from 'src/entities/user.entity';
 import { OrphanageUser } from 'src/entities/orphanage-user.entity';
 import * as moment from 'moment-timezone';
 import { changeReservationDto } from './dto/change-reservation.dto';
+import { FcmService } from 'src/notifications/fcm.service';
 
 @Injectable()
 export class ReservationService {
@@ -21,6 +22,7 @@ export class ReservationService {
     @InjectRepository(OrphanageUser)
     private orphanageUserRepository: Repository<OrphanageUser>,
     private dataSource: DataSource,
+    private fcmService: FcmService,
   ) {}
 
   async create(createReservationDto: CreateReservationDto, userId: string) {
@@ -82,6 +84,10 @@ export class ReservationService {
       reservation.orphanage = orphanageUser.orphanage_id;
 
       await this.reservationRepository.save(reservation);
+
+      //fcm 전송
+      this.fcmService.sendNotification('deviceToken', 'title', 'body');
+
 
       await queryRunner.commitTransaction();
     } catch (error) {
@@ -172,5 +178,6 @@ export class ReservationService {
       .execute();
 
     //fcm 사용자에게 전송하기..
+    this.fcmService.sendNotification('deviceToken', 'title', 'body');
   }
 }

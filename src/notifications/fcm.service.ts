@@ -20,11 +20,7 @@ export class FcmService {
     this.fcm = admin.messaging();
   }
 
-  async sendNotification(
-    deviceToken: string,
-    title: string,
-    body: string,
-  ): Promise<string> {
+  async sendNotification(deviceToken: string, title: string,body: string, ): Promise<string> {
     const message: admin.messaging.Message = {
       notification: {
         title: title,
