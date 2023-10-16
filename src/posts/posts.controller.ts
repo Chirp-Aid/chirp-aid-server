@@ -31,7 +31,7 @@ export class PostsController {
   })
   @ApiHeader({
     name: 'Authorization',
-    description: 'Bearer {Access Token}',
+    description: 'Bearer {`orphanage\'s Access Token`}',
     example: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9',
   })
   @ApiResponse({
@@ -62,7 +62,7 @@ export class PostsController {
   })
   @ApiHeader({
     name: 'Authorization',
-    description: 'Bearer {Access Token}',
+    description: 'Bearer {`orphanage\'s Access Token`}',
     example: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9',
   })
   @ApiResponse({

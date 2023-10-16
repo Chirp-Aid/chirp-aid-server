@@ -33,7 +33,7 @@ export class ReservationController {
   })
   @ApiHeader({
     name: 'Authorization',
-    description: 'Bearer {Access Token}',
+    description: 'Bearer {`user\'s Access Token`}',
     example: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9',
   })
   @ApiResponse({
@@ -74,9 +74,9 @@ export class ReservationController {
     summary: '방문 예약 신청 내역 조회',
     description:
       '사용자 또는 보육원 계정 방문 예약 내역들을 조회합니다.\
-      \n 사용자(user) : 사용자의 방문 신청 내역들을 조회합니다.\
-      \n 보육원 계정(orphange) : 보육원 계정의 방문 신청들을 조회합니다.\
-        \n예약 상태 : APPROVED(승인됨), REJECTED(거절됨), PENDING(대기 중), COMPLETED(완료))',
+      \n `사용자(user)` : 사용자의 방문 신청 내역들을 조회합니다.\
+      \n `보육원 계정(orphange)` : 보육원 계정의 방문 신청들을 조회합니다.\
+        \n예약 상태 : `APPROVED`(승인됨), `REJECTED`(거절됨), `PENDING`(대기 중), `COMPLETED`(완료)',
   })
   @ApiQuery({
     name: 'account',
@@ -101,13 +101,19 @@ export class ReservationController {
           visit_date: '2023-10-24',
           reason: '방문 신청해요~~~',
           state: 'PENDING',
+          reject_reason: 'null | string'
         },
         {
-          orphanage_name: '보육원2',
+          name: '신청자 이름',
+          age: '신청자 나이',
+          sex: '신청자 성별',
+          region: '신청자 지역',
+          phone_number: '신청자 번호',
           write_date: '2023-05-01 17:36:02',
           visit_date: '2023-06-30',
           reason: '방문 신청 합니다.',
           state: 'COMPLETED',
+          rehect_reason: 'null | string'
         },
       ],
     },
@@ -140,7 +146,7 @@ export class ReservationController {
   })
   @ApiHeader({
     name: 'Authorization',
-    description: 'Bearer {Access Token}',
+    description: 'Bearer {`orphanage\'s Access Token`}',
     example: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9',
   })
   @ApiResponse({

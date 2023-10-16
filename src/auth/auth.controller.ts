@@ -34,7 +34,7 @@ export class AuthController {
   @Post('users')
   @ApiOperation({
     summary: '사용자 로그인',
-    description: '사용자가 로그인을 시도하면 hearders에 AT와 RT가 반환됩니다.',
+    description: '사용자가 로그인을 시도하면 headers에 AT와 RT가 반환됩니다.',
   })
   @ApiResponse({
     status: 200,
@@ -73,7 +73,7 @@ export class AuthController {
   @ApiHeaders([
     {
       name: 'Authorization',
-      description: 'Bearer {Access Token}',
+      description: 'Bearer {`user\'s Access Token`}',
       example: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9',
     },
     {
@@ -107,7 +107,7 @@ export class AuthController {
   })
   @ApiHeader({
     name: 'Authorization',
-    description: 'Bearer {Refresh Token}',
+    description: 'Bearer {`user\'s Access Token`}',
     example: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9',
   })
   @ApiResponse({
@@ -140,7 +140,7 @@ export class AuthController {
   @ApiOperation({
     summary: '보육원 계정 로그인',
     description:
-      '보육원 계정이 로그인을 시도하면 hearders에 AT와 RT가 반환됩니다.',
+      '보육원 계정이 로그인을 시도하면 headers에 AT와 RT가 반환됩니다.',
   })
   @ApiResponse({
     status: 200,
@@ -182,7 +182,7 @@ export class AuthController {
   @ApiHeaders([
     {
       name: 'Authorization',
-      description: 'Bearer {Access Token}',
+      description: 'Bearer {`orphanage\'s Access Token`}',
       example: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9',
     },
     {
@@ -217,7 +217,7 @@ export class AuthController {
   })
   @ApiHeader({
     name: 'Authorization',
-    description: 'Bearer {Refresh Token}',
+    description: 'Bearer {`orphanage\'s Access Token`}',
     example: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9',
   })
   @ApiResponse({

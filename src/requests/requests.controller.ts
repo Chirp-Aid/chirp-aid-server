@@ -16,7 +16,7 @@ export class RequestsController {
   })
   @ApiHeader({
     name: 'Authorization',
-    description: 'Bearer {Access Token}',
+    description: 'Bearer {`orphanage\'s Access Token`}',
     example: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9',
   })
   @ApiResponse({

@@ -111,7 +111,7 @@ export class MembersController {
   })
   @ApiHeader({
     name: 'Authorization',
-    description: 'Bearer {Access Token}',
+    description: 'Bearer {`user\'s Access Token`}',
     example: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9',
   })
   @ApiResponse({
@@ -148,7 +148,7 @@ export class MembersController {
   })
   @ApiHeader({
     name: 'Authorization',
-    description: 'Bearer {Access Token}',
+    description: 'Bearer {`user\'s Access Token`}',
     example: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9',
   })
   @ApiResponse({
@@ -185,7 +185,7 @@ export class MembersController {
   })
   @ApiHeader({
     name: 'Authorization',
-    description: 'Bearer {Access Token}',
+    description: 'Bearer {`orphanage\'s Access Token`}',
     example: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9',
   })
   @ApiResponse({
@@ -218,7 +218,7 @@ export class MembersController {
   })
   @ApiHeader({
     name: 'Authorization',
-    description: 'Bearer {Access Token}',
+    description: 'Bearer {`orphanage\'s Access Token`}',
     example: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9',
   })
   @ApiResponse({

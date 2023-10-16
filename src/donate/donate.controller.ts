@@ -38,7 +38,7 @@ export class DonateController {
   })
   @ApiHeader({
     name: 'Authorization',
-    description: 'Bearer {Access Token}',
+    description: 'Bearer {`user\'s Access Token`}',
     example: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9',
   })
   @ApiResponse({
@@ -72,7 +72,7 @@ export class DonateController {
   })
   @ApiHeader({
     name: 'Authorization',
-    description: 'Bearer {Access Token}',
+    description: 'Bearer {`user\'s Access Token`}',
     example: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9',
   })
   @ApiResponse({
@@ -114,7 +114,7 @@ export class DonateController {
   })
   @ApiHeader({
     name: 'Authorization',
-    description: 'Bearer {Access Token}',
+    description: 'Bearer {`user\'s Access Token`}',
     example: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9',
   })
   @ApiResponse({
@@ -144,7 +144,7 @@ export class DonateController {
   })
   @ApiHeader({
     name: 'Authorization',
-    description: 'Bearer {Access Token}',
+    description: 'Bearer {`user\'s Access Token`}',
     example: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9',
   })
   @ApiResponse({
@@ -175,7 +175,7 @@ export class DonateController {
   })
   @ApiHeader({
     name: 'Authorization',
-    description: 'Bearer {Access Token}',
+    description: 'Bearer {`user\'s Access Token`}',
     example: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9',
   })
   @ApiResponse({
@@ -210,8 +210,8 @@ export class DonateController {
     description:
       '기부 내역을 조회합니다.\
     \n!!보육원/사용자 모두 동일하게 요청하지만, 반환값은 다릅니다!!\
-    \n 사용자(user) : 사용자의 방문 신청 내역들을 조회합니다.\
-      \n 보육원 계정(orphange) : 보육원 계정의 방문 신청들을 조회합니다.',
+    \n `사용자(user)` : 사용자의 방문 신청 내역들을 조회합니다.\
+      \n `보육원 계정(orphange)` : 보육원 계정의 방문 신청들을 조회합니다.',
   })
   @ApiQuery({
     name: 'account',
