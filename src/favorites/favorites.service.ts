@@ -13,7 +13,8 @@ import { User } from 'src/entities/user.entity';
 export class FavoritesService {
   constructor(
     @InjectRepository(User) private userRepository: Repository<User>,
-    @InjectRepository(Orphanage) private orphanageRepository: Repository<Orphanage>,
+    @InjectRepository(Orphanage)
+    private orphanageRepository: Repository<Orphanage>,
     @InjectRepository(Favorites) private favsRepository: Repository<Favorites>,
     private dataSource: DataSource,
   ) {}
@@ -42,10 +43,12 @@ export class FavoritesService {
       }
 
       const exist = await this.favsRepository
-      .createQueryBuilder('favorites')
-      .where('favorites.orphanage_id.orphanage_id = :orphanage_id',{ orphanage_id: orphanageId },)
-      .andWhere('favorites.user_id.user_id = :user_id', {user_id: userId,})
-      .getOne(); 
+        .createQueryBuilder('favorites')
+        .where('favorites.orphanage_id.orphanage_id = :orphanage_id', {
+          orphanage_id: orphanageId,
+        })
+        .andWhere('favorites.user_id.user_id = :user_id', { user_id: userId })
+        .getOne();
 
       if (exist) {
         throw new ConflictException('이미 해당 조합의 즐겨찾기가 존재합니다.');
@@ -77,19 +80,19 @@ export class FavoritesService {
       }
 
       const favorites = await this.favsRepository
-      .createQueryBuilder('favorites')
-      .select([
-        'favorites.favorite_id as favorite_id',
-        'o.orphanage_id as orphanage_id',
-        'o.orphanage_name as orphanage_name',
-        'o.address as address',
-        'o.phone_number as phone_number',
-        'o.photo as photo',
-      ])
-      .innerJoin('favorites.orphanage_id', 'o')
-      .innerJoin('favorites.user_id', 'u')
-      .where('u.user_id = :user_id', {user_id: userId})
-      .getRawMany();
+        .createQueryBuilder('favorites')
+        .select([
+          'favorites.favorite_id as favorite_id',
+          'o.orphanage_id as orphanage_id',
+          'o.orphanage_name as orphanage_name',
+          'o.address as address',
+          'o.phone_number as phone_number',
+          'o.photo as photo',
+        ])
+        .innerJoin('favorites.orphanage_id', 'o')
+        .innerJoin('favorites.user_id', 'u')
+        .where('u.user_id = :user_id', { user_id: userId })
+        .getRawMany();
 
       if (!favorites || favorites.length == 0) {
         return { orphanages: [] };
@@ -102,7 +105,7 @@ export class FavoritesService {
     }
   }
 
-  async delFavorite(favoriteId: number){
+  async delFavorite(favoriteId: number) {
     const favorite = await this.favsRepository.findOne({
       where: { favorite_id: favoriteId },
     });

@@ -18,7 +18,8 @@ import { OrphanageUser } from 'src/entities/orphanage-user.entity';
 export class DonateService {
   constructor(
     @InjectRepository(User) private userRepository: Repository<User>,
-    @InjectRepository(OrphanageUser) private orphanageUserRepository: Repository<OrphanageUser>,
+    @InjectRepository(OrphanageUser)
+    private orphanageUserRepository: Repository<OrphanageUser>,
     @InjectRepository(Request) private requestRepository: Repository<Request>,
     @InjectRepository(BasketProduct)
     private basketProductRepository: Repository<BasketProduct>,
@@ -89,7 +90,9 @@ export class DonateService {
         }
 
         const donationHistory = new DonationHistory();
-        const currentTime = moment.tz('Asia/Seoul').format('YYYY-MM-DD hh:mm:ss');
+        const currentTime = moment
+          .tz('Asia/Seoul')
+          .format('YYYY-MM-DD hh:mm:ss');
         donationHistory.date = currentTime;
         donationHistory.count = basket.count;
         donationHistory.message = message;
@@ -116,35 +119,16 @@ export class DonateService {
     }
   }
 
-  async getDonate(userId: string) {
+  async getUserDonate(userId: string) {
     try {
       const user = await this.userRepository.findOne({
         where: { user_id: userId },
       });
 
-      if(user){
-        return await this.getUserDonate(userId);
-      }
-      else {
-        const orphanageUser = await this.orphanageUserRepository.findOne({
-          where: {orphanage_user_id: userId}
-        });
-        if(orphanageUser) {
-          return await this.getOrphanDonate(userId);
-        }
-        else{
-          throw new NotFoundException('해당 사용자를 찾을 수 없습니다.');
-        }
+      if (!user) {
+        throw new NotFoundException('해당 사용자를 찾을 수 없습니다.');
       }
 
-    } catch (error) {
-      console.error(error);
-      throw error;
-    }
-  }
-
-  async getUserDonate(userId: string){
-    try{
       const donateInfo = await this.donationRepository
         .createQueryBuilder('donation_history')
         .select([
@@ -178,30 +162,44 @@ export class DonateService {
     }
   }
 
-  async getOrphanDonate(userId: string){
-    try{
+  async getOrphanDonate(userId: string) {
+    try {
+      const orphanageUser = await this.orphanageUserRepository.findOne({
+        where: { orphanage_user_id: userId },
+      });
+
+      if (!orphanageUser) {
+        throw new NotFoundException('해당 사용자를 찾을 수 없습니다.');
+      }
+
       const donateInfo = await this.donationRepository
-      .createQueryBuilder('donation_history')
-      .select([
-        'u.nickname as user_nickname',
-        'donation_history.date as date',
-        'pi.product_name as product_name',
-        'pi.price as price',
-        'donation_history.count as count',
-        'donation_history.message as message',
-      ])
-      .innerJoin('donation_history.user_id','u')
-      .innerJoin('donation_history.request_id', 'r')
-      .innerJoin('r.orphanage_user_id', 'ou')
-      .innerJoin('ou.orphanage_id', 'orphanage_user', 'orphanage_user.orphanage_user_id = :orphanage_user_id', {orphanage_user_id: userId})
-      .innerJoin('r.product_id', 'pi')
-      .getRawMany();
+        .createQueryBuilder('donation_history')
+        .select([
+          'u.nickname as user_nickname',
+          'donation_history.date as date',
+          'pi.product_name as product_name',
+          'pi.price as price',
+          'donation_history.count as count',
+          'donation_history.message as message',
+        ])
+        .innerJoin('donation_history.user_id', 'u')
+        .innerJoin('donation_history.request_id', 'r')
+        .innerJoin('r.orphanage_user_id', 'ou')
+        .innerJoin(
+          'ou.orphanage_id',
+          'o',
+          'ou.orphanage_user_id = :orphanage_user_id',
+          { orphanage_user_id: userId },
+        )
+        .innerJoin('r.product_id', 'pi')
+        .getRawMany();
 
-    if (!donateInfo || donateInfo.length == 0) {
-      return [];
-    }
+      if (!donateInfo || donateInfo.length == 0) {
+        console.log('nono');
+        return [];
+      }
 
-    return donateInfo;
+      return donateInfo;
     } catch (error) {
       console.error(error);
       throw error;

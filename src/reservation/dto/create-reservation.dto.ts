@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNumber, IsString, Matches, isString } from 'class-validator';
+import { IsNumber, IsString, Matches } from 'class-validator';
 
 export class CreateReservationDto {
   @IsNumber()

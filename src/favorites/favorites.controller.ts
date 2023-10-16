@@ -71,24 +71,24 @@ export class FavoritesController {
     description: 'OK',
     schema: {
       type: 'object',
-      example:[
+      example: [
         {
-          "favorite_id": 1,
-          "orphanage_id": 3,
-          "orphanage_name": "금오보육원",
-          "address": "주소3",
-          "phone_number": "333-3333",
-          "photo": "사진3"
+          favorite_id: 1,
+          orphanage_id: 3,
+          orphanage_name: '금오보육원',
+          address: '주소3',
+          phone_number: '333-3333',
+          photo: '사진3',
         },
         {
-          "favorite_id": 2,
-          "orphanage_id": 2,
-          "orphanage_name": "보육원2",
-          "address": "주소2",
-          "phone_number": "222-2222",
-          "photo": "사진2"
-        }
-      ]
+          favorite_id: 2,
+          orphanage_id: 2,
+          orphanage_name: '보육원2',
+          address: '주소2',
+          phone_number: '222-2222',
+          photo: '사진2',
+        },
+      ],
     },
   })
   @ApiResponse({
@@ -125,10 +125,9 @@ export class FavoritesController {
   })
   @ApiResponse({
     status: 404,
-    description:
-      'Not Found - 해당 즐겨찾기를 찾을 수 없습니다.',
+    description: 'Not Found - 해당 즐겨찾기를 찾을 수 없습니다.',
   })
-  async delFavorite(@Body() delFavoriteDto: DelFavoriteDto){
+  async delFavorite(@Body() delFavoriteDto: DelFavoriteDto) {
     return await this.favoritesService.delFavorite(delFavoriteDto.favorite_id);
   }
 }

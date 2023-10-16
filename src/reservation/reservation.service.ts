@@ -93,7 +93,7 @@ export class ReservationService {
     }
   }
 
-  async get(userId: string) {
+  async getUserReservation(userId: string) {
     try {
       const user = await this.userRepository.findOne({
         where: { user_id: userId },
@@ -110,6 +110,7 @@ export class ReservationService {
           'reservation.visit_date as visit_date',
           'reservation.reason as reason',
           'reservation.state as state',
+          'reservation.reject_reason as reject_reason',
         ])
         .where('reservation.user.user_id = :user_id', { user_id: userId })
         .innerJoin('reservation.orphanage', 'o')
@@ -121,15 +122,54 @@ export class ReservationService {
     }
   }
 
-  async changeReservationState(changeDto: changeReservationDto){
-    const {reservation_id: reservationId, state, message} = changeDto;
+  async getOrphanReservation(userId: string) {
+    try {
+      const orphanageUser = await this.orphanageUserRepository.findOne({
+        where: { orphanage_user_id: userId },
+        relations: ['orphanage_id'],
+      });
+      if (!orphanageUser) {
+        throw new NotFoundException('해당 사용자를 찾을 수 없습니다.');
+      }
+
+      console.log(orphanageUser.orphanage_id.orphanage_id);
+
+      const reservations = await this.reservationRepository
+        .createQueryBuilder('reservation')
+        .select([
+          'u.name as name',
+          'u.age as age',
+          'u.sex as sex',
+          'u.region as region',
+          'u.phone_number as phone_number',
+          'reservation.write_date as write_date',
+          'reservation.visit_date as visit_date',
+          'reservation.reason as reason',
+          'reservation.state as state',
+          'reservation.reject_reason as reject_reason',
+        ])
+        .where('reservation.orphanage.orphanage_id = :orphanage_id', {
+          orphanage_id: orphanageUser.orphanage_id.orphanage_id,
+        })
+        .innerJoin('reservation.user', 'u')
+        .getRawMany();
+      console.log(reservations);
+      return reservations;
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  }
+
+  async changeReservationState(changeDto: changeReservationDto) {
+    const { reservation_id: reservationId, state, message } = changeDto;
 
     await this.reservationRepository
-    .createQueryBuilder()
-    .update(Reservation)
-    .set({ state: state })
-    .where('reservation_id = :reservationId', { reservationId })
-    .execute();
+      .createQueryBuilder()
+      .update(Reservation)
+      .set({ state: state, rejectReason: message })
+      .where('reservation_id = :reservationId', { reservationId })
+      .execute();
 
     //fcm 사용자에게 전송하기..
   }

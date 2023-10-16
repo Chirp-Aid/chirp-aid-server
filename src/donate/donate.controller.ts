@@ -5,13 +5,20 @@ import {
   Get,
   Patch,
   Post,
+  Query,
   Request,
   UseGuards,
 } from '@nestjs/common';
 import { DonateService } from './donate.service';
 import { BasketService } from './basket.service';
 import { AuthGuard } from '@nestjs/passport';
-import { ApiHeader, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiHeader,
+  ApiOperation,
+  ApiQuery,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { DonateDto } from './dto/donate.dto';
 import { AddBasektDto } from './dto/add-donate.dto';
 import { DelBasketDto } from './dto/delete-basket.dto';
@@ -155,7 +162,7 @@ export class DonateController {
     \nNot Found - 해당 장바구니가 존재하지 않습니다.',
   })
   @UseGuards(AuthGuard('access'))
-  async deleteBasket(@Body() deleteDto:DelBasketDto, @Request() req) {
+  async deleteBasket(@Body() deleteDto: DelBasketDto, @Request() req) {
     const userId = req.user.user_id;
     const BasketProductId = deleteDto.basket_product_id;
     return await this.basketService.deleteBasket(userId, BasketProductId);
@@ -200,9 +207,17 @@ export class DonateController {
   @Get()
   @ApiOperation({
     summary: '기부 내역 조회하기',
-    description: '사용자의 기부 내역을 조회합니다.\
+    description:
+      '기부 내역을 조회합니다.\
     \n!!보육원/사용자 모두 동일하게 요청하지만, 반환값은 다릅니다!!\
-    \n아래 응답 예시에서 첫 번째 객체는 사용자의 요청, 두 번째 객체는 보육원 계정의 요청입니다. orphanage_name과 user_nickname만 다릅니다!!!!!',
+    \n 사용자(user) : 사용자의 방문 신청 내역들을 조회합니다.\
+      \n 보육원 계정(orphange) : 보육원 계정의 방문 신청들을 조회합니다.',
+  })
+  @ApiQuery({
+    name: 'account',
+    required: true,
+    description:
+      '어느 계정인지 명시해줍니다. 일반 사용자은 `user`, 보육원 계정은 `orphanage`로 명시해주세요.',
   })
   @ApiHeader({
     name: 'Authorization',
@@ -211,26 +226,29 @@ export class DonateController {
   })
   @ApiResponse({
     status: 200,
-    description: 'OK',
+    description:
+      'OK\
+    \n사용자(user) - 첫 번째 예시\
+    \n보육원(orphanage) - 두 번째 예시',
     schema: {
       type: 'object',
       example: [
         {
-          "orphanage_name": "금오보육원",
-          "date": "2023-10-05 03:34:22",
-          "product_name": "촉촉한 초코칩",
-          "price": 2000,
-          "count": 5,
-          "message": "냠냠"
-      },
-      {
-          "user_nickname": "기부자 닉네임",
-          "date": "2023-10-05 03:46:59",
-          "product_name": "초코파이",
-          "price": 2000,
-          "count": 10,
-          "message": "끝~~~"
-      },
+          orphanage_name: '금오보육원',
+          date: '2023-10-05 03:34:22',
+          product_name: '촉촉한 초코칩',
+          price: 2000,
+          count: 5,
+          message: '냠냠',
+        },
+        {
+          user_nickname: '기부자 닉네임',
+          date: '2023-10-05 03:46:59',
+          product_name: '초코파이',
+          price: 2000,
+          count: 10,
+          message: '끝~~~',
+        },
       ],
     },
   })
@@ -239,8 +257,12 @@ export class DonateController {
     description: 'Not Found - 해당 사용자를 찾을 수 없습니다.',
   })
   @UseGuards(AuthGuard('access'))
-  async getDonate(@Request() req) {
+  async getDonate(@Query('account') account: string, @Request() req) {
     const userId = req.user.user_id;
-    return await this.donateService.getDonate(userId);
+    if (account == 'user') {
+      return await this.donateService.getUserDonate(userId);
+    } else if (account == 'orphanage') {
+      return await this.donateService.getOrphanDonate(userId);
+    }
   }
 }

@@ -25,6 +25,9 @@ export class Reservation {
   @Column({ length: 30, default: 'PENDING' }) //APPROVED(승인됨), REJECTED(거절됨), PENDING(대기 중), COMPLETED(완료))
   state: string;
 
+  @Column({ default: null, name: 'reject_reason' })
+  rejectReason?: string;
+
   @ManyToOne(() => User, { onDelete: 'NO ACTION' })
   @JoinColumn([{ name: 'user_id', referencedColumnName: 'user_id' }])
   user: User;
