@@ -4,18 +4,25 @@ import {
   Get,
   Patch,
   Post,
+  Query,
   Request,
   UseGuards,
 } from '@nestjs/common';
 import { ReservationService } from './reservation.service';
 import { CreateReservationDto } from './dto/create-reservation.dto';
 import { AuthGuard } from '@nestjs/passport';
-import { ApiHeader, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiHeader,
+  ApiOperation,
+  ApiQuery,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { changeReservationDto } from './dto/change-reservation.dto';
 
 @ApiTags('RESERVATION: 방문 예약 관련 요청')
 @UseGuards(AuthGuard('access'))
-@Controller('reservation')
+@Controller('reservations')
 export class ReservationController {
   constructor(private readonly reservationService: ReservationService) {}
 
@@ -35,7 +42,8 @@ export class ReservationController {
   })
   @ApiResponse({
     status: 400,
-    description: 'Bad Request - 날짜 형식이 올바르지 않습니다. YYYY-MM-DD 형식으로 기입하여 주십시요.'
+    description:
+      'Bad Request - 날짜 형식이 올바르지 않습니다. YYYY-MM-DD 형식으로 기입하여 주십시요.',
   })
   @ApiResponse({
     status: 401,
@@ -65,8 +73,16 @@ export class ReservationController {
   @ApiOperation({
     summary: '방문 예약 신청 내역 조회',
     description:
-      '사용자의 방문 예약 신청 내역들을 조회합니다.\
+      '사용자 또는 보육원 계정 방문 예약 내역들을 조회합니다.\
+      \n 사용자(user) : 사용자의 방문 신청 내역들을 조회합니다.\
+      \n 보육원 계정(orphange) : 보육원 계정의 방문 신청들을 조회합니다.\
         \n예약 상태 : APPROVED(승인됨), REJECTED(거절됨), PENDING(대기 중), COMPLETED(완료))',
+  })
+  @ApiQuery({
+    name: 'account',
+    required: true,
+    description:
+      '어느 계정인지 명시해줍니다. 일반 사용자은 `user`, 보육원 계정은 `orphanage`로 명시해주세요.',
   })
   @ApiHeader({
     name: 'Authorization',
@@ -106,9 +122,13 @@ export class ReservationController {
       'Not Found - 해당 물품을 찾을 수 없습니다.\
       \nNot Found - 해당 사용자를 찾을 수 없습니다.',
   })
-  async getReservatino(@Request() req) {
+  async getReservatino(@Query('account') account: string, @Request() req) {
     const userId = req.user.user_id;
-    return await this.reservationService.get(userId);
+    if (account == 'user') {
+      return await this.reservationService.getUserReservation(userId);
+    } else if (account == 'orphanage') {
+      return await this.reservationService.getOrphanReservation(userId);
+    }
   }
 
   @Patch()
@@ -131,7 +151,7 @@ export class ReservationController {
     status: 401,
     description: 'Unaothorized',
   })
-  async changeReservationState(@Body() changeDto: changeReservationDto){
+  async changeReservationState(@Body() changeDto: changeReservationDto) {
     await this.reservationService.changeReservationState(changeDto);
   }
 }
