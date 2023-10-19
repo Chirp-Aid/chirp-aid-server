@@ -4,10 +4,23 @@ import * as admin from 'firebase-admin';
 
 @Injectable()
 export class FcmService {
-  private readonly fcm: admin.messaging.Messaging;
-  private readonly firebaseConfig: any;
+  private fcm: admin.messaging.Messaging;
+  private firebaseConfig: any;
 
-  constructor(private configService: ConfigService) {
+  constructor() {
+    // this.firebaseConfig = JSON.parse(process.env.FIREBASE_CONFIG);
+
+    // admin.initializeApp({
+    //   credential: admin.credential.cert(this.firebaseConfig),
+    //   // 다른 Firebase 설정 (옵션)
+    //   // databaseURL: 'https://your-project-id.firebaseio.com',
+    //   // storageBucket: 'your-project-id.appspot.com',
+    // });
+
+    // this.fcm = admin.messaging();
+  }
+
+  init(){
     this.firebaseConfig = JSON.parse(process.env.FIREBASE_CONFIG);
 
     admin.initializeApp({

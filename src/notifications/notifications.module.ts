@@ -8,5 +8,6 @@ import { ConfigModule } from '@nestjs/config';
   imports: [ConfigModule],
   controllers: [NotificationsController],
   providers: [NotificationsService, FcmService],
+  exports: [FcmService]
 })
 export class NotificationsModule {}
