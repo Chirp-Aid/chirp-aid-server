@@ -13,7 +13,8 @@ export class OrphanagesController {
   @ApiOperation({
     summary: '보육원 목록 가져오기',
     description:
-      '모든 보육원의 정보를 반환합니다. 이때 보육원 계정의 정보는 반환하지 않습니다.',
+      '모든 보육원의 정보를 반환합니다.\
+      \n이때 보육원과 연결된 보육원 계정의 사용자(name)을 반환합니다. 보육원 계정과 연결되어 있지 않으면 `null`을 반환합니다.',
   })
   @ApiResponse({
     status: 200,
@@ -25,19 +26,17 @@ export class OrphanagesController {
           orphanage_id: 1,
           orphanage_name: '보육원1',
           address: '주소1',
-          homepage_link: '링크1',
           phone_number: '111-1111',
-          description: '설명1',
           photo: '사진1',
+          name: '보육원장1'
         },
         {
           orphanage_id: 2,
           orphanage_name: '보육원2',
           address: '주소2',
-          homepage_link: '링크2',
           phone_number: '222-2222',
-          description: '설명2',
           photo: '사진2',
+          name: 'null'
         },
       ],
     },

@@ -18,8 +18,18 @@ export class OrphanagesService {
   ) {}
 
   async findAll() {
-    const orphanages = await this.orphanageRepository.find();
-    return await orphanages;
+    return this.orphanageRepository
+      .createQueryBuilder('orphanage')
+      .select([
+        'orphanage.orphanage_id as orphanage_id',
+        'orphanage.orphanage_name as orphanage_name',
+        'orphanage.address as address',
+        'orphanage.phone_number as phone_number',
+        'orphanage.photo as photo',
+        'user.name as name'
+      ])
+      .leftJoin('orphanage.user', 'user')
+      .getRawMany()
   }
 
   async findOne(id: number) {
