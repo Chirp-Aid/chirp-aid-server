@@ -10,6 +10,7 @@ import { OrphanageUser } from '../entities/orphanage-user.entity';
 import { CreateOrphanageUserDto } from './dto/create-orphanage-user.dto';
 import { Orphanage } from 'src/entities/orphanage.entity';
 import { UpdateOrphanageUserDto } from './dto/update-orphanage-user.dto';
+import { Request } from 'src/entities/request.entity';
 
 @Injectable()
 export class OrphanageUsersService {
@@ -18,6 +19,7 @@ export class OrphanageUsersService {
     private usersRepository: Repository<OrphanageUser>,
     @InjectRepository(Orphanage)
     private orphanageRepository: Repository<Orphanage>,
+    @InjectRepository(Request) private requestRepository: Repository<Request>,
     private dataSource: DataSource,
   ) {}
 
@@ -100,6 +102,7 @@ export class OrphanageUsersService {
     try {
       const getUser = await this.usersRepository.findOne({
         where: { orphanage_user_id: userId },
+        relations:['orphanage_id']
       });
 
       if (!getUser) {
@@ -110,8 +113,30 @@ export class OrphanageUsersService {
       delete getUser.refresh_token;
       delete getUser.fcm_token;
 
+      const requests = await this.requestRepository
+      .createQueryBuilder('requests')
+      .select([
+        'requests.request_id as request_id',
+        'p.product_name as product_name',
+        'p.price as price',
+        'requests.count as count',
+        'requests.supported_count as supported_count',
+        'requests.state as state',
+        'requests.message as message',
+        'p.product_photo as product_photo',
+      ])
+      .innerJoin('requests.product_id', 'p')
+      .where(
+        'requests.orphanage_user_id.orphanage_user_id = :orphanage_user_id',
+        { orphanage_user_id: userId },
+      )
+      .getRawMany();
       console.log(`Get UserInfo : ${getUser.email}`);
-      return getUser;
+
+      var { name, email, orphanage_id} = getUser;
+      orphanage_id['requests'] = requests;
+
+      return { name, email, orphanage:orphanage_id};
     } catch (error) {
       console.log(error['response']);
       throw error;
