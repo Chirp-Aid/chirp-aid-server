@@ -1,6 +1,8 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import { Controller, Get, Param, Patch, UseGuards, Request, Body } from '@nestjs/common';
 import { OrphanagesService } from './orphanages.service';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiHeader, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { AuthGuard } from '@nestjs/passport';
+import { UpdateOrphanageDto } from './dto/updateOrphanage.dto';
 
 @ApiTags('ORPHANAGES: 보육원 정보 관련 요청')
 @Controller('orphanages')
@@ -85,5 +87,34 @@ export class OrphanagesController {
   })
   async findOne(@Param('id') id: number) {
     return await this.orphanagesService.findOne(id);
+  }
+
+  @Patch()
+  @ApiOperation({
+    summary: '보육원 정보 수정',
+    description: '`보육원 계정`으로 `보육원 정보`를 수정합니다.',
+  })
+  @ApiHeader({
+    name: 'Authorization',
+    description: 'Bearer {`Orphanage User\'s Access Token`}',
+    example: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'OK',
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Unaothorized',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Not Found - 해당 보육원을 찾을 수 없습니다.',
+  })
+  @UseGuards(AuthGuard('access'))
+  async getOrphanageUserInfo(
+    @Body() updateOrphanDto:UpdateOrphanageDto, @Request() req) {
+    const userId = req.user.user_id;
+    return await this.orphanagesService.updateOrphanage(updateOrphanDto);
   }
 }
