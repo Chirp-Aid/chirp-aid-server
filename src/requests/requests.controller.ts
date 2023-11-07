@@ -1,4 +1,4 @@
-import { Body, Controller, Post, Request, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, Request, UseGuards } from '@nestjs/common';
 import { RequestsService } from './requests.service';
 import { CreateRequestDto } from './dto/create-request.dto';
 import { ApiHeader, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
@@ -47,5 +47,35 @@ export class RequestsController {
       createRequestDto,
       orphanageUserId,
     );
+  }
+
+  @Get('products')
+  @ApiOperation({
+    summary: '모든 물품 조회',
+    description: '등록된 모든 물품들의 정보를 조회합니다.',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'OK',
+    schema:{
+      type: 'object',
+      example: [
+        {
+            "product_id": 1,
+            "product_name": "초코파이",
+            "price": 3000,
+            "product_photo": "초코파이사진"
+        },
+        {
+            "product_id": 3,
+            "product_name": "쿠크다스",
+            "price": 1000,
+            "product_photo": "쿠크다스사진"
+        }
+    ]
+    }
+  })
+  async getProducts(){
+    return await this.requestsService.getProducts();
   }
 }

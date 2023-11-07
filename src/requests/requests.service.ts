@@ -24,7 +24,7 @@ export class RequestsService {
     createRequestDto: CreateRequestDto,
     orphanageUserId: string,
   ) {
-    const { product_name: productName, count, message } = createRequestDto;
+    const { product_id: productId, count, message } = createRequestDto;
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
     await queryRunner.startTransaction();
@@ -39,7 +39,7 @@ export class RequestsService {
       }
 
       const product = await this.productRepository.findOne({
-        where: { product_name: productName },
+        where: { product_id: productId },
       });
 
       if (!product) {
@@ -53,7 +53,7 @@ export class RequestsService {
           { orphanage_user_id: orphanageUserId },
         )
         .andWhere('requests.product_id = :product_id', {
-          product_id: product.product_id,
+          product_id: productId,
         })
         .getOne();
 
@@ -69,7 +69,7 @@ export class RequestsService {
 
       await this.requestRepository.save(newRequest);
       await queryRunner.commitTransaction();
-      console.log(`Reqeust Added : ${createRequestDto.product_name}`);
+      console.log(`Reqeust Added : ${product.product_name}`);
     } catch (error) {
       await queryRunner.rollbackTransaction();
       console.log(error);
@@ -77,5 +77,9 @@ export class RequestsService {
     } finally {
       await queryRunner.release();
     }
+  }
+
+  async getProducts(){
+    return await this.productRepository.find();
   }
 }

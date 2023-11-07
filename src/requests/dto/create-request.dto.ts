@@ -2,14 +2,13 @@ import { ApiProperty } from '@nestjs/swagger';
 import { IsString, MaxLength, MinLength } from 'class-validator';
 
 export class CreateRequestDto {
-  @IsString()
   @MinLength(2)
   @MaxLength(50)
   @ApiProperty({
-    example: '촉촉한 초코칩',
-    description: 'The name of ProductName',
+    example: '1',
+    description: 'The ID of ProductName',
   })
-  product_name: string;
+  product_id: number;
 
   @ApiProperty({
     example: '5',
