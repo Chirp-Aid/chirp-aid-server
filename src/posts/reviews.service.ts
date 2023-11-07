@@ -49,7 +49,7 @@ export class ReviewService {
   }
 
   async createPost(createPostDto: CreatePostDto, userId: string) {
-    const { title, content, photo, products } = createPostDto;
+    const { title, content, photos, products } = createPostDto;
     const queryRunner = await this.dataSouce.createQueryRunner();
     await queryRunner.connect();
     await queryRunner.startTransaction();
@@ -70,7 +70,7 @@ export class ReviewService {
       newPost.title = title;
       newPost.content = content;
       newPost.orphanage_user = user;
-      if (photo) newPost.photo = photo;
+      if (photos) newPost.photo = photos;
 
       await this.reviewRepository.save(newPost);
 

@@ -17,7 +17,7 @@ export class CreatePostDto {
   @ApiProperty({
     description: '사진 url',
   })
-  photo: string;
+  photos: string;
 
   @ApiProperty({
     example: [{ product_name: '물품명1' }, { product_name: '물품명2' }],

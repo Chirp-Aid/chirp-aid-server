@@ -19,13 +19,14 @@ export class PostsService {
 
   async getAllPosts() {
     try {
+
       const posts = await this.reviewRepository
         .createQueryBuilder('review')
         .select([
           'review.review_id as review_id',
           'review.title as title',
           'review.content as content',
-          'review.photo as photo',
+          'review.photo as photos',
           'review.date as date',
           'ou.name as name',
           'o.orphanage_name as orphanage_name',
@@ -33,13 +34,16 @@ export class PostsService {
         .innerJoin('review.orphanage_user', 'ou')
         .innerJoin('ou.orphanage_id', 'o')
         .getRawMany();
+
       for (const post of posts) {
         post.porudct_names = await this.reviewService.getProductNames(
           post.review_id,
         );
+        post.photos = post.photos.split('₩');
       }
 
       return posts;
+
     } catch (error) {
       console.error(error);
       throw error;
@@ -62,7 +66,7 @@ export class PostsService {
           'review.review_id as review_id',
           'review.title as title',
           'review.content as content',
-          'review.photo as photo',
+          'review.photo as photos',
           'review.date as date',
         ])
         .innerJoin('review.orphanage_user', 'orphanage_user')
@@ -76,6 +80,7 @@ export class PostsService {
         post.porudct_names = await this.reviewService.getProductNames(
           post.review_id,
         );
+        post.photos = post.photos.split('₩');
       }
 
       return posts;
