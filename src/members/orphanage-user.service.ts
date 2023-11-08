@@ -100,43 +100,27 @@ export class OrphanageUsersService {
 
   async getUserInfo(userId: string) {
     try {
-      const getUser = await this.usersRepository.findOne({
-        where: { orphanage_user_id: userId },
-        relations:['orphanage_id']
-      });
 
-      if (!getUser) {
-        throw new NotFoundException('해당 사용자를 찾을 수 없습니다.');
-      }
-      delete getUser.orphanage_user_id;
-      delete getUser.password;
-      delete getUser.refresh_token;
-      delete getUser.fcm_token;
-
-      const requests = await this.requestRepository
-      .createQueryBuilder('requests')
+      const info = await this.usersRepository
+      .createQueryBuilder('orphanage_user')
       .select([
-        'requests.request_id as request_id',
-        'p.product_name as product_name',
-        'p.price as price',
-        'requests.count as count',
-        'requests.supported_count as supported_count',
-        'requests.state as state',
-        'requests.message as message',
-        'p.product_photo as product_photo',
+        'orphanage_user.email as email',
+        'orphanage_user.name as name',
+        'o.orphanage_id as orphanage_id'
       ])
-      .innerJoin('requests.product_id', 'p')
+      .innerJoin('orphanage_user.orphanage_id', 'o')
       .where(
-        'requests.orphanage_user_id.orphanage_user_id = :orphanage_user_id',
+        'orphanage_user.orphanage_user_id = :orphanage_user_id',
         { orphanage_user_id: userId },
       )
-      .getRawMany();
-      console.log(`Get UserInfo : ${getUser.email}`);
+      .getRawOne();
 
-      var { name, email, orphanage_id} = getUser;
-      orphanage_id['requests'] = requests;
+      if(!info){
+        throw new NotFoundException('해당 사용자를 찾을 수 없습니다.');
+      }
+      
+      return info;
 
-      return { name, email, orphanage:orphanage_id};
     } catch (error) {
       console.log(error['response']);
       throw error;

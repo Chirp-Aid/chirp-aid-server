@@ -229,27 +229,7 @@ export class MembersController {
       example: {
         name: '홍길동',
         email: 'hong@kumoh.ac.kr',
-        orphanage: {
-          orphanage_name: '금오보육원',
-          address: '주소3',
-          homepage_link: '링크3',
-          phone_number: '333-3333',
-          description: '설명3',
-          photo: '사진3',
-          requests: [
-            {
-              request_id: 6,
-              product_name: '촉촉한 초코칩',
-              price: 2000,
-              count: 5,
-              supported_count: 5,
-              state: 'COMPLETED',
-              message:
-                '내가 좋아하는 촉촉한 초코칩, 내가 안 좋아는 안 촉촉한 초코칩',
-              product_photo: '초코칩 사진',
-            },
-          ],
-        }
+        orphanage_id: 1,
       },
     },
   })
