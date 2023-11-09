@@ -44,3 +44,6 @@ lerna-debug.log*
 
 #AWS
 *.pem
+
+#FCM
+*05d.json
