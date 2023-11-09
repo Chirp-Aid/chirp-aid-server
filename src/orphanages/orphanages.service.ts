@@ -38,6 +38,7 @@ export class OrphanagesService {
       const orphanage = await this.orphanageUserRepository
         .createQueryBuilder('orphanage_user')
         .select([
+          'orphanage.orphanage_id',
           'orphanage.orphanage_name',
           'orphanage.address',
           'orphanage.homepage_link',

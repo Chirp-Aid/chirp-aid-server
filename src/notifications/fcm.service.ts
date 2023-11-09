@@ -10,14 +10,14 @@ export class FcmService {
   constructor() {
     this.firebaseConfig = JSON.parse(process.env.FIREBASE_CONFIG);
 
-    admin.initializeApp({
-      credential: admin.credential.cert(this.firebaseConfig),
-      // 다른 Firebase 설정 (옵션)
-      // databaseURL: 'https://your-project-id.firebaseio.com',
-      // storageBucket: 'your-project-id.appspot.com',
-    });
+    // admin.initializeApp({
+    //   credential: admin.credential.cert(this.firebaseConfig),
+    //   // 다른 Firebase 설정 (옵션)
+    //   // databaseURL: 'https://your-project-id.firebaseio.com',
+    //   // storageBucket: 'your-project-id.appspot.com',
+    // });
 
-    this.fcm = admin.messaging();
+    // this.fcm = admin.messaging();
   }
 
   init(){

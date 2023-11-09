@@ -58,6 +58,7 @@ export class OrphanagesController {
       type: 'object',
       example: {
         name: '홍길동',
+        orphanage_id: 1,
         orphanage_name: '금오보육원',
         address: '주소3',
         homepage_link: '링크3',
