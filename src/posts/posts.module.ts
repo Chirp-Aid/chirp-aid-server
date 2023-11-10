@@ -8,6 +8,7 @@ import { Review } from 'src/entities/review.entity';
 import { Product } from 'src/entities/product.entity';
 import { PostsService } from './posts.service';
 import { Orphanage } from 'src/entities/orphanage.entity';
+import { FcmService } from 'src/notifications/fcm.service';
 
 @Module({
   imports: [
@@ -20,6 +21,6 @@ import { Orphanage } from 'src/entities/orphanage.entity';
     ]),
   ],
   controllers: [PostsController],
-  providers: [ReviewService, PostsService],
+  providers: [ReviewService, PostsService, FcmService],
 })
 export class PostsModule {}

@@ -7,6 +7,7 @@ import { Review } from 'src/entities/review.entity';
 import { ReviewProduct } from 'src/entities/review-product.entity';
 import { Product } from 'src/entities/product.entity';
 import * as moment from 'moment-timezone';
+import { FcmService } from 'src/notifications/fcm.service';
 
 @Injectable()
 export class ReviewService {
@@ -18,6 +19,7 @@ export class ReviewService {
     private reviewProductRepository: Repository<ReviewProduct>,
     @InjectRepository(Product) private productRepository: Repository<Product>,
     private dataSouce: DataSource,
+    private fcmService: FcmService,
   ) {}
 
   async getTags(userId: string) {
@@ -84,6 +86,10 @@ export class ReviewService {
           { review_id: newPost },
         );
       }
+
+      //fcm 전송
+      //deviceToken : 기부한 사람의 토큰을 차장야한다....
+      this.fcmService.sendNotification('deviceToken', 'title', 'body', {type: 'POST', info: user.orphanage_id.orphanage_id});
 
       await queryRunner.commitTransaction();
     } catch (error) {

@@ -86,7 +86,7 @@ export class ReservationService {
       await this.reservationRepository.save(reservation);
 
       //fcm 전송
-      this.fcmService.sendNotification('deviceToken', 'title', 'body');
+      this.fcmService.sendNotification(orphanageUser.fcm_token, '방문 신청 알림!', '방문 신청 알림??내가 보이니????', {type: 'RESERVATION', info: null});
 
 
       await queryRunner.commitTransaction();
@@ -178,6 +178,6 @@ export class ReservationService {
       .execute();
 
     //fcm 사용자에게 전송하기..
-    this.fcmService.sendNotification('deviceToken', 'title', 'body');
+    this.fcmService.sendNotification('deviceToken', 'title', 'body', {type: 'type', info: 'info'});
   }
 }
