@@ -85,6 +85,7 @@ export class DonateController {
           request_id: 1,
           basket_product_id: 5,
           product_name: '초코파이',
+          product_photo: 'https://,,',
           count: 10,
           price: 2000,
           orphanage_name: '보육원1',

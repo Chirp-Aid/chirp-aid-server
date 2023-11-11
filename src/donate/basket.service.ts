@@ -141,6 +141,7 @@ export class BasketService {
           'r.request_id as request_id',
           'basket_product.basket_product_id as basket_product_id',
           'pi.product_name as product_name',
+          'pi.product_photo as product_photo',
           'basket_product.count as count',
           'pi.price as price',
           'o.orphanage_name as orphanage_name',
