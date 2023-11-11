@@ -93,9 +93,9 @@ export class ReviewService {
             //fcm 전송
       const payload = new NotificationDto();
       payload.deviceToken = 'orphanageUser.fcm_token';
-      payload.title = '방문 신청 알림!';
-      payload.body = '새로운 방문 신청이 들어왔어요.';
-      payload.data.type = 'RESERVATION';
+      payload.title = '인증글 알림!';
+      payload.body = '새로운 인증글이 올라왔어요.';
+      payload.data.type = 'POST';
       this.fcmService.sendNotification(payload);
       
 
