@@ -8,6 +8,7 @@ import { ReviewProduct } from 'src/entities/review-product.entity';
 import { Product } from 'src/entities/product.entity';
 import * as moment from 'moment-timezone';
 import { FcmService } from 'src/notifications/fcm.service';
+import { NotificationDto } from 'src/notifications/dto/notification.dto';
 
 @Injectable()
 export class ReviewService {
@@ -89,7 +90,14 @@ export class ReviewService {
 
       //fcm 전송
       //deviceToken : 기부한 사람의 토큰을 차장야한다....
-      this.fcmService.sendNotification('deviceToken', 'title', 'body', {type: 'POST', info: user.orphanage_id.orphanage_id});
+            //fcm 전송
+      const payload = new NotificationDto();
+      payload.deviceToken = 'orphanageUser.fcm_token';
+      payload.title = '방문 신청 알림!';
+      payload.body = '새로운 방문 신청이 들어왔어요.';
+      payload.data.type = 'RESERVATION';
+      this.fcmService.sendNotification(payload);
+      
 
       await queryRunner.commitTransaction();
     } catch (error) {

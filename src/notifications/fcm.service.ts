@@ -1,6 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import * as admin from 'firebase-admin';
+import { NotificationDto } from './dto/notification.dto';
 
 @Injectable()
 export class FcmService {
@@ -18,7 +19,8 @@ export class FcmService {
 
   }
 
-  async sendNotification(deviceToken: string, title: string,body: string, data): Promise<string> {
+  async sendNotification(dto: NotificationDto): Promise<string> {
+    const {deviceToken, title, body, data} = dto;
     const message: admin.messaging.Message = {
       token: deviceToken,
       notification: {

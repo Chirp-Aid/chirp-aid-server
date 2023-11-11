@@ -12,6 +12,7 @@ import { OrphanageUser } from 'src/entities/orphanage-user.entity';
 import * as moment from 'moment-timezone';
 import { changeReservationDto } from './dto/change-reservation.dto';
 import { FcmService } from 'src/notifications/fcm.service';
+import { NotificationDto } from 'src/notifications/dto/notification.dto';
 
 @Injectable()
 export class ReservationService {
@@ -86,7 +87,12 @@ export class ReservationService {
       await this.reservationRepository.save(reservation);
 
       //fcm 전송
-      this.fcmService.sendNotification(orphanageUser.fcm_token, '방문 신청 알림!', '방문 신청 알림??내가 보이니????', {type: 'RESERVATION', info: null});
+      const payload = new NotificationDto();
+      payload.deviceToken = orphanageUser.fcm_token;
+      payload.title = '방문 신청 알림!';
+      payload.body = '새로운 방문 신청이 들어왔어요.';
+      payload.data = {type: 'RESERVATION'};
+      this.fcmService.sendNotification(payload);
 
 
       await queryRunner.commitTransaction();
@@ -170,6 +176,13 @@ export class ReservationService {
   async changeReservationState(changeDto: changeReservationDto) {
     const { reservation_id: reservationId, state, message } = changeDto;
 
+    const reservation = await this.reservationRepository.findOne({
+      where: {reservationId },
+    });
+    if (!reservation) {
+      throw new NotFoundException('해당 예약을 찾을 수 없습니다.');
+    }
+
     await this.reservationRepository
       .createQueryBuilder()
       .update(Reservation)
@@ -178,6 +191,20 @@ export class ReservationService {
       .execute();
 
     //fcm 사용자에게 전송하기..
-    this.fcmService.sendNotification('deviceToken', 'title', 'body', {type: 'type', info: 'info'});
+    const payload = new NotificationDto();
+    payload.deviceToken = reservation.user.fcm_token;
+    if (state === 'APPROVED'){
+      payload.title = '방문 신청 승인 알림';
+      payload.body = '방문 신청이 승인되었어요.'
+      payload.data.type = 'RESERVATION';
+      payload.data.info = 'APPROVED';
+    }
+    else{
+      payload.title = '방문 신청 거절 알림';
+      payload.body = `방문 신청이 거절되었어요.\n거절 사유: ${message}`;
+      payload.data.type = 'RESERVATION';
+      payload.data.info = 'REJECTED';
+    }
+    this.fcmService.sendNotification(payload);
   }
 }

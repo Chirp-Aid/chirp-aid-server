@@ -10,8 +10,7 @@ export class NotificationsController {
 
   @Post()
   async sendNotification(@Body() notificationDto: NotificationDto) {
-    const { deviceToken, title, body, data } = notificationDto;
-    await this.fcmService.sendNotification(deviceToken, title, body, data);
+    await this.fcmService.sendNotification(notificationDto);
     return { succes: true };
   }
 }

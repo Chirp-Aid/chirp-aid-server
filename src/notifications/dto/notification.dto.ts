@@ -14,7 +14,7 @@ export class NotificationDto {
   title: string;
 
   @ApiProperty({
-    example: '인증글이 작성되었어요. | 방문 신청이 들어왔어요.',
+    example: '새로운 인증글이 작성되었어요. | 새로운 방문 신청이 들어왔어요.',
     description: 'Notification의 메시지입니다.',
   })
   body: string;
