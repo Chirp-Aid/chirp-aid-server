@@ -38,6 +38,7 @@ export class OrphanagesService {
       const orphanage = await this.orphanageUserRepository
         .createQueryBuilder('orphanage_user')
         .select([
+          'orphanage.orphanage_id',
           'orphanage.orphanage_name',
           'orphanage.address',
           'orphanage.homepage_link',
@@ -51,11 +52,20 @@ export class OrphanagesService {
         .where('orphanage_user.orphanage_id = :id', { id })
         .getOne();
 
-      console.log(orphanage);
+
 
       if (!orphanage) {
-        throw new NotFoundException('해당 보육원을 찾지 못 했습니다.');
+        const isExist = await this.orphanageRepository.findOne({
+          where: { orphanage_id: id},
+        });
+  
+        if (!isExist) {
+          throw new NotFoundException('해당 보육원은 존재하지 않습니다.');
+        }
+        console.log(isExist);
+        return isExist
       }
+      console.log(orphanage);
 
       const orphanageUserId = orphanage.orphanage_user_id;
 

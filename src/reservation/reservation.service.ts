@@ -47,7 +47,7 @@ export class ReservationService {
 
       const orphanageUser = await this.orphanageUserRepository
         .createQueryBuilder('orphanage_user')
-        .select(['orphanage_user.orphanage_user_id', 'o.orphanage_id'])
+        .select(['orphanage_user.orphanage_user_id', 'o.orphanage_id', 'orphanage_user.fcm_token'])
         .innerJoin('orphanage_user.orphanage_id', 'o')
         .where('orphanage_user.orphanage_id.orphanage_id = :orphanage_id', {
           orphanage_id: orphanageId,
@@ -88,6 +88,7 @@ export class ReservationService {
 
       //fcm 전송
       const payload = new NotificationDto();
+      console.log(orphanageUser.fcm_token);
       payload.deviceToken = orphanageUser.fcm_token;
       payload.title = '방문 신청 알림!';
       payload.body = '새로운 방문 신청이 들어왔어요.';

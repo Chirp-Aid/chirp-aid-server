@@ -10,8 +10,6 @@ export class FcmService {
   constructor() {
     this.firebaseConfig = JSON.parse(process.env.FIREBASE_CONFIG);
 
-
-
     if (!admin.apps.length) {
       admin.initializeApp({
         credential: admin.credential.cert(this.firebaseConfig),
