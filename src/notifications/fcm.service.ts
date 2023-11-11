@@ -4,7 +4,6 @@ import * as admin from 'firebase-admin';
 
 @Injectable()
 export class FcmService {
-  private fcm: admin.messaging.Messaging;
   private firebaseConfig: any;
 
   constructor() {
@@ -17,7 +16,6 @@ export class FcmService {
         credential: admin.credential.cert(this.firebaseConfig),
       });}
 
-    // this.fcm = admin.messaging();
   }
 
   async sendNotification(deviceToken: string, title: string,body: string, data): Promise<string> {
@@ -32,14 +30,15 @@ export class FcmService {
     console.log(message);
 
     try {
-      const response = await this.fcm.send(message);
+      const response = await admin.messaging().send(message);
+
       return response;
     } catch (error) {
+      console.error(error)
       throw new HttpException(
         'Failed to send notification',
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
   }
-  // FCM 관련 메서드 작성
 }

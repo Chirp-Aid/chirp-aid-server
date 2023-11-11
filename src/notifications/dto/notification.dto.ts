@@ -28,6 +28,6 @@ export class NotificationDto {
   })
   data: {
     type: string,
-    info: string,
+    info?: string,
   }
 }
