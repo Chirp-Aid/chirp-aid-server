@@ -36,7 +36,7 @@ export class PostsService {
         .getRawMany();
 
       for (const post of posts) {
-        post.porudct_names = await this.reviewService.getProductNames(
+        post.product_names = await this.reviewService.getProductNames(
           post.review_id,
         );
         post.photos = post.photos.split('₩');
@@ -77,7 +77,7 @@ export class PostsService {
       console.log(posts);
 
       for (const post of posts) {
-        post.porudct_names = await this.reviewService.getProductNames(
+        post.product_names = await this.reviewService.getProductNames(
           post.review_id,
         );
         post.photos = post.photos.split('₩');
