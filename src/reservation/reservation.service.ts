@@ -180,6 +180,7 @@ export class ReservationService {
 
     const reservation = await this.reservationRepository.findOne({
       where: {reservationId },
+      relations:['user']
     });
     if (!reservation) {
       throw new NotFoundException('해당 예약을 찾을 수 없습니다.');
@@ -191,21 +192,20 @@ export class ReservationService {
       .set({ state: state, rejectReason: message })
       .where('reservation_id = :reservationId', { reservationId })
       .execute();
-
+    console.log(reservation);
+    console.log(reservation.user.fcm_token);
     //fcm 사용자에게 전송하기..
     const payload = new NotificationDto();
     payload.deviceToken = reservation.user.fcm_token;
     if (state === 'APPROVED'){
       payload.title = '방문 신청 승인 알림';
       payload.body = '방문 신청이 승인되었어요.'
-      payload.data.type = 'RESERVATION';
-      payload.data.info = 'APPROVED';
+      payload.data = {type: 'RESERVATION', info: 'APPROVED'};
     }
     else{
       payload.title = '방문 신청 거절 알림';
       payload.body = `방문 신청이 거절되었어요.\n거절 사유: ${message}`;
-      payload.data.type = 'RESERVATION';
-      payload.data.info = 'REJECTED';
+      payload.data = {type: 'RESERVATION', info: 'REJECTED'};
     }
     this.fcmService.sendNotification(payload);
   }
