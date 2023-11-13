@@ -9,11 +9,11 @@ export class CreateReservationDto {
   })
   orphanage_id: number;
 
+  // @Matches(/^(\d{4})-(\d{2})-(\d{2})$/, {
+  //   message:
+  //     '날짜 형식이 올바르지 않습니다. YYYY-MM-DD 형식으로 기입하여 주십시요.',
+  // })
   @IsString()
-  @Matches(/^(\d{4})-(\d{2})-(\d{2})$/, {
-    message:
-      '날짜 형식이 올바르지 않습니다. YYYY-MM-DD 형식으로 기입하여 주십시요.',
-  })
   @ApiProperty({
     example: '2023-12-25',
     description: '작성 일시, YYYY-MM-DD 형식으로 입력해주세요.',
