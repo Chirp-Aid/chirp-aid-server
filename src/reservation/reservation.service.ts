@@ -155,7 +155,7 @@ export class ReservationService {
           'u.sex as sex',
           'u.region as region',
           'u.phone_number as phone_number',
-          'reservation.reservation_id as reservaion_id',
+          'reservation.reservation_id as reservation_id',
           'reservation.write_date as write_date',
           'reservation.visit_date as visit_date',
           'reservation.reason as reason',
