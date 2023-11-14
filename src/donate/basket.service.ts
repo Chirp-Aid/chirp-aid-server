@@ -155,6 +155,7 @@ export class BasketService {
         .innerJoin('r.product_id', 'pi')
         .getRawMany();
 
+      console.log(baskets);
       if (!baskets || baskets.length == 0) {
         return [];
       }

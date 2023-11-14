@@ -87,6 +87,10 @@ export class DonateService {
 
         if (request.supported_count >= request.count) {
           request.state = 'COMPLETED';
+          const donatedProduct = new ReviewProduct();
+          donatedProduct.product_id = request.product_id;
+          donatedProduct.orphanage_user_id = request.orphanage_user_id;
+          await this.reviewProductRepository.save(donatedProduct);
         }
 
         const donationHistory = new DonationHistory();
@@ -99,13 +103,9 @@ export class DonateService {
         donationHistory.request_id = request;
         donationHistory.user_id = user;
 
-        const donatedProduct = new ReviewProduct();
-        donatedProduct.product_id = request.product_id;
-        donatedProduct.orphanage_user_id = request.orphanage_user_id;
 
         await this.requestRepository.save(request);
         await this.donationRepository.save(donationHistory);
-        await this.reviewProductRepository.save(donatedProduct);
         await this.basketProductRepository.delete(basket);
       }
 

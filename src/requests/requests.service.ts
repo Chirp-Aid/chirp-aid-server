@@ -42,6 +42,8 @@ export class RequestsService {
         where: { product_id: productId },
       });
 
+      console.log(`product: ${productId}`);
+
       if (!product) {
         throw new NotFoundException('해당 물품을 찾을 수 없습니다.');
       }
@@ -66,7 +68,8 @@ export class RequestsService {
       newRequest.message = message;
       newRequest.orphanage_user_id = orphanageUser;
       newRequest.product_id = product;
-
+    
+      console.log(newRequest);
       await this.requestRepository.save(newRequest);
       await queryRunner.commitTransaction();
       console.log(`Reqeust Added : ${product.product_name}`);
