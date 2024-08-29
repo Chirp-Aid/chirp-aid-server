@@ -1,4 +1,11 @@
-import { Body, Controller, Get, Post, Request, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  Request,
+  UseGuards,
+} from '@nestjs/common';
 import { RequestsService } from './requests.service';
 import { CreateRequestDto } from './dto/create-request.dto';
 import { ApiHeader, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
@@ -16,7 +23,7 @@ export class RequestsController {
   })
   @ApiHeader({
     name: 'Authorization',
-    description: 'Bearer {`orphanage\'s Access Token`}',
+    description: "Bearer {`orphanage's Access Token`}",
     example: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9',
   })
   @ApiResponse({
@@ -57,25 +64,25 @@ export class RequestsController {
   @ApiResponse({
     status: 200,
     description: 'OK',
-    schema:{
+    schema: {
       type: 'object',
       example: [
         {
-            "product_id": 1,
-            "product_name": "초코파이",
-            "price": 3000,
-            "product_photo": "초코파이사진"
+          product_id: 1,
+          product_name: '초코파이',
+          price: 3000,
+          product_photo: '초코파이사진',
         },
         {
-            "product_id": 3,
-            "product_name": "쿠크다스",
-            "price": 1000,
-            "product_photo": "쿠크다스사진"
-        }
-    ]
-    }
+          product_id: 3,
+          product_name: '쿠크다스',
+          price: 1000,
+          product_photo: '쿠크다스사진',
+        },
+      ],
+    },
   })
-  async getProducts(){
+  async getProducts() {
     return await this.requestsService.getProducts();
   }
 }

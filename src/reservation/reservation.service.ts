@@ -47,7 +47,11 @@ export class ReservationService {
 
       const orphanageUser = await this.orphanageUserRepository
         .createQueryBuilder('orphanage_user')
-        .select(['orphanage_user.orphanage_user_id', 'o.orphanage_id', 'orphanage_user.fcm_token'])
+        .select([
+          'orphanage_user.orphanage_user_id',
+          'o.orphanage_id',
+          'orphanage_user.fcm_token',
+        ])
         .innerJoin('orphanage_user.orphanage_id', 'o')
         .where('orphanage_user.orphanage_id.orphanage_id = :orphanage_id', {
           orphanage_id: orphanageId,
@@ -92,9 +96,8 @@ export class ReservationService {
       payload.deviceToken = orphanageUser.fcm_token;
       payload.title = '방문 신청 알림!';
       payload.body = '새로운 방문 신청이 들어왔어요.';
-      payload.data = {type: 'RESERVATION'};
+      payload.data = { type: 'RESERVATION' };
       this.fcmService.sendNotification(payload);
-
 
       await queryRunner.commitTransaction();
     } catch (error) {
@@ -179,8 +182,8 @@ export class ReservationService {
     const { reservation_id: reservationId, state, message } = changeDto;
 
     const reservation = await this.reservationRepository.findOne({
-      where: {reservationId },
-      relations:['user']
+      where: { reservationId },
+      relations: ['user'],
     });
     if (!reservation) {
       throw new NotFoundException('해당 예약을 찾을 수 없습니다.');
@@ -197,15 +200,14 @@ export class ReservationService {
     //fcm 사용자에게 전송하기..
     const payload = new NotificationDto();
     payload.deviceToken = reservation.user.fcm_token;
-    if (state === 'APPROVED'){
+    if (state === 'APPROVED') {
       payload.title = '방문 신청 승인 알림';
-      payload.body = '방문 신청이 승인되었어요.'
-      payload.data = {type: 'RESERVATION', info: 'APPROVED'};
-    }
-    else{
+      payload.body = '방문 신청이 승인되었어요.';
+      payload.data = { type: 'RESERVATION', info: 'APPROVED' };
+    } else {
       payload.title = '방문 신청 거절 알림';
       payload.body = `방문 신청이 거절되었어요.\n거절 사유: ${message}`;
-      payload.data = {type: 'RESERVATION', info: 'REJECTED'};
+      payload.data = { type: 'RESERVATION', info: 'REJECTED' };
     }
     this.fcmService.sendNotification(payload);
   }

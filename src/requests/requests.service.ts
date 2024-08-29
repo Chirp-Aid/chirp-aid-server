@@ -68,7 +68,7 @@ export class RequestsService {
       newRequest.message = message;
       newRequest.orphanage_user_id = orphanageUser;
       newRequest.product_id = product;
-    
+
       console.log(newRequest);
       await this.requestRepository.save(newRequest);
       await queryRunner.commitTransaction();
@@ -82,7 +82,7 @@ export class RequestsService {
     }
   }
 
-  async getProducts(){
+  async getProducts() {
     return await this.productRepository.find();
   }
 }

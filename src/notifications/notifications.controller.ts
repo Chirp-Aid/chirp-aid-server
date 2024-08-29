@@ -4,13 +4,11 @@ import { NotificationDto } from './dto/notification.dto';
 
 @Controller('notifications')
 export class NotificationsController {
-  constructor(
-    private readonly fcmService: FcmService,
-  ) {}
+  constructor(private readonly fcmService: FcmService) {}
 
   @Post()
   async sendNotification(@Body() notificationDto: NotificationDto) {
     await this.fcmService.sendNotification(notificationDto);
-    return { succes: true };
+    return { success: true };
   }
 }

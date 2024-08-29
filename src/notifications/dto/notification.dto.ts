@@ -1,4 +1,4 @@
-import { ApiProperty } from "@nestjs/swagger";
+import { ApiProperty } from '@nestjs/swagger';
 
 export class NotificationDto {
   @ApiProperty({
@@ -20,14 +20,15 @@ export class NotificationDto {
   body: string;
 
   @ApiProperty({
-    example: '{\
+    example:
+      '{\
       \n"type": ["POST" | "RESERVATION"]\
       \n"info": ["orphanage_id" | null]\
       \n}',
     description: 'Notification로 전달할 내용입니다.',
   })
   data: {
-    type: string,
-    info?: string,
-  }
+    type: string;
+    info?: string;
+  };
 }

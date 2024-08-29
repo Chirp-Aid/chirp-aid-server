@@ -13,19 +13,19 @@ export class FcmService {
     if (!admin.apps.length) {
       admin.initializeApp({
         credential: admin.credential.cert(this.firebaseConfig),
-      });}
-
+      });
+    }
   }
 
   async sendNotification(dto: NotificationDto): Promise<string> {
-    const {deviceToken, title, body, data} = dto;
+    const { deviceToken, title, body, data } = dto;
     const message: admin.messaging.Message = {
       token: deviceToken,
       notification: {
         title: title,
         body: body,
       },
-      data: data
+      data: data,
     };
     console.log(message);
 
@@ -34,7 +34,7 @@ export class FcmService {
 
       return response;
     } catch (error) {
-      console.error(error)
+      console.error(error);
       throw new HttpException(
         'Failed to send notification',
         HttpStatus.INTERNAL_SERVER_ERROR,

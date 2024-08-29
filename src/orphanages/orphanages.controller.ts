@@ -1,4 +1,12 @@
-import { Controller, Get, Param, Patch, UseGuards, Request, Body } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Param,
+  Patch,
+  UseGuards,
+  Request,
+  Body,
+} from '@nestjs/common';
 import { OrphanagesService } from './orphanages.service';
 import { ApiHeader, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
@@ -28,7 +36,7 @@ export class OrphanagesController {
           address: '주소1',
           phone_number: '111-1111',
           photo: '사진1',
-          name: '보육원장1'
+          name: '보육원장1',
         },
         {
           orphanage_id: 2,
@@ -36,7 +44,7 @@ export class OrphanagesController {
           address: '주소2',
           phone_number: '222-2222',
           photo: '사진2',
-          name: 'null'
+          name: 'null',
         },
       ],
     },
@@ -96,7 +104,7 @@ export class OrphanagesController {
   })
   @ApiHeader({
     name: 'Authorization',
-    description: 'Bearer {`Orphanage User\'s Access Token`}',
+    description: "Bearer {`Orphanage User's Access Token`}",
     example: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9',
   })
   @ApiResponse({
@@ -113,7 +121,9 @@ export class OrphanagesController {
   })
   @UseGuards(AuthGuard('access'))
   async getOrphanageUserInfo(
-    @Body() updateOrphanDto:UpdateOrphanageDto, @Request() req) {
+    @Body() updateOrphanDto: UpdateOrphanageDto,
+    @Request() req,
+  ) {
     const userId = req.user.user_id;
     return await this.orphanagesService.updateOrphanage(updateOrphanDto);
   }

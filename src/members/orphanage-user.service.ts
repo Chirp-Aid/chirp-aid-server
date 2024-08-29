@@ -100,27 +100,24 @@ export class OrphanageUsersService {
 
   async getUserInfo(userId: string) {
     try {
-
       const info = await this.usersRepository
-      .createQueryBuilder('orphanage_user')
-      .select([
-        'orphanage_user.email as email',
-        'orphanage_user.name as name',
-        'o.orphanage_id as orphanage_id'
-      ])
-      .innerJoin('orphanage_user.orphanage_id', 'o')
-      .where(
-        'orphanage_user.orphanage_user_id = :orphanage_user_id',
-        { orphanage_user_id: userId },
-      )
-      .getRawOne();
+        .createQueryBuilder('orphanage_user')
+        .select([
+          'orphanage_user.email as email',
+          'orphanage_user.name as name',
+          'o.orphanage_id as orphanage_id',
+        ])
+        .innerJoin('orphanage_user.orphanage_id', 'o')
+        .where('orphanage_user.orphanage_user_id = :orphanage_user_id', {
+          orphanage_user_id: userId,
+        })
+        .getRawOne();
 
-      if(!info){
+      if (!info) {
         throw new NotFoundException('해당 사용자를 찾을 수 없습니다.');
       }
-      
-      return info;
 
+      return info;
     } catch (error) {
       console.log(error['response']);
       throw error;

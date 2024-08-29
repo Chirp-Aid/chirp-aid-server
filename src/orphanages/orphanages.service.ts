@@ -26,10 +26,10 @@ export class OrphanagesService {
         'orphanage.address as address',
         'orphanage.phone_number as phone_number',
         'orphanage.photo as photo',
-        'user.name as name'
+        'user.name as name',
       ])
       .leftJoin('orphanage.user', 'user')
-      .getRawMany()
+      .getRawMany();
   }
 
   async findOne(id: number) {
@@ -52,18 +52,16 @@ export class OrphanagesService {
         .where('orphanage_user.orphanage_id = :id', { id })
         .getOne();
 
-
-
       if (!orphanage) {
         const isExist = await this.orphanageRepository.findOne({
-          where: { orphanage_id: id},
+          where: { orphanage_id: id },
         });
-  
+
         if (!isExist) {
           throw new NotFoundException('해당 보육원은 존재하지 않습니다.');
         }
         console.log(isExist);
-        return isExist
+        return isExist;
       }
       console.log(orphanage);
 
@@ -96,16 +94,24 @@ export class OrphanagesService {
     }
   }
 
-  async updateOrphanage(updateOrphanageDto:UpdateOrphanageDto){
-    const {orphanage_id, orphanage_name, address, homepage_link, phone_number, description, photo} = updateOrphanageDto;
-    
+  async updateOrphanage(updateOrphanageDto: UpdateOrphanageDto) {
+    const {
+      orphanage_id,
+      orphanage_name,
+      address,
+      homepage_link,
+      phone_number,
+      description,
+      photo,
+    } = updateOrphanageDto;
+
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
     await queryRunner.startTransaction();
 
     try {
       const isExist = await this.orphanageRepository.findOne({
-        where: { orphanage_id: orphanage_id},
+        where: { orphanage_id: orphanage_id },
       });
 
       if (!isExist) {

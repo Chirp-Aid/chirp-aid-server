@@ -9,7 +9,9 @@ import { Orphanage } from 'src/entities/orphanage.entity';
 import { Request } from 'src/entities/request.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([User, OrphanageUser, Orphanage, Request])],
+  imports: [
+    TypeOrmModule.forFeature([User, OrphanageUser, Orphanage, Request]),
+  ],
   controllers: [MembersController],
   providers: [OrphanageUsersService, UsersService],
 })

@@ -33,7 +33,7 @@ export class ReservationController {
   })
   @ApiHeader({
     name: 'Authorization',
-    description: 'Bearer {`user\'s Access Token`}',
+    description: "Bearer {`user's Access Token`}",
     example: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9',
   })
   @ApiResponse({
@@ -101,7 +101,7 @@ export class ReservationController {
           visit_date: '2023-10-24',
           reason: '방문 신청해요~~~',
           state: 'PENDING',
-          reject_reason: 'null | string'
+          reject_reason: 'null | string',
         },
         {
           name: '신청자 이름',
@@ -113,7 +113,7 @@ export class ReservationController {
           visit_date: '2023-06-30',
           reason: '방문 신청 합니다.',
           state: 'COMPLETED',
-          rehect_reason: 'null | string'
+          rehect_reason: 'null | string',
         },
       ],
     },
@@ -146,7 +146,7 @@ export class ReservationController {
   })
   @ApiHeader({
     name: 'Authorization',
-    description: 'Bearer {`orphanage\'s Access Token`}',
+    description: "Bearer {`orphanage's Access Token`}",
     example: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9',
   })
   @ApiResponse({

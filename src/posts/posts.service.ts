@@ -19,7 +19,6 @@ export class PostsService {
 
   async getAllPosts() {
     try {
-
       const posts = await this.reviewRepository
         .createQueryBuilder('review')
         .select([
@@ -43,7 +42,6 @@ export class PostsService {
       }
 
       return posts;
-
     } catch (error) {
       console.error(error);
       throw error;
