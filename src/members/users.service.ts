@@ -29,6 +29,7 @@ export class UsersService {
       region,
       phone_number: phoneNumber,
       profile_photo: profilePhoto,
+      role
     } = createUserDto;
 
     const queryRunner = this.dataSource.createQueryRunner();
@@ -56,6 +57,7 @@ export class UsersService {
       newUser.region = region;
       newUser.phone_number = phoneNumber;
       newUser.profile_photo = profilePhoto;
+      newUser.role = role === 'admin' ? 'admin' : 'user';
 
       const user = await queryRunner.manager.save(newUser);
       await queryRunner.commitTransaction();
