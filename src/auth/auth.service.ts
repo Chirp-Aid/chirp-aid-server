@@ -24,7 +24,7 @@ export class AuthService {
       {
         email: user.email,
         sub: user.user_id,
-        role:user.role
+        role: user.role,
       },
       {
         secret: process.env.JWT_ACCESS_TOKEN,
@@ -40,7 +40,7 @@ export class AuthService {
       {
         email: user.email,
         sub: user.user_id,
-        role:user.role
+        role: user.role,
       },
       {
         secret: process.env.JWT_REFRESH_TOKEN,

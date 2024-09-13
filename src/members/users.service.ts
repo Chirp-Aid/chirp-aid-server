@@ -29,7 +29,7 @@ export class UsersService {
       region,
       phone_number: phoneNumber,
       profile_photo: profilePhoto,
-      role
+      role,
     } = createUserDto;
 
     const queryRunner = this.dataSource.createQueryRunner();
