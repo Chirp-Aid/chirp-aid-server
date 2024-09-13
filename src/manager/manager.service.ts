@@ -13,7 +13,7 @@ export class ManagerService{
     async getAllOrphanage():Promise<Orphanage[]>
     {
         return this.orphanageRepository
-      .createQueryBuilder('orphanage')
-      .getMany();
+            .createQueryBuilder('orphanage')
+            .getMany();
     }
 }
