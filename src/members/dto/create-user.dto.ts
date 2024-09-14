@@ -88,4 +88,6 @@ export class CreateUserDto {
     description: 'The profile photo of User',
   })
   profile_photo: string;
+
+  role?:string;
 }

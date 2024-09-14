@@ -37,4 +37,7 @@ export class User {
 
   @Column({ default: 'none' })
   fcm_token: string;
+
+  @Column({ default: 'user' })
+  role: string;
 }
