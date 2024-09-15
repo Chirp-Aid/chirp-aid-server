@@ -8,7 +8,7 @@ import {
   Post,
   UseGuards,
 } from '@nestjs/common';
-import { ManagerService } from './admin-orphanage.service';
+import { orphanageManagerService } from './admin-orphanage.service';
 import { RolesGuard } from 'src/commons/guards/roles.guard';
 import { Roles } from 'src/commons/decorators/roles.decorator';
 import { AuthGuard } from '@nestjs/passport';
@@ -17,27 +17,27 @@ import { CreateOrphanageDto } from './dto/create-orphanage.dto';
 import { UpdateOrphanageDto } from 'src/orphanages/dto/updateOrphanage.dto';
 
 @UseGuards(AuthGuard('access'), RolesGuard)
-@Controller('admin')
-export class ManagerController {
-  constructor(private readonly managerService: ManagerService) {}
-  @Post('orphanage')
+@Controller('admin/orphanage')
+export class orphanageManagerController {
+  constructor(private readonly managerService: orphanageManagerService) {}
+  @Post()
   @Roles('admin')
   async createOrphanage(@Body() createOrphanageDto: CreateOrphanageDto) {
     return await this.managerService.createOrphanage(createOrphanageDto);
   }
 
-  @Get('orphanage')
+  @Get()
   @Roles('admin')
   async getAllOrphanage(): Promise<Orphanage[]> {
     return await this.managerService.findAllOrphanage();
   }
-  @Get('orphanage/:id')
+  @Get(':id')
   @Roles('admin')
   async getOneOrphanage(@Param('id') orphanageId: number): Promise<Orphanage> {
     return await this.managerService.findOrphanageById(orphanageId);
   }
 
-  @Patch('orphanage/:id')
+  @Patch('/:id')
   @Roles('admin')
   async updateOrphanage(
     @Param('id') orphanageId: number,

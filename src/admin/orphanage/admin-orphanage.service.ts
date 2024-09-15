@@ -10,7 +10,7 @@ import { CreateOrphanageDto } from './dto/create-orphanage.dto';
 import { UpdateOrphanageDto } from 'src/orphanages/dto/updateOrphanage.dto';
 
 @Injectable()
-export class ManagerService {
+export class orphanageManagerService {
   constructor(
     @InjectRepository(Orphanage)
     private orphanageRepository: Repository<Orphanage>,
