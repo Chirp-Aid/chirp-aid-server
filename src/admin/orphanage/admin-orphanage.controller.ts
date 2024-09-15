@@ -8,7 +8,7 @@ import {
   Post,
   UseGuards,
 } from '@nestjs/common';
-import { ManagerService } from './manager.service';
+import { ManagerService } from './admin-orphanage.service';
 import { RolesGuard } from 'src/commons/guards/roles.guard';
 import { Roles } from 'src/commons/decorators/roles.decorator';
 import { AuthGuard } from '@nestjs/passport';
@@ -17,7 +17,7 @@ import { CreateOrphanageDto } from './dto/create-orphanage.dto';
 import { UpdateOrphanageDto } from 'src/orphanages/dto/updateOrphanage.dto';
 
 @UseGuards(AuthGuard('access'), RolesGuard)
-@Controller('manager')
+@Controller('admin')
 export class ManagerController {
   constructor(private readonly managerService: ManagerService) {}
   @Post('orphanage')

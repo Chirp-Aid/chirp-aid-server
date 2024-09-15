@@ -22,7 +22,7 @@ import { Review } from './entities/review.entity';
 import { ReviewProduct } from './entities/review-product.entity';
 import { ReservationModule } from './reservation/reservation.module';
 import { Reservation } from './entities/reservation.entity';
-import { ManagerModule } from './manager/manager.module';
+import { ManagerModule } from './admin/orphanage/admin-orphanage.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -60,7 +60,7 @@ import { ManagerModule } from './manager/manager.module';
     DonateModule,
     PostsModule,
     ReservationModule,
-    ManagerModule
+    ManagerModule,
   ],
 })
 export class AppModule {}
