@@ -80,13 +80,37 @@ export class AdminUserService {
   }
 
   async findAllUser(): Promise<User[]> {
-    return this.userRepository.createQueryBuilder('user').getMany();
+    return this.userRepository
+      .createQueryBuilder('user')
+      .select([
+        'user.name',
+        'user.email',
+        'user.age',
+        'user.sex',
+        'user.nickname',
+        'user.region',
+        'user.phone_number',
+        'user.profile_photo',
+        'user.role',
+      ])
+      .getMany();
   }
 
   async findUserById(userId: string): Promise<User> {
     const user = await this.userRepository
       .createQueryBuilder('user')
       .where('user.user_id=:id', { id: userId })
+      .select([
+        'user.name',
+        'user.email',
+        'user.age',
+        'user.sex',
+        'user.nickname',
+        'user.region',
+        'user.phone_number',
+        'user.profile_photo',
+        'user.role',
+      ])
       .getOne();
     if (!user) {
       throw new NotFoundException('해당 유저가 존재하지 않습니다.');
@@ -98,6 +122,17 @@ export class AdminUserService {
     const users = await this.userRepository
       .createQueryBuilder('user')
       .where('user.nickname LIKE :nickname', { nickname: `%${nickname}%` })
+      .select([
+        'user.name',
+        'user.email',
+        'user.age',
+        'user.sex',
+        'user.nickname',
+        'user.region',
+        'user.phone_number',
+        'user.profile_photo',
+        'user.role',
+      ])
       .getMany();
     if (!users) {
       throw new NotFoundException('해당 유저가 존재하지 않습니다.');
