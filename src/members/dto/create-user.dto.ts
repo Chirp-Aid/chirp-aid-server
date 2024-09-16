@@ -89,5 +89,5 @@ export class CreateUserDto {
   })
   profile_photo: string;
 
-  role?:string;
+  role?: string;
 }
