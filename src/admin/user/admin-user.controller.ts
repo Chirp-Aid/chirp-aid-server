@@ -20,11 +20,11 @@ import { ApiHeader, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('ADMIN: 관리자 기능')
 @UseGuards(AuthGuard('access'), RolesGuard)
-@Controller('admin')
+@Controller('admin/users')
 export class AdminUserController {
   constructor(private readonly adminUserService: AdminUserService) {}
 
-  @Post('users')
+  @Post()
   @Roles('admin')
   @ApiOperation({
     summary: '사용자 정보 추가',
@@ -57,7 +57,7 @@ export class AdminUserController {
     return await this.adminUserService.createUser(createUserDto);
   }
 
-  @Get('users')
+  @Get()
   @Roles('admin')
   @ApiOperation({
     summary: '등록된 사용자 정보 전체 조회',
@@ -95,7 +95,7 @@ export class AdminUserController {
     return await this.adminUserService.findAllUser();
   }
 
-  @Get('users/id')
+  @Get('id')
   @Roles('admin')
   @ApiOperation({
     summary: '사용자 정보 id 검색',
@@ -135,7 +135,7 @@ export class AdminUserController {
     return await this.adminUserService.findUserById(userId);
   }
 
-  @Get('users/nickname')
+  @Get('nickname')
   @Roles('admin')
   @ApiOperation({
     summary: '사용자 정보 닉네임 검색',
@@ -175,7 +175,7 @@ export class AdminUserController {
     return await this.adminUserService.findUserByNickname(nickname);
   }
 
-  @Patch('users/:id')
+  @Patch('/:id')
   @Roles('admin')
   @ApiOperation({
     summary: '사용자 정보 수정',
@@ -204,7 +204,7 @@ export class AdminUserController {
     return await this.adminUserService.updateUserById(userId, updateUserDto);
   }
 
-  @Delete('users/:id')
+  @Delete('/:id')
   @Roles('admin')
   @ApiOperation({
     summary: '사용자 정보 삭제',
