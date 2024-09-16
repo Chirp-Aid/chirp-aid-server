@@ -120,7 +120,7 @@ export class MembersController {
   })
   @ApiResponse({
     status: 401,
-    description: 'Unaothorized',
+    description: 'Unauthorized',
   })
   @ApiResponse({
     status: 409,
