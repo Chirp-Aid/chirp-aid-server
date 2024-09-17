@@ -89,11 +89,11 @@ export class UsersService {
     await queryRunner.startTransaction();
 
     try {
-      const checkuser = await this.usersRepository.findOne({
+      const checkUser = await this.usersRepository.findOne({
         where: { nickname: nickname },
       });
 
-      if (checkuser && checkuser.user_id != userId) {
+      if (checkUser && checkUser.user_id != userId) {
         throw new ConflictException('존재하는 닉네임입니다.');
       }
 

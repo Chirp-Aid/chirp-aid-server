@@ -7,7 +7,7 @@ import {
   MaxLength,
   MinLength,
 } from 'class-validator';
-import { NotIn } from '../../commons/not-in';
+import { NotIn } from 'src/commons/not-in';
 
 export class CreateOrphanageUserDto {
   @Transform((params) => params.value.trim())
@@ -18,8 +18,8 @@ export class CreateOrphanageUserDto {
   @MinLength(2)
   @MaxLength(15)
   @ApiProperty({
-    example: '홍길동',
-    description: 'The name of OrphanageUser',
+    example: '황용진',
+    description: '보육원 사용자 이름',
   })
   readonly name: string;
 
@@ -27,8 +27,8 @@ export class CreateOrphanageUserDto {
   @IsEmail()
   @MaxLength(60)
   @ApiProperty({
-    example: 'email@email.com',
-    description: 'The email of OrphanageUser',
+    example: 'dswvgw1234@gmail.com',
+    description: '보육원 사용자 이메일',
   })
   readonly email: string;
 
@@ -39,14 +39,14 @@ export class CreateOrphanageUserDto {
   })
   @ApiProperty({
     example: 'abc123!!',
-    description: 'The password of OrphanageUser',
+    description: '보육원 사용자 비밀번호',
   })
   readonly password: string;
 
   @IsString()
   @ApiProperty({
     example: '금오보육원',
-    description: 'The name of Orphanage',
+    description: '보육원 이름',
   })
   orphanage_name: string;
 }
