@@ -18,9 +18,9 @@ import { User } from 'src/entities/user.entity';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { ApiHeader, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
+@Controller('admin/users')
 @ApiTags('ADMIN: 관리자 기능')
 @UseGuards(AuthGuard('access'), RolesGuard)
-@Controller('admin/users')
 export class AdminUserController {
   constructor(private readonly adminUserService: AdminUserService) {}
 
@@ -45,9 +45,9 @@ export class AdminUserController {
   @ApiResponse({
     status: 400,
     description:
-      'Bad Reqeust - \
+      'Bad Request - \
     [password는 name과 같은 문자열을 포함할 수 없습니다.\
-    \nBad Reqeust - 비밀번호는 8글자 이상으로 ^[A-Za-zd!@#$%^&*()]{8,30}가 포함되어야 합니다.',
+    \nBad Request - 비밀번호는 8글자 이상으로 ^[A-Za-zd!@#$%^&*()]{8,30}가 포함되어야 합니다.',
   })
   @ApiResponse({
     status: 401,
