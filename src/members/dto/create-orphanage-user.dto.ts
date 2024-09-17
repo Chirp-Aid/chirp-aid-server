@@ -28,7 +28,7 @@ export class CreateOrphanageUserDto {
   @MaxLength(60)
   @ApiProperty({
     example: 'email@email.com',
-    description: 'The eamil of OrphanageUser',
+    description: 'The email of OrphanageUser',
   })
   readonly email: string;
 

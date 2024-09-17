@@ -215,6 +215,10 @@ export class AdminUserController {
     example: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9',
   })
   @ApiResponse({
+    status: 200,
+    description: 'OK',
+  })
+  @ApiResponse({
     status: 404,
     description: 'NotFound - 해당 유저를 찾을 수 없습니다.',
   })

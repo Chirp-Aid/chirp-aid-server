@@ -40,11 +40,11 @@ export class OrphanageUsersService {
         throw new ConflictException('존재하는 이메일입니다.');
       }
 
-      const orphange = await this.orphanageRepository.findOne({
+      const orphanage = await this.orphanageRepository.findOne({
         where: { orphanage_name: orphanageName },
       });
 
-      if (!orphange) {
+      if (!orphanage) {
         throw new NotFoundException('해당 보육원을 찾을 수 없습니다.');
       }
 
@@ -53,7 +53,7 @@ export class OrphanageUsersService {
       newUser.name = name;
       newUser.email = email;
       newUser.password = password;
-      newUser.orphanage_id = orphange;
+      newUser.orphanage_id = orphanage;
 
       const user = await queryRunner.manager.save(newUser);
       await queryRunner.commitTransaction();
@@ -73,8 +73,8 @@ export class OrphanageUsersService {
     }
   }
 
-  async updateUserInfo(userId: string, udpateUserDto: UpdateOrphanageUserDto) {
-    const { name, password } = udpateUserDto;
+  async updateUserInfo(userId: string, updateUserDto: UpdateOrphanageUserDto) {
+    const { name, password } = updateUserDto;
 
     const queryRunner = this.dataSource.createQueryRunner();
 
