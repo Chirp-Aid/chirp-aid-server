@@ -53,6 +53,13 @@ export class AdminBoardService {
     return review;
   }
 
+  async findPostByTitle(title: string): Promise<Review[]> {
+    return await this.reviewRepository
+      .createQueryBuilder('review')
+      .where('review.title LIKE :title', { title: `%${title}%` })
+      .getMany();
+  }
+
   async deletePostById(reviewId: number) {
     const deletePost = await this.reviewRepository.findOne({
       where: { review_id: reviewId },
