@@ -1,4 +1,11 @@
-import { Controller, Delete, Get, Param, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
 import { Request } from 'src/entities/request.entity';
 import { AdminBoardService } from './admin-board.service';
 import { RolesGuard } from 'src/commons/guards/roles.guard';
@@ -38,6 +45,12 @@ export class AdminBoardController {
   @Roles('admin')
   async getOnePost(@Param('id') postId: number): Promise<Review> {
     return await this.adminBoardService.findPostById(postId);
+  }
+
+  @Get('/post')
+  @Roles('admin')
+  async searchReviewsByTitle(@Query('title') title: string): Promise<Review[]> {
+    return await this.adminBoardService.findPostByTitle(title);
   }
 
   @Delete('/post/:id')
