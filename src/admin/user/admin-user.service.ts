@@ -80,7 +80,7 @@ export class AdminUserService {
   }
 
   async findAllUser(): Promise<User[]> {
-    return this.userRepository
+    return await this.userRepository
       .createQueryBuilder('user')
       .select([
         'user.name',
