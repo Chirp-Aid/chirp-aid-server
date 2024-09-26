@@ -28,7 +28,6 @@ import { Report } from './entities/report.entity';
 import { ChatGateway } from './chat/chat.gateway';
 import { Message } from './entities/message.entity';
 import { ChatRoom } from './entities/chat-room.entity';
-import { ChatService } from './chat/chat.service';
 import { ChatModule } from './chat/chat.module';
 @Module({
   imports: [
