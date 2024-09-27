@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, Repository } from 'typeorm';
 import { Request } from 'src/entities/request.entity';
 import { Review } from 'src/entities/review.entity';
+import { Reservation } from 'src/entities/reservation.entity';
 
 @Injectable()
 export class AdminBoardService {
@@ -12,6 +13,9 @@ export class AdminBoardService {
 
     @InjectRepository(Review)
     private reviewRepository: Repository<Review>,
+
+    @InjectRepository(Reservation)
+    private reservationRepository: Repository<Reservation>,
   ) {}
 
   async findAllRequest(): Promise<Request[]> {
@@ -53,6 +57,13 @@ export class AdminBoardService {
     return review;
   }
 
+  async findPostByTitle(title: string): Promise<Review[]> {
+    return await this.reviewRepository
+      .createQueryBuilder('review')
+      .where('review.title LIKE :title', { title: `%${title}%` })
+      .getMany();
+  }
+
   async deletePostById(reviewId: number) {
     const deletePost = await this.reviewRepository.findOne({
       where: { review_id: reviewId },
@@ -61,5 +72,32 @@ export class AdminBoardService {
       throw new NotFoundException('해당하는 인증글이 없습니다.');
     }
     await this.reviewRepository.delete(deletePost);
+  }
+
+  async findAllVisit(): Promise<Reservation[]> {
+    return this.reservationRepository
+      .createQueryBuilder('reservation')
+      .getMany();
+  }
+
+  async findVisitById(reservationId: number) {
+    const reservation = await this.reservationRepository.findOne({
+      where: { reservationId: reservationId },
+    });
+    if (!reservation) {
+      throw new NotFoundException('해당하는 예약이 없습니다.');
+    }
+    return reservation;
+  }
+
+  async deleteVisitById(reservationId: number) {
+    const deleteReservation = await this.reservationRepository.findOne({
+      where: { reservationId: reservationId },
+    });
+    if (!deleteReservation) {
+      throw new NotFoundException('해당하는 예약글이 없습니다.');
+    }
+
+    await this.reservationRepository.delete(deleteReservation);
   }
 }

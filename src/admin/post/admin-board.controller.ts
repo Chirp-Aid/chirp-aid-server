@@ -1,10 +1,18 @@
-import { Controller, Delete, Get, Param, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
 import { Request } from 'src/entities/request.entity';
 import { AdminBoardService } from './admin-board.service';
 import { RolesGuard } from 'src/commons/guards/roles.guard';
 import { AuthGuard } from '@nestjs/passport';
 import { Roles } from 'src/commons/decorators/roles.decorator';
 import { Review } from 'src/entities/review.entity';
+import { Reservation } from 'src/entities/reservation.entity';
 
 @Controller('admin/board')
 @UseGuards(AuthGuard('access'), RolesGuard)
@@ -40,9 +48,34 @@ export class AdminBoardController {
     return await this.adminBoardService.findPostById(postId);
   }
 
+  @Get('/post')
+  @Roles('admin')
+  async searchReviewsByTitle(@Query('title') title: string): Promise<Review[]> {
+    return await this.adminBoardService.findPostByTitle(title);
+  }
+
   @Delete('/post/:id')
   @Roles('admin')
   async deletePost(@Param('id') postId: number) {
     return await this.adminBoardService.deletePostById(postId);
+  }
+
+  @Get('/reservation')
+  async getAllReservation(): Promise<Reservation[]> {
+    return await this.adminBoardService.findAllVisit();
+  }
+
+  @Get('/reservation/:id')
+  @Roles('admin')
+  async getOneReservation(
+    @Param('id') reservationId: number,
+  ): Promise<Reservation> {
+    return await this.adminBoardService.findVisitById(reservationId);
+  }
+
+  @Delete('/reservation/:id')
+  @Roles('admin')
+  async deleteReservation(@Param('id') reservationId: number): Promise<void> {
+    return await this.adminBoardService.deleteVisitById(reservationId);
   }
 }
