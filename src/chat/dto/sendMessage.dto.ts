@@ -1,5 +1,4 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { ChatRoom } from 'src/entities/chat-room.entity';
 
 export class SendMessageDto {
   @ApiProperty({
@@ -21,7 +20,7 @@ export class SendMessageDto {
     description: '대화방 ID',
     required: true,
   })
-  room: ChatRoom;
+  join_room: string;
 
   @ApiProperty({
     example: '안녕하세요',
