@@ -1,14 +1,9 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
-import { User } from './user.entity';
-import { ChatRoom } from './chat-room.entity';
+import { Column, Entity, PrimaryColumn } from 'typeorm';
 
 @Entity('message')
 export class Message {
-  @PrimaryGeneratedColumn()
+  @PrimaryColumn()
   message_id: string;
-
-  @Column()
-  content: string;
 
   @Column()
   sender: string;
@@ -16,8 +11,11 @@ export class Message {
   @Column()
   type: 'USER' | 'ORPHANAGE_USER';
 
-  @ManyToOne(() => ChatRoom, { onDelete: 'CASCADE' })
-  room: ChatRoom;
+  @Column()
+  join_room: string;
+
+  @Column()
+  content: string;
 
   @Column({ default: false })
   isRead: boolean;
