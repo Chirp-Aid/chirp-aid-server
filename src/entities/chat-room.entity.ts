@@ -1,10 +1,10 @@
-import { Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, JoinColumn, ManyToOne, PrimaryColumn } from 'typeorm';
 import { User } from './user.entity';
 import { OrphanageUser } from './orphanage-user.entity';
 
 @Entity('chat_room')
 export class ChatRoom {
-  @PrimaryGeneratedColumn()
+  @PrimaryColumn()
   chat_room_id: string;
 
   @ManyToOne(() => User, { onDelete: 'CASCADE' })
