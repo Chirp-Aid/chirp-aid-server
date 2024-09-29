@@ -29,6 +29,7 @@ import { ChatGateway } from './chat/chat.gateway';
 import { Message } from './entities/message.entity';
 import { ChatRoom } from './entities/chat-room.entity';
 import { ChatModule } from './chat/chat.module';
+import { ChatsModule } from './chats/chats.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -72,6 +73,7 @@ import { ChatModule } from './chat/chat.module';
     AdminModule,
     ReportsModule,
     ChatModule,
+    ChatsModule,
   ],
   providers: [ChatGateway],
 })
