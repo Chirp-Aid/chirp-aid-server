@@ -1,17 +1,15 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { OrphanageUser } from 'src/entities/orphanage-user.entity';
-import { User } from 'src/entities/user.entity';
 
 export class CreateRoomDto {
   @ApiProperty({
-    example: '차캐핑',
+    example: 'eweqfervtr',
     description: '일반 사용자',
   })
-  user: User;
+  user_id: string;
 
   @ApiProperty({
-    example: '다조핑',
+    example: 'ewfewqghre',
     description: '보육원 사용자',
   })
-  orphanage_user: OrphanageUser;
+  orphanage_user_id: string;
 }
