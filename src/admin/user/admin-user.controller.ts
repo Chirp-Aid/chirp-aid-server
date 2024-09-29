@@ -111,6 +111,7 @@ export class AdminUserController {
     schema: {
       type: 'object',
       example: {
+        user_id: 'wedewfw',
         name: '황용진',
         email: 'dswvgw1234@gmail.com',
         age: 5,
@@ -152,6 +153,7 @@ export class AdminUserController {
       type: 'object',
       example: [
         {
+          user_id: 'wedewfw',
           name: '황용진',
           email: 'dswvgw1234@gmail.com',
           age: 5,
