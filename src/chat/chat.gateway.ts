@@ -10,6 +10,7 @@ import { Server, Socket } from 'socket.io';
 import { ChatService } from './chat.service';
 import { CreateRoomDto } from './dto/createRoom.dto';
 import { SendMessageDto } from './dto/sendMessage.dto';
+import { Body } from '@nestjs/common';
 
 @WebSocketGateway({
   cors: {
@@ -45,10 +46,11 @@ export class ChatGateway
 
   @SubscribeMessage('sendMessage')
   async handleSendMessage(client: Socket, sendMessageDto: SendMessageDto) {
-    const message = await this.chatService.sendMessage(sendMessageDto);
-    this.server
-      .to(sendMessageDto.room.chat_room_id)
-      .emit('newMessage', message);
+    console.log(sendMessageDto);
+    const message = await this.chatService.sendMessage(
+      JSON.stringify(sendMessageDto),
+    );
+    this.server.to(sendMessageDto.join_room).emit('newMessage', message);
     console.log(`메시지 전송: ${message.content}`);
     return message;
   }
@@ -58,9 +60,10 @@ export class ChatGateway
     const room = await this.chatService.findRoomById(roomId);
     if (room) {
       client.join(roomId);
-      const messages = await this.chatService.getMessages(room);
+      console.log('방 참가');
+      const messages = await this.chatService.getMessages(roomId);
       client.emit('roomMessages', messages);
     }
-    console.log(`대화방 입장: ${roomId}`);
+    console.log(`대화방 입장: ${room}`);
   }
 }
