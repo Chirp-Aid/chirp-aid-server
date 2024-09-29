@@ -83,6 +83,7 @@ export class AdminUserService {
     return await this.userRepository
       .createQueryBuilder('user')
       .select([
+        'user.user_id',
         'user.name',
         'user.email',
         'user.age',
