@@ -102,6 +102,7 @@ export class AdminUserService {
       .createQueryBuilder('user')
       .where('user.user_id=:id', { id: userId })
       .select([
+        'user.user_id',
         'user.name',
         'user.email',
         'user.age',
