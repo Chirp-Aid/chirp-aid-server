@@ -23,6 +23,8 @@ import { ReviewProduct } from './entities/review-product.entity';
 import { ReservationModule } from './reservation/reservation.module';
 import { Reservation } from './entities/reservation.entity';
 import { AdminModule } from './admin/admin.module';
+import { ReportsModule } from './reports/reports.module';
+import { Report } from './entities/report.entity';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -47,6 +49,7 @@ import { AdminModule } from './admin/admin.module';
         Review,
         ReviewProduct,
         Reservation,
+        Report,
       ],
       synchronize: true,
     }),
@@ -61,6 +64,7 @@ import { AdminModule } from './admin/admin.module';
     PostsModule,
     ReservationModule,
     AdminModule,
+    ReportsModule,
   ],
 })
 export class AppModule {}
