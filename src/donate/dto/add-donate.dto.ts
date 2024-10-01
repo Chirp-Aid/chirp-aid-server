@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-export class AddBasektDto {
+export class AddBasketDto {
   @ApiProperty({
     example: 1,
     description: '장바구니에 담을 물품 수량',
