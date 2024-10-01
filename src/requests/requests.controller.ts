@@ -32,7 +32,7 @@ export class RequestsController {
   })
   @ApiResponse({
     status: 401,
-    description: 'Unaothorized',
+    description: 'Unauthorized',
   })
   @ApiResponse({
     status: 404,
