@@ -3,7 +3,6 @@ import { ChatRoom } from 'src/entities/chat-room.entity';
 import { Message } from 'src/entities/message.entity';
 import { Repository } from 'typeorm';
 import { CreateRoomDto } from './dto/createRoom.dto';
-import { SendMessageDto } from './dto/sendMessage.dto';
 import { User } from 'src/entities/user.entity';
 import { OrphanageUser } from 'src/entities/orphanage-user.entity';
 import * as uuid from 'uuid';
@@ -49,6 +48,7 @@ export class ChatService {
         chat_room_id: uuid.v4(),
         user,
         orphanage_user: orphanageUser,
+        created_at: new Date(),
       });
       await this.chatRoomRepository.save(room);
     }
@@ -63,8 +63,6 @@ export class ChatService {
       join_room: room,
       content,
     } = JSON.parse(JSON.parse(sendMessageDto));
-    console.log(JSON.parse(JSON.parse(sendMessageDto)));
-    console.log(sender, type, room, content);
     const message = this.messageRepository.create({
       message_id: uuid.v4(),
       content,
@@ -72,6 +70,7 @@ export class ChatService {
       type,
       join_room: room,
       isRead: false,
+      created_at: new Date(),
     });
     await this.messageRepository.save(message);
     return message;
