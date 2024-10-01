@@ -18,6 +18,7 @@ import { UpdateOrphanageDto } from 'src/orphanages/dto/updateOrphanage.dto';
 import { ApiHeader, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 @UseGuards(AuthGuard('access'), RolesGuard)
+@ApiTags('ADMIN: 관리자 보육원 관리')
 @Controller('admin/orphanage')
 @ApiTags('ADMIN: 관리자 기능')
 export class orphanageManagerController {
@@ -39,6 +40,26 @@ export class orphanageManagerController {
     description: 'Unauthorized',
   })
   @Roles('admin')
+  @ApiOperation({
+    summary: '관리자 보육원 생성',
+  })
+  @ApiHeader({
+    name: 'Authorization',
+    description: "Bearer {`user's Access Token`}",
+    example: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9',
+  })
+  @ApiResponse({
+    status: 201,
+    description: 'Created',
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Unaothorized',
+  })
+  @ApiResponse({
+    status: 409,
+    description: 'Conflict - 이미 존재하는 보육원입니다.',
+  })
   async createOrphanage(@Body() createOrphanageDto: CreateOrphanageDto) {
     return await this.managerService.createOrphanage(createOrphanageDto);
   }
@@ -46,79 +67,70 @@ export class orphanageManagerController {
   @Get()
   @Roles('admin')
   @ApiOperation({
-    summary: '보육원 목록 가져오기',
-    description:
-      '모든 보육원의 정보를 반환합니다.\
-      \n이때 보육원과 연결된 보육원 계정의 사용자(name)을 반환합니다. 보육원 계정과 연결되어 있지 않으면 `null`을 반환합니다.',
+    summary: '관리자 보육원 전체 조회',
+  })
+  @ApiHeader({
+    name: 'Authorization',
+    description: "Bearer {`user's Access Token`}",
+    example: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9',
   })
   @ApiResponse({
     status: 200,
-    description: 'OK',
+    description: '보육원 전체 정보를 반환합니다.',
     schema: {
       type: 'object',
-      example: [
-        {
-          orphanage_id: 1,
-          orphanage_name: '보육원1',
-          address: '주소1',
-          phone_number: '111-1111',
-          photo: '사진1',
-          name: '보육원장1',
-        },
-        {
-          orphanage_id: 2,
-          orphanage_name: '보육원2',
-          address: '주소2',
-          phone_number: '222-2222',
-          photo: '사진2',
-          name: 'null',
-        },
-      ],
-    },
-  })
-  async getAllOrphanage(): Promise<Orphanage[]> {
-    return await this.managerService.findAllOrphanage();
-  }
-  @Get(':id')
-  @Roles('admin')
-  @ApiOperation({
-    summary: '보육원 상세 정보 가져오기',
-    description:
-      '하나의 보육원의 상제 정보를 반환합니다. 보육원의 계정, 요청 목록도 함께 반환합니다.',
-  })
-  @ApiResponse({
-    status: 200,
-    description: 'OK',
-    schema: {
-      type: 'object',
-      example: {
-        name: '홍길동',
-        orphanage_id: 1,
-        orphanage_name: '금오보육원',
-        address: '주소3',
-        homepage_link: '링크3',
-        phone_number: '333-3333',
-        description: '설명3',
-        photo: '사진3',
-        requests: [
-          {
-            request_id: 6,
-            product_name: '촉촉한 초코칩',
-            price: 2000,
-            count: 5,
-            supported_count: 5,
-            state: 'COMPLETED',
-            message:
-              '내가 좋아하는 촉촉한 초코칩, 내가 안 좋아는 안 촉촉한 초코칩',
-            product_photo: '초코칩 사진',
-          },
-        ],
+      properties: {
+        orphanage_id: { type: 'integer', example: 1 },
+        orphanage_name: { type: 'string', example: '테스트에유' },
+        address: { type: 'string', example: '경상북도 구미시 옥계북로 69' },
+        homepage_link: { type: 'string', example: 'https://www.naver.com' },
+        phone_number: { type: 'string', example: '010-1234-5678' },
+        description: { type: 'string', example: '하이용' },
+        photo: { type: 'string', example: 'path/to/photo.jpg' },
       },
     },
   })
   @ApiResponse({
+    status: 401,
+    description: 'Unaothorized',
+  })
+  async getAllOrphanage(): Promise<Orphanage[]> {
+    return await this.managerService.findAllOrphanage();
+  }
+
+  @Get(':id')
+  @Roles('admin')
+  @ApiOperation({
+    summary: '관리자 보육원 아이디 조회',
+  })
+  @ApiHeader({
+    name: 'Authorization',
+    description: "Bearer {`user's Access Token`}",
+    example: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9',
+  })
+  @ApiResponse({
+    status: 200,
+    description: '특정 보육원을 반환합니다.',
+    schema: {
+      type: 'object',
+      properties: {
+        orphanage_id: { type: 'integer', example: 1 },
+        orphanage_name: { type: 'string', example: '테스트에유' },
+        address: { type: 'string', example: '경상북도 구미시 옥계북로 69' },
+        homepage_link: { type: 'string', example: 'https://www.naver.com' },
+        phone_number: { type: 'string', example: '010-1234-5678' },
+        description: { type: 'string', example: '하이용' },
+        photo: { type: 'string', example: 'path/to/photo.jpg' },
+      },
+    },
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Unaothorized',
+  })
+  @ApiResponse({
     status: 404,
-    description: 'Not Found - 해당 보육원을 찾지 못 했습니다.',
+    description: 'Not Found - 해당하는 보육원이 존재하지 않습니다.',
   })
   async getOneOrphanage(@Param('id') orphanageId: number): Promise<Orphanage> {
     return await this.managerService.findOrphanageById(orphanageId);
@@ -127,25 +139,24 @@ export class orphanageManagerController {
   @Patch('/:id')
   @Roles('admin')
   @ApiOperation({
-    summary: '보육원 정보 수정',
-    description: '`보육원 계정`으로 `보육원 정보`를 수정합니다.',
+    summary: '관리자 보육원 정보 수정',
   })
   @ApiHeader({
     name: 'Authorization',
-    description: "Bearer {`Orphanage User's Access Token`}",
+    description: "Bearer {`user's Access Token`}",
     example: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9',
   })
   @ApiResponse({
     status: 200,
-    description: 'OK',
+    description: 'ok',
   })
   @ApiResponse({
     status: 401,
-    description: 'Unauthorized',
+    description: 'Unaothorized',
   })
   @ApiResponse({
     status: 404,
-    description: 'Not Found - 해당 보육원을 찾을 수 없습니다.',
+    description: 'Not Found - 해당하는 보육원이 존재하지 않습니다.',
   })
   async updateOrphanage(
     @Param('id') orphanageId: number,
@@ -157,8 +168,40 @@ export class orphanageManagerController {
     );
   }
 
-  @Delete('orphanage/:id')
+  @Delete(':id')
   @Roles('admin')
+  @ApiOperation({
+    summary: '관리자 보육원 아이디를 통한 삭제',
+  })
+  @ApiHeader({
+    name: 'Authorization',
+    description: "Bearer {`user's Access Token`}",
+    example: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9',
+  })
+  @ApiResponse({
+    status: 200,
+    description: '삭제된 보육원을을 반환합니다.',
+    schema: {
+      type: 'object',
+      properties: {
+        orphanage_id: { type: 'integer', example: 1 },
+        orphanage_name: { type: 'string', example: '테스트에유' },
+        address: { type: 'string', example: '경상북도 구미시 옥계북로 69' },
+        homepage_link: { type: 'string', example: 'https://www.naver.com' },
+        phone_number: { type: 'string', example: '010-1234-5678' },
+        description: { type: 'string', example: '하이용' },
+        photo: { type: 'string', example: 'path/to/photo.jpg' },
+      },
+    },
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Unaothorized',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Not Found - 해당하는 보육원이 존재하지 않습니다.',
+  })
   async deleteOrphanage(@Param('id') orphanageId: number): Promise<Orphanage> {
     return await this.managerService.deleteOrphanageById(orphanageId);
   }

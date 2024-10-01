@@ -14,46 +14,63 @@ import { Roles } from 'src/commons/decorators/roles.decorator';
 import { Review } from 'src/entities/review.entity';
 import { Reservation } from 'src/entities/reservation.entity';
 import { ApiHeader, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { refreshToken } from 'firebase-admin/app';
-import { title } from 'process';
 
 @Controller('admin/board')
 @UseGuards(AuthGuard('access'), RolesGuard)
-@ApiTags('ADMIN: 관리자 기능')
+@ApiTags('ADMIN: 관리자 게시글 관리')
 export class AdminBoardController {
   constructor(private readonly adminBoardService: AdminBoardService) {}
 
   @Get('/request')
   @Roles('admin')
   @ApiOperation({
-    summary: '요청글 목록 전체 가져오기',
-    description: '모든 요청글의 정보를 반환합니다.',
+    summary: '관리자 보육원 물품 요청글 전체 조회',
   })
   @ApiHeader({
     name: 'Authorization',
-    description: "Bearer {`admin's Access Token`}",
+    description: "Bearer {`user's Access Token`}",
     example: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9',
   })
   @ApiResponse({
     status: 200,
-    description: 'Success',
+    description: '성공적으로 요청 목록을 반환합니다.',
     schema: {
       type: 'array',
-      example: [
-        {
-          request_id: 1,
-          count: 5,
-          supported_count: 2,
-          state: 'REQUESTED',
-          message: '초코파이 5개 기부해주세요',
-          orphanage_user_id: '다조핑',
+      items: {
+        type: 'object',
+        properties: {
+          request_id: {
+            type: 'integer',
+            example: 1,
+            description: '요청의 고유 ID',
+          },
+          count: {
+            type: 'integer',
+            example: 5,
+            description: '요청된 수량',
+          },
+          supported_count: {
+            type: 'integer',
+            example: 0,
+            description: '지원된 수량',
+          },
+          state: {
+            type: 'string',
+            example: 'REQUESTED',
+            description: '현재 요청 상태',
+          },
+          message: {
+            type: 'string',
+            example: '내가 좋아하는 속촉한 초코파이',
+            description: '요청에 대한 메시지 또는 설명',
+          },
         },
-      ],
+      },
     },
   })
   @ApiResponse({
     status: 401,
-    description: 'Unauthorized',
+    description: 'Unaothorized',
   })
   async getAllRequest(): Promise<Request[]> {
     return await this.adminBoardService.findAllRequest();
@@ -62,41 +79,82 @@ export class AdminBoardController {
   @Get('/request/:id')
   @Roles('admin')
   @ApiOperation({
-    summary: '특정 요청글 가져오기',
-    description: '해당 id 요청글의 정보를 반환합니다.',
+    summary: '관리자 보육원 특정 물품 요청글  조회',
   })
   @ApiHeader({
     name: 'Authorization',
-    description: "Bearer {`admin's Access Token`}",
+    description: "Bearer {`user's Access Token`}",
     example: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9',
   })
   @ApiResponse({
     status: 200,
-    description: 'Success',
+    description: '성공적으로 요청 목록을 반환합니다.',
     schema: {
-      type: 'object',
-      example: {
-        request_id: 1,
-        count: 5,
-        supported_count: 2,
-        state: 'REQUESTED',
-        message: '초코파이 5개 기부해주세요',
-        orphanage_user_id: '다조핑',
+      type: 'array',
+      items: {
+        type: 'object',
+        properties: {
+          request_id: {
+            type: 'integer',
+            example: 1,
+            description: '요청의 고유 ID',
+          },
+          count: {
+            type: 'integer',
+            example: 5,
+            description: '요청된 수량',
+          },
+          supported_count: {
+            type: 'integer',
+            example: 0,
+            description: '지원된 수량',
+          },
+          state: {
+            type: 'string',
+            example: 'REQUESTED',
+            description: '현재 요청 상태',
+          },
+          message: {
+            type: 'string',
+            example: '내가 좋아하는 속촉한 초코파이',
+            description: '요청에 대한 메시지 또는 설명',
+          },
+        },
       },
     },
   })
   @ApiResponse({
     status: 401,
-    description: 'Unauthorized',
+    description: 'Unaothorized',
   })
   @ApiResponse({
     status: 404,
-    description: 'Not Found - 해당 요청을 찾을 수 없습니다.',
+    description: 'Not Found - 해당하는 요청글이 없습니다.',
   })
   async getOneRequest(@Param('id') requestId: number): Promise<Request> {
     return await this.adminBoardService.findRequestById(requestId);
   }
 
+  @ApiOperation({
+    summary: '관리자 보육원 특정 물품 요청글 삭제',
+  })
+  @ApiHeader({
+    name: 'Authorization',
+    description: "Bearer {`user's Access Token`}",
+    example: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'ok',
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Unaothorized',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Not Found - 해당하는 요청글이 없습니다.',
+  })
   @Delete('/request/:id')
   @Roles('admin')
   @ApiOperation({
@@ -127,34 +185,54 @@ export class AdminBoardController {
   @Get('/post')
   @Roles('admin')
   @ApiOperation({
-    summary: '모든 리뷰글 가져오기',
-    description: '모든 요청글의 정보를 반환합니다.',
+    summary: '관리자 보육원 인증글 전체 조회',
   })
   @ApiHeader({
     name: 'Authorization',
-    description: "Bearer {`admin's Access Token`}",
+    description: "Bearer {`user's Access Token`}",
     example: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9',
   })
   @ApiResponse({
     status: 200,
-    description: 'Success',
+    description: '성공적으로 리뷰 게시글 목록을 반환합니다.',
     schema: {
       type: 'array',
-      example: [
-        {
-          review_id: 1,
-          title: '초코파이 맛있어요',
-          content: '초코파이 너무 맛있어요',
-          photo: '초코파이 사진url',
-          date: '2021-10-10',
-          orphanage_user: '다조핑',
+      items: {
+        type: 'object',
+        properties: {
+          review_id: {
+            type: 'integer',
+            example: 1,
+            description: '리뷰 게시글의 고유 ID',
+          },
+          title: {
+            type: 'string',
+            example: '감사합니다!',
+            description: '리뷰 게시글의 제목',
+          },
+          content: {
+            type: 'string',
+            example: '잘 먹었습니다~!',
+            description: '리뷰 게시글의 내용',
+          },
+          photo: {
+            type: 'string',
+            example: 'https://example.com/photo.jpg',
+            description: '리뷰 게시글에 포함된 사진의 URL',
+          },
+          date: {
+            type: 'string',
+            format: 'date-time',
+            example: '2024-09-30 01:44:07',
+            description: '리뷰 게시글이 작성된 날짜 및 시간',
+          },
         },
-      ],
+      },
     },
   })
   @ApiResponse({
     status: 401,
-    description: 'Unauthorized',
+    description: 'Unaothorized',
   })
   async getAllPost(): Promise<Review[]> {
     return await this.adminBoardService.findAllPost();
@@ -163,44 +241,118 @@ export class AdminBoardController {
   @Get('/post/:id')
   @Roles('admin')
   @ApiOperation({
-    summary: '특정 리뷰글 가져오기',
-    description: '해당 id 리뷰글의 정보를 반환합니다.',
+    summary: '관리자 보육원 특정 인증글 아이디를 통해 조회',
   })
   @ApiHeader({
     name: 'Authorization',
-    description: "Bearer {`admin's Access Token`}",
+    description: "Bearer {`user's Access Token`}",
     example: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9',
   })
   @ApiResponse({
     status: 200,
-    description: 'Success',
+    description: '성공적으로 리뷰 게시글 목록을 반환합니다.',
     schema: {
       type: 'array',
-      example: [
-        {
-          review_id: 1,
-          title: '초코파이 맛있어요',
-          content: '초코파이 너무 맛있어요',
-          photo: '초코파이 사진url',
-          date: '2021-10-10',
-          orphanage_user: '다조핑',
+      items: {
+        type: 'object',
+        properties: {
+          review_id: {
+            type: 'integer',
+            example: 1,
+            description: '리뷰 게시글의 고유 ID',
+          },
+          title: {
+            type: 'string',
+            example: '감사합니다!',
+            description: '리뷰 게시글의 제목',
+          },
+          content: {
+            type: 'string',
+            example: '잘 먹었습니다~!',
+            description: '리뷰 게시글의 내용',
+          },
+          photo: {
+            type: 'string',
+            example: 'https://example.com/photo.jpg',
+            description: '리뷰 게시글에 포함된 사진의 URL',
+          },
+          date: {
+            type: 'string',
+            format: 'date-time',
+            example: '2024-09-30 01:44:07',
+            description: '리뷰 게시글이 작성된 날짜 및 시간',
+          },
         },
-      ],
+      },
+    },
+  })
+  @ApiResponse({
+    status: 200,
+    description: '성공적으로 리뷰 게시글 목록을 반환합니다.',
+    schema: {
+      type: 'array',
+      items: {
+        type: 'object',
+        properties: {
+          review_id: {
+            type: 'integer',
+            example: 1,
+            description: '리뷰 게시글의 고유 ID',
+          },
+          title: {
+            type: 'string',
+            example: '감사합니다!',
+            description: '리뷰 게시글의 제목',
+          },
+          content: {
+            type: 'string',
+            example: '잘 먹었습니다~!',
+            description: '리뷰 게시글의 내용',
+          },
+          photo: {
+            type: 'string',
+            example: 'https://example.com/photo.jpg',
+            description: '리뷰 게시글에 포함된 사진의 URL',
+          },
+          date: {
+            type: 'string',
+            format: 'date-time',
+            example: '2024-09-30 01:44:07',
+            description: '리뷰 게시글이 작성된 날짜 및 시간',
+          },
+        },
+      },
     },
   })
   @ApiResponse({
     status: 401,
-    description: 'Unauthorized',
-  })
-  @ApiResponse({
-    status: 404,
-    description: 'Not Found - 해당 리뷰를 찾을 수 없습니다.',
+    description: 'Unaothorized',
   })
   async getOnePost(@Param('id') postId: number): Promise<Review> {
     return await this.adminBoardService.findPostById(postId);
   }
 
   @Get('/post')
+  @ApiOperation({
+    summary: '관리자 보육원 특정 인증글 제목 검색',
+  })
+  @ApiHeader({
+    name: 'Authorization',
+    description: "Bearer {`user's Access Token`}",
+    example: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'ok',
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Unaothorized',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Not Found - 해당하는 보육원이 존재하지 않습니다.',
+  })
   @Roles('admin')
   @ApiOperation({
     summary: '리뷰글 검색하기',
@@ -236,6 +388,22 @@ export class AdminBoardController {
     return await this.adminBoardService.findPostByTitle(title);
   }
 
+  @ApiOperation({
+    summary: '관리자 보육원 인증글 삭제',
+  })
+  @ApiHeader({
+    name: 'Authorization',
+    description: "Bearer {`user's Access Token`}",
+    example: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'ok',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Not Found - 해당하는 인증글이 없습니다.',
+  })
   @Delete('/post/:id')
   @Roles('admin')
   @ApiOperation({
@@ -263,6 +431,43 @@ export class AdminBoardController {
     return await this.adminBoardService.deletePostById(postId);
   }
 
+  @ApiOperation({
+    summary: '관리자 유저 방문 요청글 전체 조회',
+  })
+  @ApiHeader({
+    name: 'Authorization',
+    description: "Bearer {`user's Access Token`}",
+    example: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9',
+  })
+  @ApiResponse({
+    status: 200,
+    description: '성공적으로 고아원 방문 신청 데이터를 반환합니다.',
+    schema: {
+      type: 'object',
+      properties: {
+        orphanage_id: {
+          type: 'integer',
+          example: 1,
+          description: '고아원의 고유 ID',
+        },
+        visit_date: {
+          type: 'string',
+          format: 'date',
+          example: '2023-12-25',
+          description: '방문 신청 날짜',
+        },
+        reason: {
+          type: 'string',
+          example: '방문 신청해요~',
+          description: '방문 신청 이유',
+        },
+      },
+    },
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Not Found - 해당하는 방문 요청글이 없습니다.',
+  })
   @Get('/reservation')
   @Roles('admin')
   @ApiOperation({
@@ -302,6 +507,43 @@ export class AdminBoardController {
   }
 
   @Get('/reservation/:id')
+  @ApiOperation({
+    summary: '관리자 유저 방문 요청글 조회',
+  })
+  @ApiHeader({
+    name: 'Authorization',
+    description: "Bearer {`user's Access Token`}",
+    example: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9',
+  })
+  @ApiResponse({
+    status: 200,
+    description: '성공적으로 고아원 방문 신청 데이터를 반환합니다.',
+    schema: {
+      type: 'object',
+      properties: {
+        orphanage_id: {
+          type: 'integer',
+          example: 1,
+          description: '고아원의 고유 ID',
+        },
+        visit_date: {
+          type: 'string',
+          format: 'date',
+          example: '2023-12-25',
+          description: '방문 신청 날짜',
+        },
+        reason: {
+          type: 'string',
+          example: '방문 신청해요~',
+          description: '방문 신청 이유',
+        },
+      },
+    },
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Not Found - 해당하는 방문 요청글이 없습니다.',
+  })
   @Roles('admin')
   @ApiOperation({
     summary: '특정 예약 가져오기',
@@ -344,6 +586,22 @@ export class AdminBoardController {
   }
 
   @Delete('/reservation/:id')
+  @ApiOperation({
+    summary: '관리자 유저 방문 요청글 삭제',
+  })
+  @ApiHeader({
+    name: 'Authorization',
+    description: "Bearer {`user's Access Token`}",
+    example: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'ok',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Not Found - 해당하는 방문 요청글이 없습니다.',
+  })
   @Roles('admin')
   @ApiOperation({
     summary: '특정 예약글 삭제하기',
