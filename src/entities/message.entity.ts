@@ -19,4 +19,7 @@ export class Message {
 
   @Column({ default: false })
   isRead: boolean;
+
+  @Column()
+  created_at: Date;
 }
