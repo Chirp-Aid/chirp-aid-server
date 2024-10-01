@@ -8,7 +8,7 @@ import { Request } from 'src/entities/request.entity';
 import { User } from 'src/entities/user.entity';
 import { DataSource, Repository } from 'typeorm';
 import { BasketProduct } from 'src/entities/basket-product.entity';
-import { AddBasektDto } from './dto/add-donate.dto';
+import { AddBasketDto } from './dto/add-donate.dto';
 
 @Injectable()
 export class BasketService {
@@ -20,7 +20,7 @@ export class BasketService {
     private dataSource: DataSource,
   ) {}
 
-  async updateCount(userId: string, updateDto: AddBasektDto) {
+  async updateCount(userId: string, updateDto: AddBasketDto) {
     const { request_id: requestId, count } = updateDto;
     try {
       const user = await this.userRepository.findOne({
@@ -61,8 +61,8 @@ export class BasketService {
     }
   }
 
-  async addBasket(userId: string, addBasektDto: AddBasektDto) {
-    const { count, request_id: requestId } = addBasektDto;
+  async addBasket(userId: string, addBasketDto: AddBasketDto) {
+    const { count, request_id: requestId } = addBasketDto;
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
     await queryRunner.startTransaction();
@@ -111,7 +111,7 @@ export class BasketService {
       }
 
       await queryRunner.commitTransaction();
-      console.log(`Basket Product added : ${addBasektDto}`);
+      console.log(`Basket Product added : ${addBasketDto}`);
     } catch (error) {
       await queryRunner.rollbackTransaction();
       console.log(error);
