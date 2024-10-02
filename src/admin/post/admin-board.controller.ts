@@ -20,6 +20,7 @@ import { ApiHeader, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 @ApiTags('ADMIN: 관리자 게시글 관리')
 export class AdminBoardController {
   constructor(private readonly adminBoardService: AdminBoardService) {}
+
   @Get('/request')
   @Roles('admin')
   @ApiOperation({
@@ -156,6 +157,27 @@ export class AdminBoardController {
   })
   @Delete('/request/:id')
   @Roles('admin')
+  @ApiOperation({
+    summary: '특정 요청글 삭제하기',
+    description: '해당 id 요청글의 정보를 삭제합니다.',
+  })
+  @ApiHeader({
+    name: 'Authorization',
+    description: "Bearer {`admin's Access Token`}",
+    example: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9',
+  })
+  @ApiResponse({
+    status: 201,
+    description: 'Success',
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Unauthorized',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Not Found - 해당 요청을 찾을 수 없습니다.',
+  })
   async deleteRequest(@Param('id') requestId: number): Promise<void> {
     return await this.adminBoardService.deleteRequestById(requestId);
   }
@@ -332,6 +354,36 @@ export class AdminBoardController {
     description: 'Not Found - 해당하는 보육원이 존재하지 않습니다.',
   })
   @Roles('admin')
+  @ApiOperation({
+    summary: '리뷰글 검색하기',
+    description: '제목을 검색하여 리뷰글을 반환합니다.',
+  })
+  @ApiHeader({
+    name: 'Authorization',
+    description: "Bearer {`admin's Access Token`}",
+    example: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Success',
+    schema: {
+      type: 'array',
+      example: [
+        {
+          review_id: 1,
+          title: '초코파이 맛있어요',
+          content: '초코파이 너무 맛있어요',
+          photo: '초코파이 사진url',
+          date: '2021-10-10',
+          orphanage_user: '다조핑',
+        },
+      ],
+    },
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Unauthorized',
+  })
   async searchReviewsByTitle(@Query('title') title: string): Promise<Review[]> {
     return await this.adminBoardService.findPostByTitle(title);
   }
@@ -354,6 +406,27 @@ export class AdminBoardController {
   })
   @Delete('/post/:id')
   @Roles('admin')
+  @ApiOperation({
+    summary: '특정 리뷰글 삭제하기',
+    description: '해당 id 리뷰글의 정보를 삭제합니다.',
+  })
+  @ApiHeader({
+    name: 'Authorization',
+    description: "Bearer {`admin's Access Token`}",
+    example: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9',
+  })
+  @ApiResponse({
+    status: 201,
+    description: 'Success',
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Unauthorized',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Not Found - 해당 리뷰를 찾을 수 없습니다.',
+  })
   async deletePost(@Param('id') postId: number) {
     return await this.adminBoardService.deletePostById(postId);
   }
@@ -396,6 +469,39 @@ export class AdminBoardController {
     description: 'Not Found - 해당하는 방문 요청글이 없습니다.',
   })
   @Get('/reservation')
+  @Roles('admin')
+  @ApiOperation({
+    summary: '모든 예약 가져오기',
+    description:
+      '모든 예약 정보를 반환합니다.\
+    state: APPROVED(승인됨), REJECTED(거절됨), PENDING(대기 중), COMPLETED(완료)',
+  })
+  @ApiHeader({
+    name: 'Authorization',
+    description: "Bearer {`admin's Access Token`}",
+    example: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Success',
+    schema: {
+      type: 'array',
+      example: [
+        {
+          reservation_id: 1,
+          writeDate: '2021-10-10',
+          visitDate: '2021-10-15',
+          reason: '방문하고 싶어요.',
+          state: 'PENDING',
+          orphanage_user_id: '다조핑',
+        },
+      ],
+    },
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Unauthorized',
+  })
   async getAllReservation(): Promise<Reservation[]> {
     return await this.adminBoardService.findAllVisit();
   }
@@ -439,6 +545,40 @@ export class AdminBoardController {
     description: 'Not Found - 해당하는 방문 요청글이 없습니다.',
   })
   @Roles('admin')
+  @ApiOperation({
+    summary: '특정 예약 가져오기',
+    description:
+      '해당 id 예약정보를 반환합니다.\
+    state: APPROVED(승인됨), REJECTED(거절됨), PENDING(대기 중), COMPLETED(완료)',
+  })
+  @ApiHeader({
+    name: 'Authorization',
+    description: "Bearer {`admin's Access Token`}",
+    example: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Success',
+    schema: {
+      type: 'array',
+      example: {
+        reservation_id: 1,
+        writeDate: '2021-10-10',
+        visitDate: '2021-10-15',
+        reason: '방문하고 싶어요.',
+        state: 'PENDING',
+        orphanage_user_id: '다조핑',
+      },
+    },
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Unauthorized',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Not Found - 해당 예약을 찾을 수 없습니다.',
+  })
   async getOneReservation(
     @Param('id') reservationId: number,
   ): Promise<Reservation> {
@@ -463,6 +603,27 @@ export class AdminBoardController {
     description: 'Not Found - 해당하는 방문 요청글이 없습니다.',
   })
   @Roles('admin')
+  @ApiOperation({
+    summary: '특정 예약글 삭제하기',
+    description: '해당 id 예약글의 정보를 삭제합니다.',
+  })
+  @ApiHeader({
+    name: 'Authorization',
+    description: "Bearer {`admin's Access Token`}",
+    example: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9',
+  })
+  @ApiResponse({
+    status: 201,
+    description: 'Success',
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Unauthorized',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Not Found - 해당 예약을 찾을 수 없습니다.',
+  })
   async deleteReservation(@Param('id') reservationId: number): Promise<void> {
     return await this.adminBoardService.deleteVisitById(reservationId);
   }

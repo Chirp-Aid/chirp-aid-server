@@ -16,13 +16,13 @@ export class AdminOrphanageUsersService {
     private dataSource: DataSource,
   ) {}
 
-  async createOrphanageUser(createOrphanageUser: CreateOrphanageUserDto) {
+  async createOrphanageUser(createOrphanageUserDto: CreateOrphanageUserDto) {
     const {
       name,
       email,
       password,
       orphanage_name: orphanageName,
-    } = createOrphanageUser;
+    } = createOrphanageUserDto;
 
     const queryRunner = this.dataSource.createQueryRunner();
 
@@ -75,7 +75,12 @@ export class AdminOrphanageUsersService {
   async findAllOrphanageUsers(): Promise<OrphanageUser[]> {
     return await this.orphanageUserRepository
       .createQueryBuilder('orphanage_user')
-      .select(['orphanage_user.name', 'orphanage_user.email', 'o.orphanage_id'])
+      .select([
+        'orphanage_user.orphanage_user_id',
+        'orphanage_user.name',
+        'orphanage_user.email',
+        'o.orphanage_id',
+      ])
       .innerJoin('orphanage_user.orphanage_id', 'o')
       .getMany();
   }

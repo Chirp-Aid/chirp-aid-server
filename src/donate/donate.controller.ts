@@ -20,7 +20,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { DonateDto } from './dto/donate.dto';
-import { AddBasektDto } from './dto/add-donate.dto';
+import { AddBasketDto } from './dto/add-donate.dto';
 import { DelBasketDto } from './dto/delete-basket.dto';
 
 @ApiTags('DONATE: 기부 관련 요청')
@@ -47,7 +47,7 @@ export class DonateController {
   })
   @ApiResponse({
     status: 401,
-    description: 'Unaothorized',
+    description: 'Unauthorized',
   })
   @ApiResponse({
     status: 404,
@@ -60,9 +60,9 @@ export class DonateController {
     description: '요청 수령보다 기부 수량이 많습니다.',
   })
   @UseGuards(AuthGuard('access'))
-  async addBasekt(@Body() addBasektDto: AddBasektDto, @Request() req) {
+  async addBasket(@Body() addBasketDto: AddBasketDto, @Request() req) {
     const userId = req.user.user_id;
-    return await this.basketService.addBasket(userId, addBasektDto);
+    return await this.basketService.addBasket(userId, addBasketDto);
   }
 
   @Get('basket')
@@ -95,7 +95,7 @@ export class DonateController {
   })
   @ApiResponse({
     status: 401,
-    description: 'Unaothorized',
+    description: 'Unauthorized',
   })
   @ApiResponse({
     status: 404,
@@ -124,7 +124,7 @@ export class DonateController {
   })
   @ApiResponse({
     status: 401,
-    description: 'Unaothorized',
+    description: 'Unauthorized',
   })
   @ApiResponse({
     status: 404,
@@ -134,7 +134,7 @@ export class DonateController {
     \nNot Found - 해당 장바구니가 존재하지 않습니다.',
   })
   @UseGuards(AuthGuard('access'))
-  async updateBasket(@Body() updateDto: AddBasektDto, @Request() req) {
+  async updateBasket(@Body() updateDto: AddBasketDto, @Request() req) {
     return await this.basketService.updateCount(req.user.user_id, updateDto);
   }
 
@@ -154,7 +154,7 @@ export class DonateController {
   })
   @ApiResponse({
     status: 401,
-    description: 'Unaothorized',
+    description: 'Unauthorized',
   })
   @ApiResponse({
     status: 404,
@@ -185,7 +185,7 @@ export class DonateController {
   })
   @ApiResponse({
     status: 401,
-    description: 'Unaothorized',
+    description: 'Unauthorized',
   })
   @ApiResponse({
     status: 404,
@@ -212,7 +212,7 @@ export class DonateController {
       '기부 내역을 조회합니다.\
     \n!!보육원/사용자 모두 동일하게 요청하지만, 반환값은 다릅니다!!\
     \n `사용자(user)` : 사용자의 방문 신청 내역들을 조회합니다.\
-      \n `보육원 계정(orphange)` : 보육원 계정의 방문 신청들을 조회합니다.',
+      \n `보육원 계정(orphanage)` : 보육원 계정의 방문 신청들을 조회합니다.',
   })
   @ApiQuery({
     name: 'account',

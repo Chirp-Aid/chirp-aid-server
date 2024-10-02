@@ -25,6 +25,11 @@ import { Reservation } from './entities/reservation.entity';
 import { AdminModule } from './admin/admin.module';
 import { ReportsModule } from './reports/reports.module';
 import { Report } from './entities/report.entity';
+import { ChatGateway } from './chat/chat.gateway';
+import { Message } from './entities/message.entity';
+import { ChatRoom } from './entities/chat-room.entity';
+import { ChatModule } from './chat/chat.module';
+import { ChatsModule } from './chats/chats.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -50,6 +55,8 @@ import { Report } from './entities/report.entity';
         ReviewProduct,
         Reservation,
         Report,
+        Message,
+        ChatRoom,
       ],
       synchronize: true,
     }),
@@ -65,6 +72,9 @@ import { Report } from './entities/report.entity';
     ReservationModule,
     AdminModule,
     ReportsModule,
+    ChatModule,
+    ChatsModule,
   ],
+  providers: [ChatGateway],
 })
 export class AppModule {}

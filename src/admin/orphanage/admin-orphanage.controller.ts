@@ -20,9 +20,25 @@ import { ApiHeader, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 @UseGuards(AuthGuard('access'), RolesGuard)
 @ApiTags('ADMIN: 관리자 보육원 관리')
 @Controller('admin/orphanage')
+@ApiTags('ADMIN: 관리자 기능')
 export class orphanageManagerController {
   constructor(private readonly managerService: orphanageManagerService) {}
+
   @Post()
+  @ApiOperation({ summary: '관리자가 보육원 생성' })
+  @ApiHeader({
+    name: 'Authorization',
+    description: "Bearer {`admin's Access Token`}",
+    example: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9',
+  })
+  @ApiResponse({
+    status: 201,
+    description: 'Created',
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Unauthorized',
+  })
   @Roles('admin')
   @ApiOperation({
     summary: '관리자 보육원 생성',
