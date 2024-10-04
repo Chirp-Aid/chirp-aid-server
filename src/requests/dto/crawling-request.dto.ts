@@ -3,7 +3,7 @@ import { IsNumber, IsString } from 'class-validator';
 export class crawlingRequest {
   @IsString()
   title: string;
-  @IsString()
+  @IsNumber()
   price: number;
   @IsString()
   image: string;
