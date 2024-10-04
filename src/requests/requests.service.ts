@@ -9,9 +9,15 @@ import { DataSource, Repository } from 'typeorm';
 import { OrphanageUser } from 'src/entities/orphanage-user.entity';
 import { Request } from 'src/entities/request.entity';
 import { Product } from 'src/entities/product.entity';
+import axios from 'axios';
+import { crawlingRequest } from './dto/crawling-request.dto';
 
 @Injectable()
 export class RequestsService {
+  private readonly NAVER_CLIENT_ID = process.env.NAVER_CLIENT_ID; // 네이버 클라이언트 ID
+  private readonly NAVER_CLIENT_SECRET = process.env.NAVER_CLIENT_SECRET; // 네이버 클라이언트 시크릿
+  private readonly NAVER_API_URL = process.env.NAVER_API_URL;
+
   constructor(
     @InjectRepository(OrphanageUser)
     private usersRepository: Repository<OrphanageUser>,
@@ -82,7 +88,51 @@ export class RequestsService {
     }
   }
 
-  async getProducts() {
-    return await this.productRepository.find();
+  async searchProduct(query: string) {
+    const headers = {
+      'X-Naver-Client-Id': this.NAVER_CLIENT_ID,
+      'X-Naver-Client-Secret': this.NAVER_CLIENT_SECRET,
+    };
+
+    try {
+      const response = await axios.get(this.NAVER_API_URL, {
+        headers: headers,
+        params: { query: query, display: 3 },
+      });
+      return response.data.items.map((item) => ({
+        title: item.title,
+        price: item.lprice,
+        image: item.image,
+        link: item.link,
+      }));
+    } catch (error) {
+      console.error('Error fetching data from Naver API', error);
+      throw new Error('Failed to fetch data');
+    }
+  }
+
+  async insertCrawlingProduct(crawlingRequest: crawlingRequest) {
+    const { title, price, image, link } = crawlingRequest;
+
+    const queryRunner = this.dataSource.createQueryRunner();
+
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+    try {
+      const newProduct = new Product();
+      newProduct.product_name = title;
+      newProduct.price = price;
+      newProduct.product_photo = image;
+      newProduct.product_link = link;
+      const product = await queryRunner.manager.save(newProduct);
+      await queryRunner.commitTransaction();
+      console.log(`save User : ${product.product_name}`);
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+      console.log(error['response']);
+      throw error;
+    } finally {
+      await queryRunner.release();
+    }
   }
 }
