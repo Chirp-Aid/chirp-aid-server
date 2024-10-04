@@ -1,7 +1,7 @@
 import { IsNumber, IsString } from 'class-validator';
 
 export class crawlingRequest {
-  @IsNumber()
+  @IsString()
   title: string;
   @IsString()
   price: number;
