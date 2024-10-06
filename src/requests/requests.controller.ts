@@ -3,11 +3,13 @@ import {
   Controller,
   Get,
   Post,
+  Query,
   Request,
   UseGuards,
 } from '@nestjs/common';
 import { RequestsService } from './requests.service';
 import { CreateRequestDto } from './dto/create-request.dto';
+import { crawlingRequest } from './dto/crawling-request.dto';
 import { ApiHeader, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
 
@@ -82,7 +84,12 @@ export class RequestsController {
       ],
     },
   })
-  async getProducts() {
-    return await this.requestsService.getProducts();
+  async searchProduct(@Query('query') query: string) {
+    return this.requestsService.searchProduct(query);
+  }
+
+  @Post('products/insert')
+  async insertCrawlingProduct(@Body() crawlingRequest: crawlingRequest) {
+    return this.requestsService.insertCrawlingProduct(crawlingRequest);
   }
 }

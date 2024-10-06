@@ -13,4 +13,7 @@ export class Product {
 
   @Column()
   product_photo: string;
+
+  @Column()
+  product_link: string;
 }
