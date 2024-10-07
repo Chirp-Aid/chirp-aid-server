@@ -431,43 +431,6 @@ export class AdminBoardController {
     return await this.adminBoardService.deletePostById(postId);
   }
 
-  @ApiOperation({
-    summary: '관리자 유저 방문 요청글 전체 조회',
-  })
-  @ApiHeader({
-    name: 'Authorization',
-    description: "Bearer {`user's Access Token`}",
-    example: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9',
-  })
-  @ApiResponse({
-    status: 200,
-    description: '성공적으로 고아원 방문 신청 데이터를 반환합니다.',
-    schema: {
-      type: 'object',
-      properties: {
-        orphanage_id: {
-          type: 'integer',
-          example: 1,
-          description: '고아원의 고유 ID',
-        },
-        visit_date: {
-          type: 'string',
-          format: 'date',
-          example: '2023-12-25',
-          description: '방문 신청 날짜',
-        },
-        reason: {
-          type: 'string',
-          example: '방문 신청해요~',
-          description: '방문 신청 이유',
-        },
-      },
-    },
-  })
-  @ApiResponse({
-    status: 404,
-    description: 'Not Found - 해당하는 방문 요청글이 없습니다.',
-  })
   @Get('/reservation')
   @Roles('admin')
   @ApiOperation({
@@ -507,43 +470,6 @@ export class AdminBoardController {
   }
 
   @Get('/reservation/:id')
-  @ApiOperation({
-    summary: '관리자 유저 방문 요청글 조회',
-  })
-  @ApiHeader({
-    name: 'Authorization',
-    description: "Bearer {`user's Access Token`}",
-    example: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9',
-  })
-  @ApiResponse({
-    status: 200,
-    description: '성공적으로 고아원 방문 신청 데이터를 반환합니다.',
-    schema: {
-      type: 'object',
-      properties: {
-        orphanage_id: {
-          type: 'integer',
-          example: 1,
-          description: '고아원의 고유 ID',
-        },
-        visit_date: {
-          type: 'string',
-          format: 'date',
-          example: '2023-12-25',
-          description: '방문 신청 날짜',
-        },
-        reason: {
-          type: 'string',
-          example: '방문 신청해요~',
-          description: '방문 신청 이유',
-        },
-      },
-    },
-  })
-  @ApiResponse({
-    status: 404,
-    description: 'Not Found - 해당하는 방문 요청글이 없습니다.',
-  })
   @Roles('admin')
   @ApiOperation({
     summary: '특정 예약 가져오기',
