@@ -10,7 +10,7 @@ import { Server, Socket } from 'socket.io';
 import { ChatService } from './chat.service';
 import { CreateRoomDto } from './dto/createRoom.dto';
 import { SendMessageDto } from './dto/sendMessage.dto';
-import { Request, UseGuards } from '@nestjs/common';
+import { UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 
 @WebSocketGateway({
@@ -30,7 +30,7 @@ export class ChatGateway
 
   constructor(private readonly chatService: ChatService) {}
 
-  afterInit(server: Server) {
+  afterInit() {
     console.log('WebSocket 서버 초기화');
   }
 
