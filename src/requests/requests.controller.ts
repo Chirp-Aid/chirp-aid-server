@@ -10,7 +10,14 @@ import {
 import { RequestsService } from './requests.service';
 import { CreateRequestDto } from './dto/create-request.dto';
 import { crawlingRequest } from './dto/crawling-request.dto';
-import { ApiHeader, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBody,
+  ApiHeader,
+  ApiOperation,
+  ApiQuery,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
 
 @ApiTags('REQUEST: 요청 글 관련 요청')
@@ -59,36 +66,99 @@ export class RequestsController {
   }
 
   @Get('products')
-  @ApiOperation({
-    summary: '모든 물품 조회',
-    description: '등록된 모든 물품들의 정보를 조회합니다.',
+  @ApiOperation({ summary: '네이버 쇼핑 API를 사용하여 제품 검색' })
+  @ApiQuery({
+    name: 'query',
+    required: true,
+    description: '검색할 제품명',
+    example: '갤럭시 노트20',
+  })
+  @ApiHeader({
+    name: 'Authorization',
+    description: "Bearer {`orphanage's Access Token`}",
+    example: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9',
   })
   @ApiResponse({
     status: 200,
-    description: 'OK',
+    description: '성공적으로 제품 검색 결과를 반환합니다.',
     schema: {
-      type: 'object',
-      example: [
-        {
-          product_id: 1,
-          product_name: '초코파이',
-          price: 3000,
-          product_photo: '초코파이사진',
+      type: 'array',
+      items: {
+        type: 'object',
+        properties: {
+          title: {
+            type: 'string',
+            example: '삼성전자 갤럭시 노트20 울트라 공기계',
+          },
+          price: {
+            type: 'integer',
+            example: 349070,
+          },
+          image: {
+            type: 'string',
+            example:
+              'https://shopping-phinf.pstatic.net/main_4499267/44992671338.jpg',
+          },
+          link: {
+            type: 'string',
+            example:
+              'https://www.lotte.com/p/product/L02235681986?sitmlNo=10000656sch_dtl_no=10000306entryPoint=pcs&dp_infw_cd=CHT',
+          },
         },
-        {
-          product_id: 3,
-          product_name: '쿠크다스',
-          price: 1000,
-          product_photo: '쿠크다스사진',
-        },
-      ],
+      },
     },
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Unauthorized',
   })
   async searchProduct(@Query('query') query: string) {
     return this.requestsService.searchProduct(query);
   }
 
   @Post('products/insert')
+  @ApiOperation({ summary: '크롤링된 제품 정보를 저장' })
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        title: {
+          type: 'string',
+          example: '삼성전자 갤럭시 노트20 울트라 5G 256GB (SKT)',
+          description: '제품의 제목',
+        },
+        price: {
+          type: 'integer',
+          example: 221700,
+          description: '제품의 가격',
+        },
+        image: {
+          type: 'string',
+          example:
+            'https://shopping-phinf.pstatic.net/main_2371608/23716088492.20200807143243.jpg',
+          description: '제품의 이미지 URL',
+        },
+        link: {
+          type: 'string',
+          example: 'https://search.shopping.naver.com/catalog/23716088492',
+          description: '제품의 링크',
+        },
+      },
+    },
+  })
+  @ApiHeader({
+    name: 'Authorization',
+    description: "Bearer {`orphanage's Access Token`}",
+    example: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9',
+  })
+  @ApiResponse({
+    status: 201,
+    description: '성공적으로 제품 정보가 저장되었습니다.',
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Unauthorized',
+  })
   async insertCrawlingProduct(@Body() crawlingRequest: crawlingRequest) {
     return this.requestsService.insertCrawlingProduct(crawlingRequest);
   }
