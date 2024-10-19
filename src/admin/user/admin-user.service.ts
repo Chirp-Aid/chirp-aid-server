@@ -196,7 +196,12 @@ export class AdminUserService {
   }
 
   async deleteUserById(userId: string) {
-    const user = await this.findUserById(userId);
+    const user = await this.userRepository.findOne({
+      where: { user_id: userId },
+    });
+    if (!user) {
+      throw new NotFoundException('해당 유저가 존재하지 않습니다.');
+    }
     return this.userRepository.remove(user);
   }
 }
