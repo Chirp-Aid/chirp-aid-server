@@ -34,7 +34,6 @@ export class ChatGateway
     console.log('WebSocket 서버 초기화');
   }
 
-  @UseGuards(AuthGuard('access'))
   handleConnection(client: Socket) {
     // 클라이언트의 고유 사용자 ID 가져오기 (예: 핸드쉐이크에서 userId 전달)
     const userId = client.handshake.headers['x-user-id'] as string;
