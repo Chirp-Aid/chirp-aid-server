@@ -16,7 +16,7 @@ export class BasketProduct {
   @Column()
   count: number;
 
-  @ManyToOne(() => Request, { onDelete: 'NO ACTION' })
+  @ManyToOne(() => Request, { onDelete: 'CASCADE' })
   @JoinColumn([{ name: 'request_id', referencedColumnName: 'request_id' }])
   request_id: Request;
 
