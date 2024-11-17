@@ -146,7 +146,13 @@ export class AdminOrphanageUsersService {
   }
 
   async deleteOrphanageUserById(orphanageUserId: string) {
-    const orphanageUser = await this.findOrphanageUserById(orphanageUserId);
-    return this.orphanageUserRepository.remove(orphanageUser);
+    const orphanage_user = await this.orphanageUserRepository.findOne({
+      where: { orphanage_user_id: orphanageUserId },
+    });
+    if (!orphanage_user) {
+      throw new NotFoundException('해당하는 보육원 계정이 없습니다.');
+    }
+
+    await this.orphanageUserRepository.delete(orphanage_user);
   }
 }
