@@ -91,7 +91,6 @@ export class AdminBoardService {
   }
 
   async deleteVisitById(reservationId: number) {
-    console.log('삭제 서비스 진입');
     const deleteReservation = await this.reservationRepository.findOne({
       where: { reservationId: reservationId },
     });
