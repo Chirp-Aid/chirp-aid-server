@@ -153,6 +153,6 @@ export class AdminOrphanageUsersService {
       throw new NotFoundException('해당하는 보육원 계정이 없습니다.');
     }
 
-    await this.orphanageUserRepository.delete(orphanage_user);
+    await this.orphanageUserRepository.remove(orphanage_user);
   }
 }
