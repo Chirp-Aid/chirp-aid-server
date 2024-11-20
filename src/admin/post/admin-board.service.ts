@@ -91,13 +91,14 @@ export class AdminBoardService {
   }
 
   async deleteVisitById(reservationId: number) {
+    console.log('삭제 서비스 진입');
     const deleteReservation = await this.reservationRepository.findOne({
       where: { reservationId: reservationId },
     });
     if (!deleteReservation) {
       throw new NotFoundException('해당하는 예약글이 없습니다.');
     }
-    console.log('삭제할 예약:', deleteReservation);
-    await this.reservationRepository.delete(deleteReservation);
+
+    await this.reservationRepository.remove(deleteReservation);
   }
 }
