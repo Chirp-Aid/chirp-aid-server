@@ -106,6 +106,7 @@ export class OrphanageUsersService {
           'orphanage_user.email as email',
           'orphanage_user.name as name',
           'o.orphanage_id as orphanage_id',
+          'orphanage_user.orphanage_user_id as orphanage_user_id',
         ])
         .innerJoin('orphanage_user.orphanage_id', 'o')
         .where('orphanage_user.orphanage_user_id = :orphanage_user_id', {
