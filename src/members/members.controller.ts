@@ -177,6 +177,12 @@ export class MembersController {
     const userId = req.user.user_id;
     return await this.usersService.getUserInfo(userId);
   }
+  @Get('admin/info')
+  @UseGuards(AuthGuard('access'))
+  async getAdminInfo(@Request() req) {
+    const userId = req.user.user_id;
+    return await this.usersService.getUserInfo(userId);
+  }
 
   @Patch('orphanages/info')
   @ApiOperation({
