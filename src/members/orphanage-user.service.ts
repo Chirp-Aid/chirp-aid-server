@@ -117,7 +117,7 @@ export class OrphanageUsersService {
         .innerJoin(
           'orphanage',
           'o',
-          'orphanage_user.orphanage_id=o.orphanage_id',
+          'orphanage_user.orphanage_id = o.orphanage_id',
         )
         .where('orphanage_user.orphanage_user_id = :orphanage_user_id', {
           orphanage_user_id: userId,
@@ -128,7 +128,20 @@ export class OrphanageUsersService {
         throw new NotFoundException('해당 사용자를 찾을 수 없습니다.');
       }
 
-      return info;
+      return {
+        email: info.email,
+        name: info.name,
+        orphanage_user_id: info.orphanage_user_id,
+        orphanage_id: {
+          orphanage_id: info.orphanage_id,
+          orphanage_name: info.orphanage_name,
+          address: info.address,
+          homepage_link: info.homepage_link,
+          phone_number: info.phone_number,
+          description: info.description,
+          photo: info.photo,
+        },
+      };
     } catch (error) {
       console.log(error['response']);
       throw error;
