@@ -95,6 +95,10 @@ export class RequestsService {
     };
 
     try {
+      console.log('API URL:', this.NAVER_API_URL);
+      console.log('Client ID:', this.NAVER_CLIENT_ID);
+      console.log('Client Secret:', this.NAVER_CLIENT_SECRET);
+
       const response = await axios.get(this.NAVER_API_URL, {
         headers: headers,
         params: { query: query, display: 3 },
