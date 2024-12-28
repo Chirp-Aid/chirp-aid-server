@@ -106,7 +106,11 @@ export class RequestsService {
         link: item.link,
       }));
     } catch (error) {
-      console.error('Error fetching data from Naver API', error);
+      console.error(
+        'Naver API Error:',
+        error.response?.status,
+        error.response?.data,
+      );
       throw new Error('Failed to fetch data');
     }
   }
