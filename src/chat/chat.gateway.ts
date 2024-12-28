@@ -16,6 +16,7 @@ import { AuthGuard } from '@nestjs/passport';
 @WebSocketGateway({
   cors: {
     origin: '*',
+    allowedHeaders: ['x-user-id'],
   },
 })
 export class ChatGateway
