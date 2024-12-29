@@ -1,7 +1,7 @@
 import { InjectRepository } from '@nestjs/typeorm';
 import { ChatRoom } from 'src/entities/chat-room.entity';
 import { Message } from 'src/entities/message.entity';
-import { Repository } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 import { CreateRoomDto } from './dto/createRoom.dto';
 import { User } from 'src/entities/user.entity';
 import { OrphanageUser } from 'src/entities/orphanage-user.entity';
@@ -17,6 +17,7 @@ export class ChatService {
     private userRepository: Repository<User>,
     @InjectRepository(OrphanageUser)
     private orphanageUserRepository: Repository<OrphanageUser>,
+    private dataSource: DataSource,
   ) {}
 
   async findRoomById(id: string): Promise<ChatRoom> {
@@ -77,6 +78,25 @@ export class ChatService {
   }
 
   async getMessages(room: string): Promise<Message[]> {
-    return this.messageRepository.find({ where: { join_room: room } });
+    const queryRunner = this.dataSource.createQueryRunner();
+    const roomId = JSON.parse(room).roomId;
+
+    queryRunner.connect();
+    queryRunner.startTransaction();
+
+    try {
+      await this.messageRepository.update(
+        { join_room: roomId },
+        { isRead: true },
+      );
+      await queryRunner.commitTransaction();
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+      console.log(error['response']);
+      throw error;
+    } finally {
+      await queryRunner.release();
+    }
+    return this.messageRepository.find({ where: { join_room: roomId } });
   }
 }

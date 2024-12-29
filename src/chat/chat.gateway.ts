@@ -10,10 +10,13 @@ import { Server, Socket } from 'socket.io';
 import { ChatService } from './chat.service';
 import { CreateRoomDto } from './dto/createRoom.dto';
 import { SendMessageDto } from './dto/sendMessage.dto';
+import { UseGuards } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 
 @WebSocketGateway({
   cors: {
     origin: '*',
+    allowedHeaders: ['x-user-id'],
   },
 })
 export class ChatGateway
@@ -28,25 +31,43 @@ export class ChatGateway
 
   constructor(private readonly chatService: ChatService) {}
 
-  afterInit(server: Server) {
+  afterInit() {
     console.log('WebSocket 서버 초기화');
   }
 
   handleConnection(client: Socket) {
-    if (this.connectedClients.has(client.id)) {
-      console.log(`중복 연결 시도 차단: ${client.id}`);
+    // 클라이언트의 고유 사용자 ID 가져오기 (예: 핸드쉐이크에서 userId 전달)
+    const userId = client.handshake.headers['x-user-id'] as string;
+
+    if (!userId) {
+      console.log('사용자 ID를 찾을 수 없음');
+      client.disconnect();
+      return;
+    }
+
+    // 중복 연결 확인
+    if (this.connectedClients.has(userId)) {
+      console.log(`중복 연결 시도 차단: ${userId}`);
+      client.disconnect();
       return;
     }
 
     // 클라이언트 연결 등록
-    this.connectedClients.set(client.id, client);
-    console.log(`클라이언트 연결됨: ${client.id}`);
+    this.connectedClients.set(userId, client);
+    console.log(`클라이언트 연결됨: ${userId}`);
   }
 
   handleDisconnect(client: Socket) {
-    console.log(`클라이언트 연결 끊김: ${client.id}`);
-    // 연결 해제된 클라이언트 제거
-    this.connectedClients.delete(client.id);
+    // 클라이언트의 고유 사용자 ID 가져오기
+    const userId = client.handshake.headers['x-user-id'] as string;
+
+    if (userId && this.connectedClients.has(userId)) {
+      // 연결 해제된 클라이언트 제거
+      this.connectedClients.delete(userId);
+      console.log(`클라이언트 연결 끊김: ${userId}`);
+    } else {
+      console.log('연결된 클라이언트를 찾을 수 없음');
+    }
   }
 
   @SubscribeMessage('createRoom')
@@ -58,6 +79,7 @@ export class ChatGateway
     ]);
     client.join(room.chat_room_id);
     console.log(`새 대화방 생성: ${room.chat_room_id}`);
+    client.emit('create', 'd');
     return room;
   }
 
@@ -90,13 +112,15 @@ export class ChatGateway
       this.rooms.set(roomId, [...(this.rooms.get(roomId) || []), client.id]);
       client.join(roomId);
       console.log('방 참가');
-      const messages = (await this.chatService.getMessages(roomId)).map(
-        (message) =>
-          message.isRead === false ? { ...message, isRead: true } : message,
+      const messages = await this.chatService.getMessages(roomId);
+      console.log(messages);
+      client.emit(
+        'roomMessages',
+        messages.sort((a: any, b: any) => a.created_at - b.created_at),
       );
-      client.emit('roomMessages', messages);
     }
     console.log(`대화방 입장: ${room}`);
+    console.log(`현재 참가자: ${this.rooms.get(roomId)}`);
   }
 
   @SubscribeMessage('leaveRoom')
@@ -110,5 +134,6 @@ export class ChatGateway
       this.rooms.delete(roomId);
     }
     console.log(`대화방 퇴장: ${roomId}`);
+    console.log(`현재 참가자: ${this.rooms.get(roomId)}`);
   }
 }

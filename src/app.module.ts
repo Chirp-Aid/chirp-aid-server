@@ -75,6 +75,6 @@ import { ChatsModule } from './chats/chats.module';
     ChatModule,
     ChatsModule,
   ],
-  providers: [ChatGateway],
+  providers: [],
 })
 export class AppModule {}
