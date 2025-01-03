@@ -37,7 +37,7 @@ export class ChatGateway
 
   handleConnection(client: Socket) {
     // 클라이언트의 고유 사용자 ID 가져오기 (예: 핸드쉐이크에서 userId 전달)
-    const userId = client.handshake.auth['x-user-id'] as string;
+    const userId = client.handshake.header['x-user-id'] as string;
 
     if (!userId) {
       console.log('사용자 ID를 찾을 수 없음');
