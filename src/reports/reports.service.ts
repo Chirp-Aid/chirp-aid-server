@@ -21,9 +21,8 @@ export class ReportsService {
       target_id: targetId,
       target_name: targetName,
       target_type: targetType,
-      board_id: boardId,
-      board_title: boardTitle,
       board_type: boardType,
+      board_content: boardContent,
     } = reportUserDto;
 
     const queryRunner = this.dataSource.createQueryRunner();
@@ -39,8 +38,7 @@ export class ReportsService {
       newReport.target_id = targetId;
       newReport.target_name = targetName;
       newReport.target_type = targetType;
-      newReport.board_id = boardId;
-      newReport.board_title = boardTitle;
+      newReport.board_content = boardContent;
       newReport.board_type = boardType;
 
       const report = await queryRunner.manager.save(newReport);
