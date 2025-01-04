@@ -57,23 +57,16 @@ export class ReportUserDto {
   target_type?: string;
 
   @ApiProperty({
-    example: null,
-    description: 'Board ID',
-    required: true,
-  })
-  board_id?: string;
-
-  @ApiProperty({
-    example: null,
-    description: 'Board Name',
-    required: true,
-  })
-  board_title?: string;
-
-  @ApiProperty({
-    example: null,
-    description: 'Board Type: REQUEST or REVIEW',
+    example: 'CHAT',
+    description: '글 유형: ORPHANAGE | THANKS | CHAT | RESERVATION',
     required: true,
   })
   board_type?: string;
+
+  @ApiProperty({
+    example: '성윤아 논문 다시써야 돼',
+    description: '신고 글 내용',
+    required: true,
+  })
+  board_content?: string;
 }
