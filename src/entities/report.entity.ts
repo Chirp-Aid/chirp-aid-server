@@ -27,11 +27,8 @@ export class Report {
   target_type?: string;
 
   @Column({ nullable: true })
-  board_id?: string;
-
-  @Column({ nullable: true })
-  board_title?: string;
-
-  @Column({ nullable: true })
   board_type?: string;
+
+  @Column({ nullable: true })
+  board_content?: string;
 }
