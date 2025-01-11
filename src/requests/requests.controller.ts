@@ -1,9 +1,11 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Post,
   Query,
+  Req,
   Request,
   UseGuards,
 } from '@nestjs/common';
@@ -161,5 +163,34 @@ export class RequestsController {
   })
   async insertCrawlingProduct(@Body() crawlingRequest: crawlingRequest) {
     return this.requestsService.insertCrawlingProduct(crawlingRequest);
+  }
+
+  @Delete()
+  @UseGuards(AuthGuard('access'))
+  @ApiOperation({
+    summary: '보육원의 요청 글 삭제',
+    description: '보육원이 요청한 물품 요청 글을 삭제합니다.',
+  })
+  @ApiHeader({
+    name: 'Authorization',
+    description: "Bearer {`orphanage's Access Token`}",
+    example: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9',
+  })
+  @ApiResponse({
+    status: 204,
+    description: 'No Content - 요청 글이 성공적으로 삭제되었습니다.',
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Unauthorized - 유효하지 않은 접근 토큰입니다.',
+  })
+  @ApiResponse({
+    status: 404,
+    description:
+      'Not Found - 해당 사용자를 찾을 수 없습니다.\nNot Found - 삭제할 요청이 존재하지 않습니다.',
+  })
+  async deleteRequest(@Request() req) {
+    const orphanageUserId = req.user.user_id;
+    return await this.requestsService.deleteRequestByUserId(orphanageUserId);
   }
 }
