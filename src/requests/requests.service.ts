@@ -139,4 +139,33 @@ export class RequestsService {
       await queryRunner.release();
     }
   }
+
+  async deleteRequestByUserId(orphanageUserId: string) {
+    const orphanageUser = await this.usersRepository.findOne({
+      where: { orphanage_user_id: orphanageUserId },
+    });
+
+    if (!orphanageUser) {
+      throw new NotFoundException(
+        `해당 orphanageUserId (${orphanageUserId})를 가진 사용자를 찾을 수 없습니다.`,
+      );
+    }
+
+    const request = await this.requestRepository
+      .createQueryBuilder('request')
+      .leftJoinAndSelect('request.orphanage_user_id', 'user')
+      .where('user.orphanage_user_id = :orphanage_user_id', {
+        orphanage_user_id: orphanageUserId,
+      })
+      .getOne();
+
+    if (!request) {
+      throw new NotFoundException(
+        `해당 orphanageUserId (${orphanageUserId})에 대한 삭제할 요청이 존재하지 않습니다.`,
+      );
+    }
+
+    await this.requestRepository.remove(request);
+    console.log(`Request deleted for orphanageUserId: ${orphanageUserId}`);
+  }
 }
