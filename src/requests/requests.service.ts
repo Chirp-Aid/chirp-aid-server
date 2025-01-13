@@ -11,6 +11,7 @@ import { Request } from 'src/entities/request.entity';
 import { Product } from 'src/entities/product.entity';
 import axios from 'axios';
 import { crawlingRequest } from './dto/crawling-request.dto';
+import { deleteRequest } from './dto/delete-request.dto';
 
 @Injectable()
 export class RequestsService {
@@ -140,32 +141,26 @@ export class RequestsService {
     }
   }
 
-  async deleteRequestByUserId(orphanageUserId: string) {
-    const orphanageUser = await this.usersRepository.findOne({
-      where: { orphanage_user_id: orphanageUserId },
-    });
+  async deleteRequestByRequestId(
+    orphanageUserId: string,
+    deleteRequest: deleteRequest,
+  ) {
+    const { request_id: requestId } = deleteRequest;
 
-    if (!orphanageUser) {
-      throw new NotFoundException(
-        `해당 orphanageUserId (${orphanageUserId})를 가진 사용자를 찾을 수 없습니다.`,
-      );
-    }
-
-    const request = await this.requestRepository
+    const deleteRequestBoard = await this.requestRepository
       .createQueryBuilder('request')
-      .leftJoinAndSelect('request.orphanage_user_id', 'user')
       .where('user.orphanage_user_id = :orphanage_user_id', {
-        orphanage_user_id: orphanageUserId,
+        request_id: requestId,
       })
       .getOne();
 
-    if (!request) {
+    if (!deleteRequestBoard) {
       throw new NotFoundException(
         `해당 orphanageUserId (${orphanageUserId})에 대한 삭제할 요청이 존재하지 않습니다.`,
       );
     }
 
-    await this.requestRepository.remove(request);
+    await this.requestRepository.remove(deleteRequestBoard);
     console.log(`Request deleted for orphanageUserId: ${orphanageUserId}`);
   }
 }
