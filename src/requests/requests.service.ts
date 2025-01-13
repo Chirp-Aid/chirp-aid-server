@@ -11,7 +11,6 @@ import { Request } from 'src/entities/request.entity';
 import { Product } from 'src/entities/product.entity';
 import axios from 'axios';
 import { crawlingRequest } from './dto/crawling-request.dto';
-import { deleteRequest } from './dto/delete-request.dto';
 
 @Injectable()
 export class RequestsService {

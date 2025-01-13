@@ -6,7 +6,6 @@ import {
   Param,
   Post,
   Query,
-  Req,
   Request,
   UseGuards,
 } from '@nestjs/common';
@@ -22,7 +21,6 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
-import { deleteRequest } from './dto/delete-request.dto';
 
 @ApiTags('REQUEST: 요청 글 관련 요청')
 @Controller('requests')
