@@ -5,8 +5,8 @@ export class CreateRequestDto {
   @MinLength(2)
   @MaxLength(50)
   @ApiProperty({
-    example: '1',
-    description: 'The ID of ProductName',
+    example: '키보드',
+    description: 'The name of ProductName',
   })
   title: string;
 

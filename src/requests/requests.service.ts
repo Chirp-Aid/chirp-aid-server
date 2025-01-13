@@ -57,11 +57,11 @@ export class RequestsService {
 
       const exist = await this.requestRepository
         .createQueryBuilder('requests')
-        .where(
-          'requests.orphanage_user_id.orphanage_user_id = :orphanage_user_id',
-          { orphanage_user_id: orphanageUserId },
-        )
-        .andWhere('requests.product_id = :product_id', {
+        .innerJoin('requests.product_id', 'product')
+        .where('requests.orphanage_user_id = :orphanage_user_id', {
+          orphanage_user_id: orphanageUserId,
+        })
+        .andWhere('product.product_name = :product_name', {
           product_name: title,
         })
         .getOne();
