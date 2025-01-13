@@ -145,12 +145,9 @@ export class RequestsService {
     orphanageUserId: string,
     deleteRequest: string,
   ) {
-    const deleteRequestBoard = await this.requestRepository
-      .createQueryBuilder('request')
-      .where('user.orphanage_user_id = :orphanage_user_id', {
-        request_id: deleteRequest,
-      })
-      .getOne();
+    const deleteRequestBoard = await this.requestRepository.findOne({
+      where: { request_id: Number(deleteRequest) },
+    });
 
     if (!deleteRequestBoard) {
       throw new NotFoundException(
