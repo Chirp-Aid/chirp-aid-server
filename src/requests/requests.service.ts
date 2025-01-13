@@ -11,7 +11,6 @@ import { Request } from 'src/entities/request.entity';
 import { Product } from 'src/entities/product.entity';
 import axios from 'axios';
 import { crawlingRequest } from './dto/crawling-request.dto';
-import { deleteRequest } from './dto/delete-request.dto';
 
 @Injectable()
 export class RequestsService {
@@ -31,7 +30,7 @@ export class RequestsService {
     createRequestDto: CreateRequestDto,
     orphanageUserId: string,
   ) {
-    const { product_id: productId, count, message } = createRequestDto;
+    const { title, count, message } = createRequestDto;
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
     await queryRunner.startTransaction();
@@ -46,10 +45,10 @@ export class RequestsService {
       }
 
       const product = await this.productRepository.findOne({
-        where: { product_id: productId },
+        where: { product_name: title },
       });
 
-      console.log(`product: ${productId}`);
+      console.log(`product: ${title}`);
 
       if (!product) {
         throw new NotFoundException('해당 물품을 찾을 수 없습니다.');
@@ -62,7 +61,7 @@ export class RequestsService {
           { orphanage_user_id: orphanageUserId },
         )
         .andWhere('requests.product_id = :product_id', {
-          product_id: productId,
+          product_name: title,
         })
         .getOne();
 
@@ -79,7 +78,7 @@ export class RequestsService {
       console.log(newRequest);
       await this.requestRepository.save(newRequest);
       await queryRunner.commitTransaction();
-      console.log(`Reqeust Added : ${product.product_name}`);
+      console.log(`Request Added : ${product.product_name}`);
     } catch (error) {
       await queryRunner.rollbackTransaction();
       console.log(error);
