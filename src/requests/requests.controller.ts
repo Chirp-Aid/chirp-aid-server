@@ -11,7 +11,7 @@ import {
 } from '@nestjs/common';
 import { RequestsService } from './requests.service';
 import { CreateRequestDto } from './dto/create-request.dto';
-import { crawlingRequest } from './dto/crawling-request.dto';
+import { CrawlingRequest } from './dto/crawling-request.dto';
 import {
   ApiBody,
   ApiHeader,
@@ -161,7 +161,7 @@ export class RequestsController {
     status: 401,
     description: 'Unauthorized',
   })
-  async insertCrawlingProduct(@Body() crawlingRequest: crawlingRequest) {
+  async insertCrawlingProduct(@Body() crawlingRequest: CrawlingRequest) {
     return this.requestsService.insertCrawlingProduct(crawlingRequest);
   }
 

@@ -1,6 +1,6 @@
 import { IsNumber, IsString } from 'class-validator';
 
-export class crawlingRequest {
+export class CrawlingRequest {
   @IsString()
   title: string;
   @IsNumber()
