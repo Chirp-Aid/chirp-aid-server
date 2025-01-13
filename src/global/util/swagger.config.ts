@@ -23,5 +23,7 @@ export function BaseAPIDocument(app: INestApplication): void {
     .build();
 
   const document = SwaggerModule.createDocument(app, options);
-  SwaggerModule.setup('api', app, document);
+  SwaggerModule.setup('api', app, document, {
+    swaggerOptions: { cache: false }, // 캐시 방지 옵션 추가
+  });
 }
