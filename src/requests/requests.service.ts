@@ -143,14 +143,12 @@ export class RequestsService {
 
   async deleteRequestByRequestId(
     orphanageUserId: string,
-    deleteRequest: deleteRequest,
+    deleteRequest: string,
   ) {
-    const { request_id: requestId } = deleteRequest;
-
     const deleteRequestBoard = await this.requestRepository
       .createQueryBuilder('request')
       .where('user.orphanage_user_id = :orphanage_user_id', {
-        request_id: requestId,
+        request_id: deleteRequest,
       })
       .getOne();
 

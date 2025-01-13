@@ -190,10 +190,7 @@ export class RequestsController {
     description:
       'Not Found - 해당 사용자를 찾을 수 없습니다.\nNot Found - 삭제할 요청이 존재하지 않습니다.',
   })
-  async deleteRequest(
-    @Request() req,
-    @Query('id') deleteRequest: deleteRequest,
-  ) {
+  async deleteRequest(@Request() req, @Query('id') deleteRequest: string) {
     const orphanageUserId = req.user.user_id;
     return await this.requestsService.deleteRequestByRequestId(
       orphanageUserId,
