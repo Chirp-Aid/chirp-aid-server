@@ -30,7 +30,8 @@ export class RequestsService {
     createRequestDto: CreateRequestDto,
     orphanageUserId: string,
   ) {
-    const { title, count, message } = createRequestDto;
+    const { title: prevTitle, count, message } = createRequestDto;
+    const title = prevTitle.replace('<b>', '').replace('</b>', '');
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
     await queryRunner.startTransaction();
