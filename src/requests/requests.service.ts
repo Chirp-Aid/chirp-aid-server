@@ -10,7 +10,7 @@ import { OrphanageUser } from 'src/entities/orphanage-user.entity';
 import { Request } from 'src/entities/request.entity';
 import { Product } from 'src/entities/product.entity';
 import axios from 'axios';
-import { crawlingRequest } from './dto/crawling-request.dto';
+import { CrawlingRequest } from './dto/crawling-request.dto';
 
 @Injectable()
 export class RequestsService {
@@ -115,8 +115,9 @@ export class RequestsService {
     }
   }
 
-  async insertCrawlingProduct(crawlingRequest: crawlingRequest) {
-    const { title, price, image, link } = crawlingRequest;
+  async insertCrawlingProduct(crawlingRequest: CrawlingRequest) {
+    const { title: prevTitle, price, image, link } = crawlingRequest;
+    const title = prevTitle.replace('<b>', '').replace('</b>', '');
 
     const queryRunner = this.dataSource.createQueryRunner();
 
