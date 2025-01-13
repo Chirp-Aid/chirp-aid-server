@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  Param,
   Post,
   Query,
   Req,
@@ -166,7 +167,7 @@ export class RequestsController {
     return this.requestsService.insertCrawlingProduct(crawlingRequest);
   }
 
-  @Delete()
+  @Delete(':id')
   @UseGuards(AuthGuard('access'))
   @ApiOperation({
     summary: '보육원의 요청 글 삭제',
@@ -190,7 +191,7 @@ export class RequestsController {
     description:
       'Not Found - 해당 사용자를 찾을 수 없습니다.\nNot Found - 삭제할 요청이 존재하지 않습니다.',
   })
-  async deleteRequest(@Request() req, @Query('id') deleteRequest: string) {
+  async deleteRequest(@Request() req, @Param('id') deleteRequest: string) {
     const orphanageUserId = req.user.user_id;
     return await this.requestsService.deleteRequestByRequestId(
       orphanageUserId,
