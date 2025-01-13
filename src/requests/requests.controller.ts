@@ -21,6 +21,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
+import { deleteRequest } from './dto/delete-request.dto';
 
 @ApiTags('REQUEST: 요청 글 관련 요청')
 @Controller('requests')
@@ -189,8 +190,11 @@ export class RequestsController {
     description:
       'Not Found - 해당 사용자를 찾을 수 없습니다.\nNot Found - 삭제할 요청이 존재하지 않습니다.',
   })
-  async deleteRequest(@Request() req) {
+  async deleteRequest(@Request() req, @Body() deleteRequest: deleteRequest) {
     const orphanageUserId = req.user.user_id;
-    return await this.requestsService.deleteRequestByUserId(orphanageUserId);
+    return await this.requestsService.deleteRequestByRequestId(
+      orphanageUserId,
+      deleteRequest,
+    );
   }
 }
