@@ -8,7 +8,7 @@ export class CreateRequestDto {
     example: '1',
     description: 'The ID of ProductName',
   })
-  product_id: number;
+  title: string;
 
   @ApiProperty({
     example: '5',
