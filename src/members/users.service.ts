@@ -131,7 +131,7 @@ export class UsersService {
       if (!getUser) {
         throw new NotFoundException('해당 사용자를 찾을 수 없습니다.');
       }
-      delete getUser.user_id;
+
       delete getUser.password;
       delete getUser.refresh_token;
       delete getUser.fcm_token;
