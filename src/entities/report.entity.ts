@@ -12,6 +12,9 @@ export class Report {
   reporter_id: string;
 
   @Column()
+  reporter_name: string;
+
+  @Column()
   reporter_type: string;
 
   @Column({ nullable: true })
