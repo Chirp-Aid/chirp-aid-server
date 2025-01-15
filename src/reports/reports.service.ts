@@ -12,12 +12,12 @@ export class ReportsService {
     private dataSource: DataSource,
   ) {}
 
-  async reportUser(reportUserDto: ReportUserDto) {
+  async reportUser(reporterUser, reportUserDto: ReportUserDto) {
+    console.log(reporterUser);
+    const { user_id: reporterId, role: reporterRole } = reporterUser;
+    const reporterType = reporterRole.toUpperCase();
     const {
       description,
-      reporter_id: reporterId,
-      reporter_name: reporterName,
-      reporter_type: reporterType,
       target_id: targetId,
       target_name: targetName,
       target_type: targetType,
@@ -33,7 +33,6 @@ export class ReportsService {
       const newReport = new Report();
       newReport.description = description;
       newReport.reporter_id = reporterId;
-      newReport.reporter_name = reporterName;
       newReport.reporter_type = reporterType;
       newReport.target_id = targetId;
       newReport.target_name = targetName;

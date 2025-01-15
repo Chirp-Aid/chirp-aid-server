@@ -4,6 +4,7 @@ import {
   Delete,
   Param,
   Post,
+  Request,
   UseGuards,
 } from '@nestjs/common';
 import { ReportsService } from './reports.service';
@@ -17,6 +18,7 @@ export class ReportsController {
   constructor(private readonly reportsService: ReportsService) {}
 
   @Post()
+  @UseGuards(AuthGuard('access'))
   @ApiOperation({ summary: '악성 유저 신고하기' })
   @ApiHeader({
     name: 'Authorization',
@@ -31,8 +33,9 @@ export class ReportsController {
     status: 404,
     description: '존재하지 않는 유저입니다.',
   })
-  async reportUser(@Body() reportUserDto: ReportUserDto) {
-    return this.reportsService.reportUser(reportUserDto);
+  async reportUser(@Request() req, @Body() reportUserDto: ReportUserDto) {
+    const reporterUser = req.user;
+    return this.reportsService.reportUser(reporterUser, reportUserDto);
   }
 
   @Delete('/delete')
