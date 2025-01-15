@@ -11,30 +11,6 @@ export class ReportUserDto {
   })
   description: string;
 
-  @IsString()
-  @ApiProperty({
-    example: '신고자 유저 ID',
-    description: 'Reporter User ID',
-    required: true,
-  })
-  reporter_id: string;
-
-  @IsString()
-  @ApiProperty({
-    example: '아자핑',
-    description: 'Reporter User Name',
-    required: true,
-  })
-  reporter_name: string;
-
-  @IsString()
-  @ApiProperty({
-    example: 'USER',
-    description: 'Reporter User Type: USER or ORPHANAGE_USER',
-    required: true,
-  })
-  reporter_type: string;
-
   @ApiProperty({
     example: '피신고자 유저 ID',
     description: 'Target User ID',
@@ -43,7 +19,7 @@ export class ReportUserDto {
   target_id?: string;
 
   @ApiProperty({
-    example: '앙대핑',
+    example: '칩에이드',
     description: 'Target User ID',
     required: true,
   })
