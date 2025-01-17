@@ -87,7 +87,7 @@ export class OrphanagesService {
         .getRawMany();
 
       const { name, email, orphanage_id: orphanageInfo } = orphanage;
-      return { name, email, ...orphanageInfo, requests };
+      return { orphanageUserId, name, email, ...orphanageInfo, requests };
     } catch (error) {
       console.log(error);
       throw error;
