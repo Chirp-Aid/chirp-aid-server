@@ -65,7 +65,7 @@ export class OrphanagesService {
       }
       console.log(orphanage);
 
-      const orphanageUserId = orphanage.orphanage_user_id;
+      const orphanage_user_id = orphanage.orphanage_user_id;
 
       const requests = await this.requestRepository
         .createQueryBuilder('requests')
@@ -82,12 +82,12 @@ export class OrphanagesService {
         .innerJoin('requests.product_id', 'p')
         .where(
           'requests.orphanage_user_id.orphanage_user_id = :orphanage_user_id',
-          { orphanage_user_id: orphanageUserId },
+          { orphanage_user_id: orphanage_user_id },
         )
         .getRawMany();
 
       const { name, email, orphanage_id: orphanageInfo } = orphanage;
-      return { orphanageUserId, name, email, ...orphanageInfo, requests };
+      return { orphanage_user_id, name, email, ...orphanageInfo, requests };
     } catch (error) {
       console.log(error);
       throw error;
