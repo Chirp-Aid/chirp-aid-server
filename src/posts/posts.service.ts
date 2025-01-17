@@ -38,7 +38,7 @@ export class PostsService {
         post.product_names = await this.reviewService.getProductNames(
           post.review_id,
         );
-        post.photos = post.photos.split('₩');
+        post.photos = post.photos.split(', ');
       }
 
       return posts;
@@ -78,7 +78,7 @@ export class PostsService {
         post.product_names = await this.reviewService.getProductNames(
           post.review_id,
         );
-        post.photos = post.photos.split('₩');
+        post.photos = post.photos.split(', ');
       }
 
       return posts;
