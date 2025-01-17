@@ -1,4 +1,11 @@
-import { Controller, Get, Query, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiHeader, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Roles } from 'src/commons/decorators/roles.decorator';
@@ -150,5 +157,29 @@ export class AdminReportsController {
     @Query('desc') description: string,
   ): Promise<Report[]> {
     return this.adminReportsService.getReportsByDescription(description);
+  }
+
+  @Delete('/:id')
+  @ApiOperation({ summary: '특정 신고 ID 삭제' })
+  @ApiHeader({
+    name: 'Authorization',
+    description: "Bearer {`user's Access Token`}",
+    example: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Success',
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Unauthorized',
+  })
+  @ApiResponse({
+    status: 404,
+    description: '존재하지 않는 신고입니다.',
+  })
+  @Roles('admin')
+  async deleteReport(@Param('id') reportId: string) {
+    return this.adminReportsService.deleteReport(reportId);
   }
 }
