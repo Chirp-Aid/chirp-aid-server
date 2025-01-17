@@ -19,7 +19,7 @@ export class ReviewService {
     @InjectRepository(ReviewProduct)
     private reviewProductRepository: Repository<ReviewProduct>,
     @InjectRepository(Product) private productRepository: Repository<Product>,
-    private dataSouce: DataSource,
+    private dataSource: DataSource,
     private fcmService: FcmService,
   ) {}
 
@@ -53,7 +53,8 @@ export class ReviewService {
 
   async createPost(createPostDto: CreatePostDto, userId: string) {
     const { title, content, photos, products } = createPostDto;
-    const queryRunner = await this.dataSouce.createQueryRunner();
+    console.log(photos);
+    const queryRunner = await this.dataSource.createQueryRunner();
     await queryRunner.connect();
     await queryRunner.startTransaction();
 
