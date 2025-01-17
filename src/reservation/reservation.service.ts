@@ -89,16 +89,6 @@ export class ReservationService {
       reservation.orphanage = orphanageUser.orphanage_id;
 
       await this.reservationRepository.save(reservation);
-
-      //fcm 전송
-      const payload = new NotificationDto();
-      console.log(orphanageUser.fcm_token);
-      payload.deviceToken = orphanageUser.fcm_token;
-      payload.title = '방문 신청 알림!';
-      payload.body = '새로운 방문 신청이 들어왔어요.';
-      payload.data = { type: 'RESERVATION' };
-      this.fcmService.sendNotification(payload);
-
       await queryRunner.commitTransaction();
     } catch (error) {
       await queryRunner.rollbackTransaction();
