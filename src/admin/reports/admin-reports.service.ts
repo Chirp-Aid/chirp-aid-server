@@ -35,4 +35,16 @@ export class AdminReportsService {
       })
       .getMany();
   }
+
+  async deleteReport(reportId: string) {
+    const report = await this.reportRepository.findOne({
+      where: { report_id: reportId },
+    });
+
+    if (!report) {
+      throw new NotFoundException('존재하지 않는 신고입니다.');
+    }
+
+    return await this.reportRepository.remove(report);
+  }
 }
