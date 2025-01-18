@@ -21,6 +21,7 @@ export class OrphanagesService {
     return this.orphanageRepository
       .createQueryBuilder('orphanage')
       .select([
+        'user.orphanage_user_id as orphanage_user_id',
         'orphanage.orphanage_id as orphanage_id',
         'orphanage.orphanage_name as orphanage_name',
         'orphanage.address as address',
@@ -118,6 +119,10 @@ export class OrphanagesService {
         throw new NotFoundException('해당 보육원은 존재하지 않습니다.');
       }
       console.log(updateOrphanageDto);
+      const orphanageUser = await this.orphanageUserRepository.findOne({
+        where: { orphanage_id: { orphanage_id: orphanage_id } },
+      });
+      const orphanage_user_id = orphanageUser?.orphanage_user_id || null;
 
       this.orphanageRepository.update(
         { orphanage_id: orphanage_id },
@@ -133,6 +138,7 @@ export class OrphanagesService {
 
       console.log(`update OrphanageInfo : ${orphanage_id}`);
       await queryRunner.commitTransaction();
+      return orphanage_user_id;
     } catch (error) {
       await queryRunner.rollbackTransaction();
       console.log(error);
