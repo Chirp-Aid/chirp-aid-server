@@ -130,6 +130,7 @@ export class ReservationService {
 
   async getOrphanReservation(userId: string) {
     try {
+      // orphanageUser를 찾기
       const orphanageUser = await this.orphanageUserRepository.findOne({
         where: { orphanage_user_id: userId },
         relations: ['orphanage_id'],
@@ -140,6 +141,17 @@ export class ReservationService {
 
       console.log(orphanageUser.orphanage_id.orphanage_id);
 
+      // 방문 날짜가 지난 예약 상태를 REJECTED로 업데이트
+      const currentDate = new Date();
+      await this.reservationRepository
+        .createQueryBuilder()
+        .update('reservation')
+        .set({ state: 'REJECTED' }) // state를 REJECTED로 설정
+        .where('visit_date < :currentDate', { currentDate }) // 현재 날짜보다 방문 날짜가 이전인 경우
+        .andWhere('state != :state', { state: 'REJECTED' }) // 이미 REJECTED인 상태는 제외
+        .execute();
+
+      // 업데이트된 예약 정보 조회
       const reservations = await this.reservationRepository
         .createQueryBuilder('reservation')
         .select([
@@ -160,6 +172,7 @@ export class ReservationService {
         })
         .innerJoin('reservation.user', 'u')
         .getRawMany();
+
       console.log(reservations);
       return reservations;
     } catch (error) {
