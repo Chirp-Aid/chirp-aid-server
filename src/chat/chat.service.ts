@@ -28,16 +28,19 @@ export class ChatService {
   }
 
   async findOrCreateRoom(createRoomDto: CreateRoomDto): Promise<ChatRoom> {
-    const { user_id: userId, orphanage_user_id: orphanageUserId } =
-      createRoomDto;
+    const { user_id: userId, orphanage_user_id: orphanageUserId } = JSON.parse(
+      createRoomDto.toString(),
+    );
     // 두 사용자가 참여하는 대화방이 존재하는지 확인
     const user = await this.userRepository.findOne({
       where: { user_id: userId },
     });
+    console.log(user);
 
     const orphanageUser = await this.orphanageUserRepository.findOne({
       where: { orphanage_user_id: orphanageUserId },
     });
+    console.log(orphanageUser);
 
     let room = await this.chatRoomRepository.findOne({
       where: { user, orphanage_user: orphanageUser },
