@@ -158,7 +158,9 @@ export class ReservationService {
         .update('reservation')
         .set({ state: 'REJECTED' }) // state를 REJECTED로 설정
         .where('visit_date < :currentDate', { currentDate }) // 현재 날짜보다 방문 날짜가 이전인 경우
-        .andWhere('state != :state', { state: 'REJECTED' }) // 이미 REJECTED인 상태는 제외
+        .andWhere('state NOT IN (:...excludedStates)', {
+          excludedStates: ['REJECTED', 'APPROVED'],
+        }) // REJECTED와 APPROVED 제외
         .execute();
 
       // 업데이트된 예약 정보 조회
