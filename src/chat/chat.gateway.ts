@@ -79,7 +79,7 @@ export class ChatGateway
     ]);
     client.join(room.chat_room_id);
     console.log(`새 대화방 생성: ${room.chat_room_id}`);
-    client.emit('create', 'd');
+    client.emit('createRoom', room);
     return room;
   }
 
