@@ -101,7 +101,7 @@ export class RequestsService {
         params: { query: query, display: 3 },
       });
       return response.data.items.map((item) => ({
-        title: item.title,
+        title: item.title.replaceAll(/<\/?b>/gi, ''),
         price: item.lprice,
         image: item.image,
         link: item.link,
