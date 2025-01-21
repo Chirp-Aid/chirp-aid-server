@@ -21,9 +21,8 @@ export class ChatService {
   ) {}
 
   async findRoomById(id: string): Promise<ChatRoom> {
-    const { roomId } = JSON.parse(id);
     return this.chatRoomRepository.findOne({
-      where: { chat_room_id: roomId },
+      where: { chat_room_id: id },
     });
   }
 
@@ -82,14 +81,14 @@ export class ChatService {
 
   async getMessages(room: string): Promise<Message[]> {
     const queryRunner = this.dataSource.createQueryRunner();
-    const roomId = JSON.parse(room).roomId;
+    console.log(room);
 
     queryRunner.connect();
     queryRunner.startTransaction();
 
     try {
       await this.messageRepository.update(
-        { join_room: roomId },
+        { join_room: room },
         { isRead: true },
       );
       await queryRunner.commitTransaction();
@@ -100,6 +99,6 @@ export class ChatService {
     } finally {
       await queryRunner.release();
     }
-    return this.messageRepository.find({ where: { join_room: roomId } });
+    return this.messageRepository.find({ where: { join_room: room } });
   }
 }

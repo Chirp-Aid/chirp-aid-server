@@ -10,8 +10,6 @@ import { Server, Socket } from 'socket.io';
 import { ChatService } from './chat.service';
 import { CreateRoomDto } from './dto/createRoom.dto';
 import { SendMessageDto } from './dto/sendMessage.dto';
-import { UseGuards } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
 
 @WebSocketGateway({
   cors: {
@@ -27,7 +25,7 @@ export class ChatGateway
 
   // 클라이언트 목록을 관리하는 Map
   private connectedClients: Map<string, Socket> = new Map();
-  private rooms: Map<string, string[]> = new Map();
+  private rooms: Map<string, Socket[]> = new Map();
 
   constructor(private readonly chatService: ChatService) {}
 
@@ -75,7 +73,7 @@ export class ChatGateway
     const room = await this.chatService.findOrCreateRoom(createRoomDto);
     this.rooms.set(room.chat_room_id, [
       ...(this.rooms.get(room.chat_room_id) || []),
-      client.id,
+      client,
     ]);
     client.join(room.chat_room_id);
     console.log(`새 대화방 생성: ${room.chat_room_id}`);
@@ -85,31 +83,30 @@ export class ChatGateway
 
   @SubscribeMessage('sendMessage')
   async handleSendMessage(client: Socket, sendMessageDto: SendMessageDto) {
-    console.log(sendMessageDto);
+    const { join_room: joinRoom } = JSON.parse(sendMessageDto.toString());
     const message = await this.chatService.sendMessage(
       JSON.stringify(sendMessageDto),
     );
     console.log(`메시지 전송: ${message.content}`);
-    if (this.rooms.has(sendMessageDto.join_room)) {
-      this.rooms.get(sendMessageDto.join_room)?.forEach((id) => {
-        if (id !== client.id) {
-          this.connectedClients.get(id)?.emit('newMessage', message);
-        }
+    if (this.rooms.has(joinRoom)) {
+      this.rooms.get(joinRoom)?.forEach((cl) => {
+        cl.emit('newMessage', message);
       });
     }
-    client.emit('newMessage', message);
     return message;
   }
 
   @SubscribeMessage('joinRoom')
-  async handleJoinRoom(client: Socket, roomId: string) {
+  async handleJoinRoom(client: Socket, id: string) {
+    console.log(id);
+    const { room_id: roomId } = JSON.parse(id);
     // 이미 접속한 방이면 무시
     if (client.rooms.has(roomId)) {
       return;
     }
     const room = await this.chatService.findRoomById(roomId);
     if (room) {
-      this.rooms.set(roomId, [...(this.rooms.get(roomId) || []), client.id]);
+      this.rooms.set(roomId, [...(this.rooms.get(roomId) || []), client]);
       client.join(roomId);
       console.log('방 참가');
       const messages = await this.chatService.getMessages(roomId);
@@ -124,11 +121,12 @@ export class ChatGateway
   }
 
   @SubscribeMessage('leaveRoom')
-  async handleLeaveRoom(client: Socket, roomId: string) {
+  async handleLeaveRoom(client: Socket, id: string) {
+    const { room_id: roomId } = JSON.parse(id);
     client.leave(roomId);
     this.rooms.set(
       roomId,
-      this.rooms.get(roomId)?.filter((id) => id !== client.id),
+      this.rooms.get(roomId)?.filter((cl) => cl !== client),
     );
     if (this.rooms.get(roomId)?.length === 0) {
       this.rooms.delete(roomId);
