@@ -58,9 +58,11 @@ export class ChatsService {
         'o.orphanage_user_id',
         'o.name',
         'o.email',
+        'orph.orphanage_name',
       ])
       .innerJoin('chat_room.user', 'u')
       .innerJoin('chat_room.orphanage_user', 'o')
+      .innerJoin('o.orphanage', 'orph')
       .getMany();
   }
 
