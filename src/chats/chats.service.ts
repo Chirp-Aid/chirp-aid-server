@@ -54,8 +54,8 @@ export class ChatsService {
         orphanage_user_id: row.o_orphanage_user_id,
         name: row.o_name,
         email: row.o_email,
+        orphanage_name: row.orph_orphanage_name, // orphanage_name 추가
       },
-      orphanage_name: row.orph_orphanage_name, // orphanage_name 추가
     }));
   }
 
@@ -101,8 +101,8 @@ export class ChatsService {
         orphanage_user_id: row.o_orphanage_user_id,
         name: row.o_name,
         email: row.o_email,
+        orphanage_name: row.orph_orphanage_name, // orphanage_name 추가
       },
-      orphanage_name: row.orph_orphanage_name, // orphanage_name 추가
     }));
   }
 
@@ -153,8 +153,8 @@ export class ChatsService {
         orphanage_user_id: row.o_orphanage_user_id,
         name: row.o_name,
         email: row.o_email,
+        orphanage_name: row.orph_orphanage_name, // orphanage_name 추가
       },
-      orphanage_name: row.orph_orphanage_name, // orphanage_name 추가
     }));
   }
 
