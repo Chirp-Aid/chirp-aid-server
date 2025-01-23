@@ -16,33 +16,33 @@ export class ReportUserDto {
     description: 'Target User ID',
     required: true,
   })
-  target_id?: string;
+  target_id: string;
 
   @ApiProperty({
     example: '칩에이드',
     description: 'Target User ID',
     required: true,
   })
-  target_name?: string;
+  target_name: string;
 
   @ApiProperty({
     example: 'ORPHANAGE_USER',
     description: 'Target User Type: USER or ORPHANAGE_USER',
     required: true,
   })
-  target_type?: string;
+  target_type: string;
 
   @ApiProperty({
     example: 'CHAT',
     description: '글 유형: ORPHANAGE | THANKS | CHAT | RESERVATION',
     required: true,
   })
-  board_type?: string;
+  board_type: string;
 
   @ApiProperty({
     example: '성윤아 논문 다시써야 돼',
     description: '신고 글 내용',
     required: true,
   })
-  board_content?: string;
+  board_content: string;
 }
