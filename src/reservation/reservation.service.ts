@@ -86,7 +86,7 @@ export class ReservationService {
       reservation.visitDate = visitDate;
       reservation.reason = reason;
       reservation.user = user;
-      reservation.orphanage = orphanageUser.orphanage_id;
+      reservation.orphanage = orphanageUser.orphanage;
 
       await this.reservationRepository.save(reservation);
       await queryRunner.commitTransaction();
@@ -138,7 +138,7 @@ export class ReservationService {
         throw new NotFoundException('해당 사용자를 찾을 수 없습니다.');
       }
 
-      console.log(orphanageUser.orphanage_id.orphanage_id);
+      console.log(orphanageUser.orphanage.orphanage_id);
 
       const reservations = await this.reservationRepository
         .createQueryBuilder('reservation')
@@ -156,7 +156,7 @@ export class ReservationService {
           'reservation.reject_reason as reject_reason',
         ])
         .where('reservation.orphanage.orphanage_id = :orphanage_id', {
-          orphanage_id: orphanageUser.orphanage_id.orphanage_id,
+          orphanage_id: orphanageUser.orphanage.orphanage_id,
         })
         .innerJoin('reservation.user', 'u')
         .getRawMany();

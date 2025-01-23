@@ -53,7 +53,7 @@ export class OrphanageUsersService {
       newUser.name = name;
       newUser.email = email;
       newUser.password = password;
-      newUser.orphanage_id = orphanage;
+      newUser.orphanage = orphanage;
 
       const user = await queryRunner.manager.save(newUser);
       await queryRunner.commitTransaction();
