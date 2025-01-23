@@ -87,7 +87,7 @@ export class OrphanagesService {
         )
         .getRawMany();
 
-      const { name, email, orphanage_id: orphanageInfo } = orphanage;
+      const { name, email, orphanage: orphanageInfo } = orphanage;
       return { orphanage_user_id, name, email, ...orphanageInfo, requests };
     } catch (error) {
       console.log(error);
@@ -120,7 +120,7 @@ export class OrphanagesService {
       }
       console.log(updateOrphanageDto);
       const orphanageUser = await this.orphanageUserRepository.findOne({
-        where: { orphanage_id: { orphanage_id: orphanage_id } },
+        where: { orphanage: { orphanage_id: orphanage_id } },
       });
       const orphanage_user_id = orphanageUser?.orphanage_user_id || null;
 
