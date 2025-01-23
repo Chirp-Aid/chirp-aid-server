@@ -17,18 +17,18 @@ export class Report {
   @Column()
   reporter_type: string;
 
-  @Column({ nullable: true })
+  @Column()
   target_id: string;
 
-  @Column({ nullable: true })
-  target_name?: string;
+  @Column()
+  target_name: string;
 
-  @Column({ nullable: true })
-  target_type?: string;
+  @Column()
+  target_type: string;
 
-  @Column({ nullable: true })
-  board_type?: string;
+  @Column()
+  board_type: string;
 
-  @Column({ nullable: true })
-  board_content?: string;
+  @Column()
+  board_content: string;
 }
