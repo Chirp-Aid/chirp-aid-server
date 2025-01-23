@@ -13,8 +13,8 @@ export class ChatsService {
     private readonly messageRepository: Repository<Message>,
   ) {}
 
-  async getAllChatRooms(): Promise<ChatRoom[]> {
-    return this.chatRoomRepository
+  async getAllChatRooms(): Promise<ChatRoomWithOrphanageName[]> {
+    const rawData = await this.chatRoomRepository
       .createQueryBuilder('chat_room')
       .select([
         'chat_room.chat_room_id',
@@ -30,20 +30,37 @@ export class ChatsService {
         'o.orphanage_user_id',
         'o.name',
         'o.email',
-        'orph.orphanage_name',
+        'orph.orphanage_name', // orphanage_name 추가
       ])
       .innerJoin('chat_room.user', 'u')
       .innerJoin('chat_room.orphanage_user', 'o')
-      .innerJoin('o.orphanage_id', 'orph')
-      .getMany();
+      .innerJoin('o.orphanage', 'orph') // orphanage와 조인
+      .getRawMany(); // Raw 데이터 가져오기
+
+    return rawData.map((row) => ({
+      chat_room_id: row.chat_room_chat_room_id,
+      user: {
+        user_id: row.u_user_id,
+        name: row.u_name,
+        email: row.u_email,
+        age: row.u_age,
+        sex: row.u_sex,
+        nickname: row.u_nickname,
+        region: row.u_region,
+        phone_number: row.u_phone_number,
+        profile_photo: row.u_profile_photo,
+      },
+      orphanage_user: {
+        orphanage_user_id: row.o_orphanage_user_id,
+        name: row.o_name,
+        email: row.o_email,
+      },
+      orphanage_name: row.orph_orphanage_name, // orphanage_name 추가
+    }));
   }
 
-  async getAllMessages(): Promise<Message[]> {
-    return this.messageRepository.find();
-  }
-
-  async getChatRoomsByUser(id: string): Promise<ChatRoom[]> {
-    return this.chatRoomRepository
+  async getChatRoomsByUser(id: string): Promise<ChatRoomWithOrphanageName[]> {
+    const rawData = await this.chatRoomRepository
       .createQueryBuilder('chat_room')
       .where('chat_room.user.user_id = :user_id', { user_id: id })
       .select([
@@ -64,12 +81,35 @@ export class ChatsService {
       ])
       .innerJoin('chat_room.user', 'u')
       .innerJoin('chat_room.orphanage_user', 'o')
-      .innerJoin('o.orphanage_id', 'orph')
-      .getMany();
+      .innerJoin('o.orphanage', 'orph')
+      .getRawMany();
+
+    return rawData.map((row) => ({
+      chat_room_id: row.chat_room_chat_room_id,
+      user: {
+        user_id: row.u_user_id,
+        name: row.u_name,
+        email: row.u_email,
+        age: row.u_age,
+        sex: row.u_sex,
+        nickname: row.u_nickname,
+        region: row.u_region,
+        phone_number: row.u_phone_number,
+        profile_photo: row.u_profile_photo,
+      },
+      orphanage_user: {
+        orphanage_user_id: row.o_orphanage_user_id,
+        name: row.o_name,
+        email: row.o_email,
+      },
+      orphanage_name: row.orph_orphanage_name, // orphanage_name 추가
+    }));
   }
 
-  async getChatRoomsByOrphanageUser(id: string): Promise<ChatRoom[]> {
-    return this.chatRoomRepository
+  async getChatRoomsByOrphanageUser(
+    id: string,
+  ): Promise<ChatRoomWithOrphanageName[]> {
+    const rawData = await this.chatRoomRepository
       .createQueryBuilder('chat_room')
       .where(
         'chat_room.orphanage_user.orphanage_user_id = :orphanage_user_id',
@@ -89,10 +129,33 @@ export class ChatsService {
         'o.orphanage_user_id',
         'o.name',
         'o.email',
+        'orph.orphanage_name', // orphanage_name 추가
       ])
       .innerJoin('chat_room.user', 'u')
       .innerJoin('chat_room.orphanage_user', 'o')
-      .getMany();
+      .innerJoin('o.orphanage', 'orph')
+      .getRawMany();
+
+    return rawData.map((row) => ({
+      chat_room_id: row.chat_room_chat_room_id,
+      user: {
+        user_id: row.u_user_id,
+        name: row.u_name,
+        email: row.u_email,
+        age: row.u_age,
+        sex: row.u_sex,
+        nickname: row.u_nickname,
+        region: row.u_region,
+        phone_number: row.u_phone_number,
+        profile_photo: row.u_profile_photo,
+      },
+      orphanage_user: {
+        orphanage_user_id: row.o_orphanage_user_id,
+        name: row.o_name,
+        email: row.o_email,
+      },
+      orphanage_name: row.orph_orphanage_name, // orphanage_name 추가
+    }));
   }
 
   async getMessagesByRoom(id: string): Promise<Message[]> {
@@ -100,5 +163,9 @@ export class ChatsService {
       .createQueryBuilder('message')
       .where('message.join_room = :join_room', { join_room: id })
       .getMany();
+  }
+
+  async getAllMessages(): Promise<Message[]> {
+    return this.messageRepository.find();
   }
 }
