@@ -15,6 +15,6 @@ interface ChatRoomWithOrphanageName {
     orphanage_user_id: string;
     name: string;
     email: string;
+    orphanage_name: string; // orphanage_name 추가
   };
-  orphanage_name: string; // orphanage_name 추가
 }
