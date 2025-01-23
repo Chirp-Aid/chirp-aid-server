@@ -1,7 +1,6 @@
 import { Controller, Get, Param, Request, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { ChatsService } from './chats.service';
-import { ChatRoom } from 'src/entities/chat-room.entity';
 import { Message } from 'src/entities/message.entity';
 import { ApiHeader, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
@@ -18,7 +17,7 @@ export class ChatsController {
   })
   @ApiHeader({
     name: 'Authorization',
-    description: "Bearer {`user's Access Token`}",
+    description: "Bearer {`user's Access Token`} Example",
     example: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9',
   })
   @ApiResponse({
@@ -45,25 +44,7 @@ export class ChatsController {
             name: '다조핑',
             email: 'dazo1578@gmail.com',
           },
-        },
-        {
-          chat_room_id: '9431a16d-8f17-4fd6-94c7-60a6cb6ce087',
-          user: {
-            user_id: '080c7dc0-7eed-11ef-8310-09489e88db41',
-            name: '황용진',
-            email: 'dswvgw1234@gmail.com',
-            age: 5,
-            sex: 'm',
-            nickname: 'oko_jin',
-            region: '뉴욕',
-            phone_number: '01033288164',
-            profile_photo: '사진 url',
-          },
-          orphanage_user: {
-            orphanage_user_id: '68882a60-7efb-11ef-9912-f5e9b51a2448',
-            name: '다조핑',
-            email: 'dazo1578@gmail.com',
-          },
+          orphanage_name: 'Hope Orphanage', // orphanage_name 추가
         },
       ],
     },
@@ -72,7 +53,7 @@ export class ChatsController {
     status: 401,
     description: 'Unauthorized',
   })
-  async getAllChatRooms(): Promise<ChatRoom[]> {
+  async getAllChatRooms(): Promise<ChatRoomWithOrphanageName[]> {
     return await this.chatsService.getAllChatRooms();
   }
 
@@ -83,7 +64,7 @@ export class ChatsController {
   })
   @ApiHeader({
     name: 'Authorization',
-    description: "Bearer {`user's Access Token`}",
+    description: "Bearer {`user's Access Token`} Example",
     example: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9',
   })
   @ApiResponse({
@@ -113,13 +94,13 @@ export class ChatsController {
 
   @Get('/rooms/user')
   @ApiOperation({
-    summary: '일반 사용자 id 기반 모든 채팅방 조회',
+    summary: '일반 사용자 ID 기반 모든 채팅방 조회',
     description:
-      '해당 일반 사용자가 참여중인 채팅방을 최신 메시지 순으로 조회합니다.',
+      '해당 일반 사용자가 참여 중인 채팅방을 최신 메시지 순으로 조회합니다.',
   })
   @ApiHeader({
     name: 'Authorization',
-    description: "Bearer {`user's Access Token`}",
+    description: "Bearer {`user's Access Token`} Example",
     example: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9',
   })
   @ApiResponse({
@@ -146,25 +127,7 @@ export class ChatsController {
             name: '다조핑',
             email: 'dazo1578@gmail.com',
           },
-        },
-        {
-          chat_room_id: '9431a16d-8f17-4fd6-94c7-60a6cb6ce087',
-          user: {
-            user_id: '080c7dc0-7eed-11ef-8310-09489e88db41',
-            name: '황용진',
-            email: 'dswvgw1234@gmail.com',
-            age: 5,
-            sex: 'm',
-            nickname: 'oko_jin',
-            region: '뉴욕',
-            phone_number: '01033288164',
-            profile_photo: '사진 url',
-          },
-          orphanage_user: {
-            orphanage_user_id: '68882a60-7efb-11ef-9912-f5e9b51a2448',
-            name: '다조핑',
-            email: 'dazo1578@gmail.com',
-          },
+          orphanage_name: 'Hope Orphanage', // orphanage_name 추가
         },
       ],
     },
@@ -173,20 +136,22 @@ export class ChatsController {
     status: 401,
     description: 'Unauthorized',
   })
-  async getChatRoomsByUser(@Request() req): Promise<ChatRoom[]> {
+  async getChatRoomsByUser(
+    @Request() req,
+  ): Promise<ChatRoomWithOrphanageName[]> {
     const userId = req.user.user_id;
     return await this.chatsService.getChatRoomsByUser(userId);
   }
 
   @Get('/rooms/orphanage-user')
   @ApiOperation({
-    summary: '보육원 사용자 id 기반 모든 채팅방 조회',
+    summary: '보육원 사용자 ID 기반 모든 채팅방 조회',
     description:
-      '해당 보육원 사용자가 참여중인 채팅방을 최신 메시지 순으로 조회합니다.',
+      '해당 보육원 사용자가 참여 중인 채팅방을 최신 메시지 순으로 조회합니다.',
   })
   @ApiHeader({
     name: 'Authorization',
-    description: "Bearer {`user's Access Token`}",
+    description: "Bearer {`user's Access Token`} Example",
     example: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9',
   })
   @ApiResponse({
@@ -213,25 +178,7 @@ export class ChatsController {
             name: '다조핑',
             email: 'dazo1578@gmail.com',
           },
-        },
-        {
-          chat_room_id: '9431a16d-8f17-4fd6-94c7-60a6cb6ce087',
-          user: {
-            user_id: '080c7dc0-7eed-11ef-8310-09489e88db41',
-            name: '황용진',
-            email: 'dswvgw1234@gmail.com',
-            age: 5,
-            sex: 'm',
-            nickname: 'oko_jin',
-            region: '뉴욕',
-            phone_number: '01033288164',
-            profile_photo: '사진 url',
-          },
-          orphanage_user: {
-            orphanage_user_id: '68882a60-7efb-11ef-9912-f5e9b51a2448',
-            name: '다조핑',
-            email: 'dazo1578@gmail.com',
-          },
+          orphanage_name: 'Hope Orphanage', // orphanage_name 추가
         },
       ],
     },
@@ -240,19 +187,21 @@ export class ChatsController {
     status: 401,
     description: 'Unauthorized',
   })
-  async getChatRoomsByOrphanageUser(@Request() req): Promise<ChatRoom[]> {
+  async getChatRoomsByOrphanageUser(
+    @Request() req,
+  ): Promise<ChatRoomWithOrphanageName[]> {
     const orphanageUserId = req.user.user_id;
     return await this.chatsService.getChatRoomsByOrphanageUser(orphanageUserId);
   }
 
-  @Get('/messages/room')
+  @Get('/messages/room/:id')
   @ApiOperation({
     summary: '현재 채팅방 내 모든 메시지 조회',
-    description: '존재하는 모든 채팅방을 조회합니다.',
+    description: '특정 채팅방 ID에 포함된 모든 메시지를 조회합니다.',
   })
   @ApiHeader({
     name: 'Authorization',
-    description: "Bearer {`user's Access Token`}",
+    description: "Bearer {`user's Access Token`} Example",
     example: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9',
   })
   @ApiResponse({
@@ -276,7 +225,7 @@ export class ChatsController {
     status: 401,
     description: 'Unauthorized',
   })
-  async getMessagesByRoom(@Param() id: string): Promise<Message[]> {
+  async getMessagesByRoom(@Param('id') id: string): Promise<Message[]> {
     return await this.chatsService.getMessagesByRoom(id);
   }
 }
