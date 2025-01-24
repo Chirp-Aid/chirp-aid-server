@@ -81,7 +81,7 @@ export class AdminOrphanageUsersService {
         'orphanage_user.email',
         'o.orphanage_id',
       ])
-      .innerJoin('orphanage_user.orphanage_id', 'o')
+      .innerJoin('orphanage_user.orphanage', 'o')
       .getMany();
   }
 
@@ -92,7 +92,7 @@ export class AdminOrphanageUsersService {
         id: orphanageUserId,
       })
       .select(['orphanage_user.name', 'orphanage_user.email', 'o.orphanage_id'])
-      .innerJoin('orphanage_user.orphanage_id', 'o')
+      .innerJoin('orphanage_user.orphanage', 'o')
       .getOne();
     if (!orphanageUser) {
       throw new NotFoundException('해당 보육원 사용자가 존재하지 않습니다.');
@@ -105,7 +105,7 @@ export class AdminOrphanageUsersService {
       .createQueryBuilder('orphanage_user')
       .where('orphanage_user.name LIKE :name', { name: `%${name}%` })
       .select(['orphanage_user.name', 'orphanage_user.email', 'o.orphanage_id'])
-      .innerJoin('orphanage_user.orphanage_id', 'o')
+      .innerJoin('orphanage_user.orphanage', 'o')
       .getMany();
   }
 
