@@ -151,7 +151,7 @@ export class BasketService {
         })
         .innerJoin('basket_product.request_id', 'r')
         .innerJoin('r.orphanage_user_id', 'ou')
-        .innerJoin('ou.orphanage_id', 'o')
+        .innerJoin('ou.orphanage', 'o')
         .innerJoin('r.product_id', 'pi')
         .getRawMany();
 
