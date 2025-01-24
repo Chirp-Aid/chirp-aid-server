@@ -52,7 +52,7 @@ export class ReservationService {
           'o.orphanage_id',
           'orphanage_user.fcm_token',
         ])
-        .innerJoin('orphanage_user.orphanage_id', 'o')
+        .innerJoin('orphanage_user.orphanage', 'o')
         .where('orphanage_user.orphanage_id.orphanage_id = :orphanage_id', {
           orphanage_id: orphanageId,
         })
