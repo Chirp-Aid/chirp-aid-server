@@ -31,7 +31,7 @@ export class PostsService {
           'o.orphanage_name as orphanage_name',
         ])
         .innerJoin('review.orphanage_user', 'ou')
-        .innerJoin('ou.orphanage_id', 'o')
+        .innerJoin('ou.orphanage', 'o')
         .getRawMany();
 
       for (const post of posts) {
@@ -68,7 +68,7 @@ export class PostsService {
           'review.date as date',
         ])
         .innerJoin('review.orphanage_user', 'orphanage_user')
-        .innerJoin('orphanage_user.orphanage_id', 'orphanage')
+        .innerJoin('orphanage_user.orphanage', 'orphanage')
         .where('orphanage.orphanage_id = :orphanageId', { orphanageId })
         .getRawMany();
 

@@ -49,8 +49,8 @@ export class OrphanagesService {
           'orphanage_user.name',
           'orphanage_user.orphanage_user_id',
         ])
-        .leftJoin('orphanage_user.orphanage_id', 'orphanage')
-        .where('orphanage_user.orphanage_id = :id', { id })
+        .leftJoin('orphanage_user.orphanage', 'orphanage')
+        .where('orphanage_user.orphanage = :id', { id })
         .getOne();
 
       if (!orphanage) {
